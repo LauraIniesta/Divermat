@@ -1,0 +1,22 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Cambio Contrasenia
+{% endblock %}
+
+{% block body_block %}
+<form  method="post"> {% csrf_token %}
+    <div class="...">
+        {{ form.old_password }}
+    </div>
+    <div class="...">
+        <div class="...">
+            {{ form.new_password1 }}
+        </div>
+    </div>
+    <section>
+        {{ form.new_password2 }}
+    </section>
+    <button type="submit">Cambiar</button>
+</form>
+{% endblock %}

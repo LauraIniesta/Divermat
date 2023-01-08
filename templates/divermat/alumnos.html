@@ -1,0 +1,96 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Alumnos
+{% endblock %}
+
+{% block body_block %}
+<div class="flex-container">
+    <table>
+        <tr>
+            <td>
+                <h2>Alumnos</h2>
+            </td>
+            <td>
+                <h2>Seguimiento {{alumno}}</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>
+
+            </td>
+            <td>
+                <div>
+                    <table>
+                        <tr>
+                            <td>
+                               <h3>Tema</h3>
+                            </td>
+                            <td>
+                                <h3>% Acierto</h3>
+                            </td>
+                            <td>
+                               <h3>Nº Ejercicios Hechos</h3> 
+                            </td>
+                        </tr>
+                        <!--Seguimiento alumno-->
+                        {% for infor in informacion%}
+                        <tr>
+                            <td>
+                                {{infor.tema}}
+                            </td>
+                            <td>
+                                {{infor.acierto}}
+                            </td>
+                            <td>
+                                {{infor.ejercicios}}
+                            </td>
+                        </tr>
+                        {%endfor%}
+                    </table>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            
+                <table>
+                        {% for alum in alumnos %}
+                        <tr><td><a href="{% url 'alumnos' alum.id %}"><li>{{alum}}</li></a>{{alum.password_temporal}}</td></tr>
+                        {%endfor%}
+                </table>
+
+            </td>
+    
+            
+            <td>
+               
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="lateral">
+    <div class ="flex-container">
+        <div class="medio">
+            <a>Buscar</a></br></br>
+            <form action="alumnos" method="GET">
+                <div>
+                    <input type="text" name="buscar" value="Buscar Alumno"></br></br>
+                    <div>
+                        <select name="curso" value="Curso">
+                            <option selected>Curso</option>
+                            <option>1º ESO </option>
+                            <option>2º ESO </option>
+                            <option>3º ESO </option>  
+                            <option>4º ESO </option>      
+                        </select></br></br>
+                    </div>
+                    <input type="submit" value="Aceptar"></input>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+      
+{% endblock %}

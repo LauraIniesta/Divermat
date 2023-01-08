@@ -1,0 +1,34 @@
+{% extends "divermat/base.html" %}
+{% block title_block %}
+    Registro
+{% endblock %}
+
+{% block body_block %}
+
+    <h3>Iniciar Sesión</h3></br></br>
+
+   
+
+    <div class ="flex-container">
+        <div>
+        
+          <form id="InicioSesionForm" action="iniciar_sesion" method="POST">
+
+                <table>
+                    {{form}}
+                </table>
+                {% csrf_token %}
+
+                <input type="submit" value="Aceptar">   
+                <input type="submit" value="Cancelar">
+
+            </form>
+
+               
+        </div>
+        <div>
+            {{error}}
+        </div>
+    </div>
+
+{% endblock %}

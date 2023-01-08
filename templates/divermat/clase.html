@@ -1,0 +1,119 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Clase
+{% endblock %}
+
+{% block body_block %}
+<div class="flex-container">
+    <h1>{{Clase.nombre}}</h1>
+    {% if alumno is False %}
+        <table>
+            <tr>
+                <td>
+                    <h2>Alumnos-Usuario-Contrasenia</h2>
+                </td>
+                <td>
+                    <h2>Informacion</h2>
+                </td>
+                <td>
+                    <h2>Seguimiento</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        {%for alumno in alumnos%}
+                        <tr>
+                            <td>
+                                {{alumno.first_name}}
+                            </td>
+                            <td>
+                                {{alumno.username}}
+                            </td>
+                            <td>
+                                {{alumno.password_temporal}}
+                            </td>
+                        </tr>
+                        {%endfor%}
+                    </table>
+                    <a href="{% url 'alumnosclase' clase.id %}"> Modificar</a>                
+                </td>
+                <td>
+                    <div>
+                        Curso: {{curso}}<br>
+                        Año Académico: {{ano_academico}}<br>
+                        Nombre:{{nombre}}<br>
+                        Total Alumnos:{{nalumnos}}<br>
+                        Centro Educativo:{{centro}}<br>
+                        <br>
+                        <br>
+                        <a href="{% url 'infoclase' clase.id %}"> Modificar Información </a>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <table>
+                            <tr>
+                                <td>
+                                <h3>Tema</h3>
+                                </td>
+                                <td>
+                                    <h3>% Acierto</h3>
+                                </td>
+                            </tr>
+                            <!--Seguimiento alumno-->
+                            {% for infor in informacion%}
+                            <tr>
+                                <td>
+                                    {{infor.tema}}
+                                </td>
+                                <td>
+                                    {{infor.acierto}}
+                                </td>
+                            </tr>
+                            {%endfor%}
+                        <tr>
+                            <td>
+                                    <a href="{% url 'seguimientoclase' clase.id %}"> Más Informacion </a>
+                            </td>
+                        </tr> 
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    {% else %}
+        <table>
+            <tr>
+                <td>
+                    <h2>Ejercicios Asignados</h2>
+                </td>
+                <td>
+                    <h2>Informacion</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ol>            
+                        {% for ejercicio in ejercicios.all %}
+                            <a href="{% url 'ejercicio' %}"><li>{{ejercicio.titulo}}</li></a><br>
+                        {%endfor%}
+                    </ol>  
+                                        
+                </td>
+                <td>
+                    <div>
+                        Curso: {{curso}}<br>
+                        Año Académico: {{ano_academico}}<br>
+                        Nombre:{{nombre}}<br>
+                        Total Alumnos:{{nalumnos}}<br>
+                        Centro Educativo:{{centro}}<br>
+                    </div>
+                </td>    
+            </tr>
+        </table>
+    {% endif %}
+</div>
+      
+{% endblock %}

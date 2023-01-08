@@ -1,0 +1,156 @@
+body {
+    background-color:rgb(255, 255, 255);
+}
+h1{
+
+  font-family:"Comic Sans",serif;
+  font-size: 40px;
+}
+cent{
+  text-align:center;
+ 
+}
+
+.menu{
+	text-align:center;
+	margin-left: 480px;
+	margin-top: 0px;
+
+}
+
+.listamedio{
+  text-align:center;
+	margin-right: 200px;
+}
+.izq{
+  text-align:left;
+  margin-top: 10px;
+  margin-left: 450px;
+}
+
+.arriba{
+  vertical-align: text-top;
+}
+texto{
+  font-family: "Comic Sans",serif;
+  font-size: 20px;
+
+}
+error{
+  color: red;
+}
+.fortaleza{
+  border:1px red;
+}
+.dch{
+  text-align:right;
+  margin-top: 10px; 
+  margin-right: 50px;
+  font-family: "Comic Sans",serif;
+  margin-bottom: 0%;
+  float: right;
+}
+.Search{
+ margin-bottom:5%;
+}
+
+.listaizq {
+  margin-right: 1000px;
+}
+
+.flex-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: baseline;
+  margin: auto;
+ 
+}
+.contenido{
+
+  margin-left:150px;
+  margin-bottom: 64px;
+  margin-top:10px;
+}
+
+/*Cabecera de la web*/
+
+.cab{
+  width: 100%;
+  height: 100px;
+  background: rgb(171, 203, 250);
+  margin:0; 
+  position: fixed;
+  top:0px;
+  left:0px; 
+}
+
+html, body {
+  height: 100%;
+  margin-top: 4%;
+}
+.footer {
+  width: 100%;
+  height: 64px ;
+  background: rgb(214, 228, 250);
+  margin: 0;
+  position: fixed;
+  bottom: 0px;
+  margin-bottom: 0px;
+  left:0px;
+}
+
+.lateral{
+  position: fixed;
+  width: 250px;
+  height: 100vh;
+  left: 0px;
+  top: 100px;
+  bottom: 64px;
+  background: rgb(214, 228, 250);
+  font-size: 20px;
+}
+
+.medio{
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.menu table td {
+	border: 1px black solid;
+  background: rgb(214, 228, 250);
+  border-collapse: collapse;
+	margin: 10px;
+	padding:20px;
+}
+
+.cab table td{
+  border: none;
+  padding: 10px;
+}
+/*.cab table tr{
+  padding: 20px;
+}
+*/
+
+table {
+  border: none;
+  border-spacing:15px;
+  text-align: left;
+}
+
+th {
+  padding: 0.2%;
+  text-align: left;
+}
+
+td {
+  padding: 0.6%;
+  border-spacing: 15px;
+  text-align: left;
+}
+
+tr {
+  padding: 1%;
+  text-align: left;
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+    <head>
+        <title>       
+            DIVERMAT! -
+            {% block title_block %}
+            {% endblock %}
+        </title>    
+        <link rel="stylesheet" type="text/css" href="{% static 'estilo.css' %}" />
+    </head>
+    <body>            
+        <div class = "cab">
+            <table >
+                <tr>
+                    {% if user.is_authenticated %}
+                    <td>Hola_{{user.get_username}}!</td> 
+                    {%else%}
+                    <td>Bienvenido!</td> 
+                    {%endif%}
+                    <td WIDTH="1600"><izq><h1 class = "izq"><a href="{% url 'index' %}">DIVERMAT!</a></h1></izq></td>
+
+                    {% if user.is_authenticated %}
+                        <td>
+                            <a href="{% url 'cerrar_sesion' %}">Cerrar_Sesión</a>
+                        </td>                        
+                        <td>
+                            <a href="{% url 'perfil' %}">Mi_Perfil</a>
+                        </td>
+                    {% else %}
+                        <td>
+                            <a href="{% url 'iniciar_sesion' %}">Iniciar_Sesión</a>
+                        </td>
+                        <td>
+                            <a href="{% url 'registro' %}">Registrarse</a>
+                        </td>
+                    {% endif %}
+                </tr>
+            </table>
+        </div>
+        {% if registro is False%}
+        <div class="menu">
+
+
+            <table >
+                {% if user.is_authenticated %}
+                    <td>
+                        <a href="{% url 'clases' %}">Clases</a>
+                    </td>
+
+                    <td>
+                        <a href="{% url 'alumnos' %}">Alumnos</a>
+                    </td>
+
+                    <td>
+                        <a href="{% url 'index' %}">Ejercicios</a>
+                    </td>
+
+                    <td>
+                        <a href="{% url 'contenido' %}">Contenido</a>
+                    </td>
+                {% else %}
+                    <td>
+                        <a href="{% url 'index' %}">Ejercicios</a>
+                    </td>
+
+                    <td>
+                        <a href="{% url 'videos' %}">Vídeos</a>
+                    </td>
+
+                    <td>
+                        <a href="{% url 'resumenes' %}">Resúmenes</a>
+                    </td>
+
+                    <td>
+                        <a href="{% url 'examenes' %}">Exámenes</a>
+                    </td>
+                {%endif%}
+
+                <!--{% if user.is_authenticated %}
+                    
+                {% endif %}-->
+
+            </table>
+        </div>
+        {% endif %}
+        <div class="contenido">
+            <div class="flex-container">
+                {% block body_block %}
+            
+                {% endblock %}
+            </div>
+        </div>
+        <div class = "footer">
+             <cent><p>Para cualquier duda contactar con lauinirod@gmail.com</p></cent>
+        </div>
+    </body>
+</html>

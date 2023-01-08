@@ -1,0 +1,69 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Clases
+{% endblock %}
+
+{% block body_block %}
+<div class="flex-container">
+    <table>
+        <tr>
+            <td>
+                <h2>Mis Clases</h2>
+            </td>
+            <td>
+                <h2>Crear una nueva clase</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            
+                <table>
+                    {% for c in clases %}
+                    <tr><td><a href="{% url 'clase' c.id %}"><li>{{c}}</li></a></td></tr>
+                    {%endfor%}
+
+                </table>
+
+            </td>
+    
+            
+            <td>
+                <div>
+                    <form id="NuevaClase" action="clases" method="POST">
+                        <table>
+                            {{form}}
+                        </table>
+                        {% csrf_token %}
+            
+                        <input type="submit" value="Crear">   
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="lateral">
+    <div class ="flex-container">
+        <div class="medio">
+            <a>Buscar</a></br></br>
+            <form action="clases" method="GET">
+                <div>
+                    <input type="text" name="buscar" value="Buscar Clase"></br></br>
+                    <div>
+                        <select name="curso" value="Curso">
+                            <option selected>Curso</option>
+                            <option>1º ESO </option>
+                            <option>2º ESO </option>
+                            <option>3º ESO </option>  
+                            <option>4º ESO </option>      
+                        </select></br></br>
+                    </div>
+                    <input type="submit" value="Aceptar"></input>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+       
+{% endblock %}

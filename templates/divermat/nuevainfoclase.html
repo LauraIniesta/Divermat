@@ -1,0 +1,44 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Perfil
+{% endblock %}
+
+{% block body_block %}
+<div>
+    <table>
+        <tr>
+            <td><h3>Información</h3></td>
+            <td><h3>Cambiar Información</h3></td>
+        </tr>
+        
+        <tr>
+            <td>
+                <div>
+                    Curso: {{curso}}<br>
+                    Año Académico: {{ano_academico}}<br>
+                    Nombre:{{nombre}}<br>
+                    Centro Educativo:{{centro}}<br>
+                </div>
+
+            </td>
+            <td>
+                Introduce los nuevos datos:
+                <form id="NuevaInfoClase" action="infoclase/{{clase.id}}/" method="POST">
+                    <table>
+                        {{form}}
+                    </table>
+                    {% csrf_token %}
+        
+                   <br> <input type="submit" value="Cambiar"> <br><br>
+                   
+                    
+                </form>
+            </td>
+        </tr>  
+                
+             
+    </table>
+</div>
+
+{% endblock %}

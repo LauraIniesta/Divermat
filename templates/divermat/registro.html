@@ -1,0 +1,32 @@
+{% extends "divermat/base.html" %}
+{% block title_block %}
+    Registro
+{% endblock %}
+
+{% block body_block %}
+
+        <h3>Introduce los datos para Registrarte</h3></br></br>
+
+   
+
+    <div class ="flex-container">
+        <div>
+        
+          <form id="RegistroForm" action="registro" method="POST">
+
+                <table>
+                    {{form}}
+                </table>
+                {% csrf_token %}
+
+                <input type="submit" value="Aceptar">   
+                <input type="submit" value="Cancelar">
+
+            </form>
+
+               
+        </div>
+    </div>
+</div>
+
+{% endblock %}

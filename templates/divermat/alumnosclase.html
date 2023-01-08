@@ -1,0 +1,58 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Alumnos
+{% endblock %}
+
+{% block body_block %}
+<div class="flex-container">
+    <table>
+        <tr>
+            <td>
+                <h2>Alumnos</h2>
+            </td>
+            
+        </tr>
+        <tr>
+            <td>
+
+            </td>
+           
+        </tr>
+        <tr>
+            <td>
+                <form id="borrarAlumno" action="" method="POST">
+                    {% csrf_token %}
+
+                    <table>
+                            {% for alum in alumnos %}
+                            <tr><td> 
+                                <input type="checkbox" name="Alumnos" value={{alum.id}}>
+                                   <li>{{alum}}</li>
+                                </input>
+                            </td></tr>
+                            {%endfor%}
+                    </table>
+                    <input type="submit" value="Borrar"></input>
+                </form>
+
+            </td>
+    
+            
+            <td>
+                <div>
+                    <form id="NuevoAlumno" method="post">
+                        <table>
+                            {{form}}
+                        </table>
+                        {% csrf_token %}
+                        <input type="submit" value="NuevoAlumno">   
+                    </form>
+                </div>                
+            </td>
+        </tr>
+    </table>
+</div>
+
+      
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Inicio
+{% endblock %}
+
+{% block body_block %}
+<div class="lateral"></div>
+{% if Examen is True %}
+<h3>Examen nº {{ n_examen }}</h3></br></br>
+<!--Examen-->
+{% else %}
+<div >
+    <h3>Selecciona los datos para realizar el Examen</h3></br></br>
+
+    <div class ="flex-container">
+        <div>
+        
+          <form id="NuevoExamenForm" action="examenes" method="POST">
+
+                <table>
+                    {{form}}
+                </table>
+                {% csrf_token %}
+
+                <input type="submit" value="Aceptar">   
+                <input type="submit" value="Cancelar">
+
+            </form>
+
+               
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

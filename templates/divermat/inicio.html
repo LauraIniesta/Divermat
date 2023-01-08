@@ -1,0 +1,61 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Inicio
+{% endblock %}
+
+{% block body_block %}
+<div class="listamedio">
+    <h2>Lista de {{Tipo}}</h2>
+    <ol>
+        {% for conten in Contenido %}
+           <a href="{% url 'ejercicio' %}"><li>{{conten.titulo}}</li></a>
+        {%endfor%}
+    </ol>
+</div>
+
+ 
+ <div class="lateral">
+    <div class ="flex-container">
+        <div class="medio">
+            <a>Buscar</a></br></br>
+            <form action="index" method="GET">
+                <div>
+                    <input type="text" name="buscar" value="Buscar"></br></br>
+                    <div>
+                    {% if not user.is_authenticated %}
+                        <select name="curso">
+                            <option selected>Curso</option>
+                            <option>1º ESO </option>
+                            <option>2º ESO </option>
+                            <option>3º ESO </option>  
+                            <option>4º ESO </option>      
+                        </select></br></br>
+                    {% endif %}
+                </div>
+                <div>
+                    <select name="tema">
+                        <option selected>Tema</option>
+                        {% for tema in temas%}
+                            <option>{{tema}} </option>
+                        {% endfor %}     
+                    </select></br></br>
+                </div>
+                <div>
+                    <select name="tipo">
+                        <option selected>Tipo</option>
+                        <option>Test </option>
+                        <option>Respuesta corta </option>
+                        <option>Problema </option>     
+                    </select>
+                </div>
+                <input type="submit" value="Aceptar"></input>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

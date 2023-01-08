@@ -1,0 +1,57 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Cambiar Informacion
+{% endblock %}
+
+{% block body_block %}
+<div>
+    <table>
+        <tr>
+            <td><h3>Información</h3></td>
+            <td><h3>Cambiar Información</h3></td>
+        </tr>
+        
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <tr>
+                                <td>
+                                    Nombre de usuario: {{username}}
+                                </td>
+                            </tr>
+                            <td>
+                                Nombre: {{nombre}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Apellidos: {{apellidos}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Centro educativo: {{centro}}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    Introduce los nuevos datos:
+                    <form id="NuevaInfo" action="cambiarInformacionAlumno" method="POST">
+                        <table>
+                            {{form}}
+                        </table>
+                        {% csrf_token %}
+            
+                       <br> <input type="submit" value="Cambiar"> <br><br>
+                       
+                        
+                    </form>
+                </td>
+            </tr>      
+    </table>
+</div>
+
+{% endblock %}
