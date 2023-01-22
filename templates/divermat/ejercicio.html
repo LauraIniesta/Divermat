@@ -1,0 +1,46 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Ejercicio
+{% endblock %}
+
+{% block body_block %}
+<div>
+    <form action="{% url 'ejercicio' ejercicio=ejercicio.id%}" method="GET">
+        {% if ejercicio.nsoluciones is 1%}
+            <div>
+                <h2>Ejercicio:  {{ejercicio.titulo}}</h2>
+                <h3>{{ejercicio.enunciado}}</h3>
+                {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test-->
+                    <p>Selecciona la solución correcta</p>
+                    {% for sol in soluciones %}
+                        <input type="radio" id="solucion" value="{{sol}}" name="solucion"> {{sol}} </br>
+                    {% endfor %}
+                    <input type="submit" value="Aceptar">   
+                {% else %} <!--Ejercicio de respuesta corta-->
+                    <input label="Introduce la solución: " type="text" name="solucion" value="Solucion"></br></br>
+
+                {% endif %}
+            </div>
+        {% else %}
+            <div>
+                <h2>Ejercicio:  {{ejercicio.titulo}}</h2>
+                <h3>{{ejercicio.enunciado}}</h3>
+                {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test con varias soluciones-->
+                    <p>Selecciona la solución correcta</p>
+                    {% for sol in soluciones %}
+                        <input type="checkbox" id="solucion" value="{{sol}}" name="solucion"> {{sol}} </br>
+                    {% endfor %}
+                    <input type="submit" value="Aceptar">   
+                {% else %} <!--Ejercicio de respuesta corta con varias soluciones-->
+                
+                    <input label="Introduce las soluciones separadas por ';': " type="text" name="solucion" value="Solucion"></br></br>
+
+                {% endif %}
+            </div>
+        {% endif %}
+    </form>
+
+    <h4 style="color:crimson">{{resultado}}</h4>
+</div>
+{% endblock %}

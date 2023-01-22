@@ -1,0 +1,67 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Set Ejercicios
+{% endblock %}
+
+{% block body_block %}
+<div>
+    <h2>Set de Ejercicios </h2>
+    
+
+    <h3>Tema {{tema.titulo}}</h3>
+    <ol>
+        <form action="{% url 'setEjercicios' tema.id %}" method="POST">
+            {% for ejercicio in set %}
+                <li>
+                    {% if ejercicio.nsoluciones is 1%}
+                        <div>
+                            <h4>{{ejercicio.titulo}}: {{ejercicio.enunciado}}</h4>
+                            {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test-->
+                                <p>Selecciona la solución correcta</p>
+
+                                {% for sol in ejercicio.soluciones %}
+                                    <input type="radio" id="{{ejercicio.id}}" value="{{sol}}" name="{{ejercicio.id}}" required> {{sol}} </br>
+                                {% endfor %}
+
+                            {% else %} <!--Ejercicio de respuesta corta-->
+
+                                <input label="Introduce la solución: " type="text" name="{{ejercicio.id}}" value="Solucion" required></br></br>
+            
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div>
+                            <h4>Ejercicio:  {{ejercicio.titulo}}</h4>
+                            <h5>{{ejercicio.enunciado}}</h5>
+                            {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test con varias soluciones-->
+
+                                <p>Selecciona la solución correcta</p>
+
+                                {% for sol in ejercicio.soluciones %}
+                                    <input type="checkbox" id="{{ejercicio.id}}" value="{{sol}}" name="{{ejercicio.id}}" > {{sol}} </br>
+                                {% endfor %}  
+
+                            {% else %} <!--Ejercicio de respuesta corta con varias soluciones-->
+                            
+                                <input label="Introduce las soluciones separadas por ';': " type="text" name="{{ejercicio.id}}"value="Solucion" required></br></br>
+            
+                            {% endif %}
+                        </div>
+                    {% endif %}
+            
+                    <h4 style="color:crimson">{{ejercicio.resultado}}</h4>
+        
+                </li>
+            {% endfor %}
+            {% csrf_token %}
+            <input type="submit" value="Aceptar">   
+        </form>
+
+    </ol>
+
+
+</div>
+
+      
+{% endblock %}

@@ -22,21 +22,36 @@ class NuevoExamen(forms.Form):
             'temas': CheckBoxSelectMultiple()
         }
    """
-    curso = forms.ModelChoiceField(label="Selecciona el curso ", queryset=Curso.objects, widget=forms.widgets.Select(),required=True)
+    curso = forms.ModelChoiceField(label="Selecciona el curso ", queryset=Curso.objects, widget=forms.widgets.Select(),required=True, initial='Curso')
     temas = forms.ModelMultipleChoiceField(label="Selecciona el Temario del examen",queryset=Tema.objects,widget=forms.widgets.CheckboxSelectMultiple,required=True)
-    crono = forms.ChoiceField(label="¿Quieres que el examen sea cronometrado?",choices=[('Si','Si'), ('No','No')],required=True)
 
-
-    def __init__(self, curso=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         c = kwargs.pop('curso', None)
         super(NuevoExamen,self).__init__(*args, **kwargs)
-        """self.fields['temas'].widget = forms.widgets.CheckboxSelectMultiple
-        self.fields['temas'].initial = '0'"""
-       #Hacer que los temas se correspondan con el curso
+        if c:
+            self.fields['temas'].queryset = Tema.objects.filter(curso=c)
+            self.fields['curso'].queryset = Curso.objects.filter(curso=c)
+            self.fields['curso'].initial = c
 
     def clean_input(self):
         data = self.cleaned_data
         return data
+
+
+class NuevoSetEjercicios(forms.Form):
+
+    tema = forms.ModelChoiceField(label="",queryset=Tema.objects,widget=forms.widgets.Select(),required=True, initial="Tema")
+
+    def __init__(self, *args, **kwargs):
+        c = kwargs.pop('curso', None)
+        super(NuevoSetEjercicios,self).__init__(*args, **kwargs)
+        if c:
+            self.fields['tema'].queryset = Tema.objects.filter(curso=c)
+
+    def clean_input(self):
+        data = self.cleaned_data
+        return data
+
 
 class Registro(UserCreationForm):
 

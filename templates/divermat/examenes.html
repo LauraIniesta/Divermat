@@ -5,33 +5,66 @@
 {% endblock %}
 
 {% block body_block %}
-<div class="lateral"></div>
-{% if Examen is True %}
-<h3>Examen nº {{ n_examen }}</h3></br></br>
-<!--Examen-->
-{% else %}
-<div >
-    <h3>Selecciona los datos para realizar el Examen</h3></br></br>
 
-    <div class ="flex-container">
+    {% if Examen is True %}
         <div>
-        
-          <form id="NuevoExamenForm" action="examenes" method="POST">
-
-                <table>
-                    {{form}}
-                </table>
-                {% csrf_token %}
-
-                <input type="submit" value="Aceptar">   
-                <input type="submit" value="Cancelar">
-
-            </form>
-
-               
+            <h3>Examen nº {{ n_examen }}</h3></br></br>
+            <!--Examen-->
         </div>
-    </div>
-</div>
-{% endif %}
+
+    {% else %}
+        <div >
+            <table>
+                <tr>
+                    <td>
+                        <h3>Selecciona los datos para realizar el Examen</h3></br></br>
+                    </td>
+                    <td>
+                        {% if alumno is True%}
+                            <h3>Historial de Exámenes</h3>
+                        {% endif %}
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td>
+                        <div class ="flex-container">
+                            <div>
+                            
+                                <form id="NuevoExamenForm" action="examenes" method="POST">
+        
+                                    
+                                    {{form.as_p}}
+                                    {% csrf_token %}
+        
+                                    <input type="submit" value="Aceptar">   
+                                    <input type="submit" value="Cancelar">
+        
+                                </form>
+        
+                                
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>
+                        {% if alumno is True%}
+                            <div>
+                                {% for examen in examenes%}
+
+                                    <ul>
+                                        <a href="{% url 'examen' examen.id %}">{{examen.titulo}}</a>
+                                    </ul>
+
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </td>
+                </tr>              
+               
+            </table>
+        </div>
+
+    {% endif %}
 
 {% endblock %}

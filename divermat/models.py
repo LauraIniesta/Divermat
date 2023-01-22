@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 class Usuario(User):
+    #0 se corresponde con False (Profesor) y 1 con True (Alumno)
     tipo = models.BooleanField(default=1, choices=[(0,'Profesor'),(1,'Alumno')], null=True)
     centro = models.CharField(max_length=150, default=None, null=True)
 
@@ -59,15 +60,16 @@ class Ejercicio(models.Model):
     titulo = models.CharField(max_length=50, default=None)
     tipo = models.IntegerField(default=None,null=True) # Tipo 1 es test, tipo 2 respuesta corta, tipo 3 problemas pero ese todavía no lo implemento
     enunciado = models.CharField(max_length=1000, default = None)
-    nsoluciones = models.IntegerField(default=None,null=True)
-    soluciones = models.CharField(max_length=1000, default = None) #Cada solucion divididad por ; o algo así tupla que ponga valor y si es o no correta
+    nsoluciones = models.IntegerField(default=None,null=True) #Numero de soluciones correctas
+    soluciones = models.CharField(max_length=1000, default = None) #Cada solucion divididad por ; incluye la solucion correcta y las erroneas en caso de Test
+    solucion_correcta = models.CharField(max_length=1024, default = None)
     #Primero tipo test y respuesta con hueco problemas más adelante un ej tipo por curso y temática
 
     class Meta:
         ordering = ('curso',  'titulo', )
 
     def __str__(self):
-        return str(self.curso) +  " " + self.titulo
+        return str(self.curso) +  "ºESO " + self.titulo
 
 
 class Clase(models.Model):

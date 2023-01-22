@@ -44,7 +44,7 @@
 
 
             <table >
-                {% if user.is_authenticated %}
+                {% if profesor is True %}
                     <td>
                         <a href="{% url 'clases' %}">Clases</a>
                     </td>

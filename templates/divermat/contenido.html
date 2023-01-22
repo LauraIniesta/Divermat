@@ -40,16 +40,16 @@
                 <div>
                     <input type="text" name="buscar" value="Buscar"></br></br>
                     <div>
-                    {% if not user.is_authenticated %}
-                        <select name="curso">
-                            <option selected>Curso</option>
-                            <option>1º ESO </option>
-                            <option>2º ESO </option>
-                            <option>3º ESO </option>  
-                            <option>4º ESO </option>      
-                        </select></br></br>
-                    {% endif %}
-                </div>
+                        {% if alumno is False %}
+                            <select name="curso">
+                                <option selected>Curso</option>
+                                <option>1º ESO </option>
+                                <option>2º ESO </option>
+                                <option>3º ESO </option>  
+                                <option>4º ESO </option>      
+                            </select></br></br>
+                        {% endif %}
+                    </div>
                 <div>
                     <select name="tema">
                         <option selected>Tema</option>

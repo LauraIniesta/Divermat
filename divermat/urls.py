@@ -3,16 +3,22 @@ from . import views
 
 
 urlpatterns = [
+    url(r'setEjercicios/(?P<idTema>[\w]+)/$', views.setEjercicios, name='setEjercicios'),
+    url(r'setEjercicios/$', views.setEjercicios, name='setEjercicios'),
     url(r'^$', views.index, name='index'),
     url(r'index', views.index, name='index'),
+    url(r'Ejercicios', views.index, name='index'),
     url(r'perfil', views.perfil, name='perfil'),
     url(r'cerrar_sesion', views.cerrar_sesion.as_view(), name='cerrar_sesion'),
     url(r'iniciar_sesion', views.iniciar_sesion, name='iniciar_sesion'),
-    # url(r'iniciar_sesion_alumno_profesor',views.iniciar_sesion_alumno_profesor,name='iniciar_sesion_alumno_profesor'),
     url(r'registro', views.registro.as_view(), name='registro'),
     url(r'videos', views.videos, name='videos'),
+    url(r'Videos', views.videos, name='videos'),
     url(r'resumenes', views.resumenes, name='resumenes'),
+    url(r'Resúmenes', views.resumenes, name='resumenes'),
     url(r'examenes', views.examenes, name='examenes'),
+    url(r'^examen/(?P<examen>[\w]+)/$', views.examen, name='examen'),
+    url(r'^ejercicio/(?P<ejercicio>[\w]+)/$', views.ejercicio, name='ejercicio'),
     url(r'ejercicio', views.ejercicio, name='ejercicio'),
     url(r'video', views.video, name='video'),
     url(r'resumen', views.resumen, name='resumen'),

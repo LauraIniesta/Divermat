@@ -5,25 +5,65 @@
 {% endblock %}
 
 {% block body_block %}
-<div class="listamedio">
-    <h2>Lista de {{Tipo}}</h2>
-    <ol>
-        {% for conten in Contenido %}
-           <a href="{% url 'ejercicio' %}"><li>{{conten.titulo}}</li></a>
-        {%endfor%}
-    </ol>
-</div>
+{% if alumno is True and ejercicios is True %}
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <h2>Lista de {{Tipo}}</h2>
+                </td>
+                <td>
+                    Generar set de ejercicios personalizados
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ol>
+                        {% for conten in Contenido %}
+                        <a href="{% url 'ejercicio' conten.id %}"><li>{{conten.titulo}}</li></a>
+                        {%endfor%}
+                    </ol>
+                </td>
+                <td>
+                    <form id="NuevoSetEjercicios" action="index" method="POST">
+
+                        <table>
+                            {{form}}
+                        </table>
+                        {% csrf_token %}
+        
+                        <input type="submit" value="Generar">           
+                    </form>
+                </td>
+            </tr>
+
+        </table>
+        
+    </div>
+{% else %}
+
+    <div class="listamedio">
+        <h2>Lista de {{Tipo}}</h2>
+        <ol>
+            {% for conten in Contenido %}
+            <a href="{% url 'ejercicio' conten.id %}"><li>{{conten.titulo}}</li></a>
+            {%endfor%}
+        </ol>
+    </div>
+
+{% endif %}
+
 
  
  <div class="lateral">
     <div class ="flex-container">
         <div class="medio">
             <a>Buscar</a></br></br>
-            <form action="index" method="GET">
+            <form action={{Tipo}} method="GET">
                 <div>
                     <input type="text" name="buscar" value="Buscar"></br></br>
                     <div>
-                    {% if not user.is_authenticated %}
+                    {% if alumno is False %}
                         <select name="curso">
                             <option selected>Curso</option>
                             <option>1º ESO </option>

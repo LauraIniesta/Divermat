@@ -97,7 +97,7 @@
                 <td>
                     <ol>            
                         {% for ejercicio in ejercicios.all %}
-                            <a href="{% url 'ejercicio' %}"><li>{{ejercicio.titulo}}</li></a><br>
+                            <a href="{% url 'ejercicio' ejercicio.id %}"><li>{{ejercicio.titulo}}</li></a><br>
                         {%endfor%}
                     </ol>  
                                         
