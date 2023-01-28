@@ -153,10 +153,9 @@ class Examen(models.Model):
     curso = models.ForeignKey(Curso,
                                  on_delete=models.CASCADE,
                                  default=None, null=True)
-    temas = models.ManyToManyField(Tema,
-                                 default=None) #el usuario seleccionará varios temas
+    temas = models.ManyToManyField(Tema) #el usuario seleccionará varios temas
     ejercicios = models.ManyToManyField(Ejercicio,
-                                 default=None) #Ids de los ejercicios del examen
+                                 default=None)#Lista con un dic que tenga los ids de los ejercicios asignados y lista alum hecho
     cronometrado = models.CheckConstraint(name="Cronometrado", check=['Si', 'No'])
     tiempo = models.FloatField(default=None,null=True) # Tengo que decidir tipos de ejs y ponerlos con numeracion
     
@@ -182,4 +181,4 @@ class Seguimiento(models.Model):
         ordering = ('tema',  )
 
     def __str__(self):
-        return self.alumno + " " + self.tema + " "
+        return str(self.alumno) + " " + str(self.tema) + " "
