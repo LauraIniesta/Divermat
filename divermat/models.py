@@ -145,6 +145,15 @@ class Resumen(models.Model):
         return str(self.curso) + " " + str(self.tema) + " " + self.titulo
 
 
+class EjercicioUsuario(models.Model):
+    ejercicio = models.ForeignKey(Ejercicio,
+                                 on_delete=models.CASCADE,
+                                 default=None, null=True)
+    alumno = models.ForeignKey(Alumno,
+                                on_delete=models.CASCADE,
+                                default=None, null=True)
+    soluciones_seleccionadas = models.CharField(max_length=1000, default = None) #Cada solucion divididad por ; incluye las seleccionadas por el usuario
+
 class Examen(models.Model):
     titulo = models.CharField(max_length=200, default=None) #COmbinará el usuario con el curso y tema
     alumno = models.ForeignKey(Alumno, 
@@ -154,7 +163,7 @@ class Examen(models.Model):
                                  on_delete=models.CASCADE,
                                  default=None, null=True)
     temas = models.ManyToManyField(Tema) #el usuario seleccionará varios temas
-    ejercicios = models.ManyToManyField(Ejercicio,
+    ejercicios = models.ManyToManyField(EjercicioUsuario,
                                  default=None)#Lista con un dic que tenga los ids de los ejercicios asignados y lista alum hecho
     cronometrado = models.CheckConstraint(name="Cronometrado", check=['Si', 'No'])
     tiempo = models.FloatField(default=None,null=True) # Tengo que decidir tipos de ejs y ponerlos con numeracion

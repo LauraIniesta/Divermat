@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 
 from divermat.models import (Profesor, Alumno, Usuario, User,
                     Clase, Curso, Ejercicio,Seguimiento,
-                    Examen, Video, Resumen,Tema)
+                    Examen, Video, Resumen,Tema,EjercicioUsuario)
 
 from divermat.forms import (NuevoAlumno, NuevoExamen, Registro,
                              NuevaClase, NuevaInfoProfesor,NuevaInfoAlumno,
@@ -349,43 +349,11 @@ def examenes(request):
 
         try:
             usuario = Alumno.objects.get(username=request.user)
-            content['alumno'] = True
-            content['examenes'] = Examen.objects.filter(alumno=usuario)
-
-            if request.method == 'POST':
-                form = NuevoExamen(request.POST)
-                if form.is_valid():
-
-                    #Crear un examen que tenga 10 preguntas del tema y curso seleccionado y mostrarlo
-                    temas = form.cleaned_data['temas']
-                    curso = form.cleaned_data['curso'] 
-                    crono = form.cleaned_data['crono']
-
-                    content['examen_data'] = getExamen(usuario,temas,curso,crono)
-                    
-                    usuario.numexamen += 1
-                    nExamen = usuario.numexamen
-                    content['examen'] = True
-                    content['n_examen'] = nExamen
-                                    
-                else:
-                    content['error'] = "Error en el formulario"
-                
-                return render(request,'divermat/examen.html', context=content,)      
-            
-            else:
-                #Usuario iniciada sesion y quiere rellenar el formulario
-                if usuario is None:
-                    c = None
-                else:
-                    c = usuario.curso
-                form = NuevoExamen(curso=c)
-                
-                content['form'] = form
-
+            return examenesAlumno(usuario,request)
+           
         except Alumno.DoesNotExist:
             usuario = None    
-
+    #Si no hay un usuario logeado pero quieren hacer un examen
     else:
         if request.method == 'POST':
             form = NuevoExamen(request.POST)
@@ -395,7 +363,7 @@ def examenes(request):
                 #Crear un examen que tenga 10 preguntas del tema y curso seleccionado y mostrarlo
                 temas = form.cleaned_data['temas']
                 curso = form.cleaned_data['curso'] 
-                #crono = form.cleaned_data['crono']
+                crono = form.cleaned_data['crono']
                 content['examen_data'] = getExamen(None,temas,curso,crono)
                 content['examen'] = True
                 content['n_examen'] = 1
@@ -407,26 +375,102 @@ def examenes(request):
             form = NuevoExamen(None)
             content['form'] = form  
 
-    return render(request,'divermat/examenes.html', context=content,)
+    return render(request,'divermat/examenes.html', context=content)
+
+
+def examenesAlumno(alumno,request):
+    content = {}
+    content['registro'] = False
+    content['examen'] = False
+    content['alumno'] = True
+    content['examenes'] = Examen.objects.filter(alumno=alumno)
+
+    if request.method == 'POST':
+        form = NuevoExamen(request.POST)
+        if form.is_valid():
+
+            #Crear un examen que tenga 10 preguntas del tema y curso seleccionado y mostrarlo
+            temas = form.cleaned_data['temas']
+            curso = form.cleaned_data['curso'] 
+            crono = form.cleaned_data['crono']
+
+            content['examen_data'] = getExamen(alumno,temas,curso,crono)
+
+            alumno.numexamen += 1
+            nExamen = alumno.numexamen
+            content['examen'] = True
+            content['n_examen'] = nExamen                    
+        else:
+            content['error'] = "Error en el formulario"
+        
+        return render(request,'divermat/examen.html', context=content)      
+
+    else:
+        #Usuario iniciada sesion y quiere rellenar el formulario
+        if alumno is None:
+            c = None
+        else:
+            c = alumno.curso
+        form = NuevoExamen(curso=c)
+        
+        content['form'] = form
+
+    return render(request,'divermat/examenes.html', context=content)
+
 
 def examen(request, examen=None):
     content = {}
     content['profesor'] = False
     content['registro'] = False
     set = []
-    ejercicios_examen = Examen.objects.get(id=examen).ejercicios.all()
-    
-    for ejercicio in ejercicios_examen:
+    #Obtenemos el Examen
+    examen_object = Examen.objects.get(id=examen)
+    #Obtenemos los ejercicios del examen para el alumno
+    ejercicios_alumno = examen_object.ejercicios.all()
+    ejercicios_examen = []
+
+    #Para cada ejercicio del examen para el alumno
+    for ejercicio_alumno in ejercicios_alumno:
+        #Obtenemos el ejercicio y guardamos los datos que vamos a necesitar en ejercicio_data
+        ejercicio = Ejercicio.objects.get(id=ejercicio_alumno.ejercicio.id)
+        ejercicios_examen.append(ejercicio)
         ejercicio_data = {}
         ejercicio_data['id'] = ejercicio.id
         ejercicio_data['enunciado'] = ejercicio.enunciado
         ejercicio_data['titulo'] = ejercicio.titulo
         ejercicio_data['tipo'] = ejercicio.tipo
         ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
+        #Separamos las posibles soluciones del ejercicio
         soluciones = ejercicio.soluciones.split(";")
-        ejercicio_data['soluciones'] = soluciones
-        set.append(ejercicio_data)
+        soluciones_data = []
+        #En caso de que el ejercicio tenga más de una posible solucion
+        if ejercicio.nsoluciones >1:
+            soluciones_seleccionadas = ejercicio_alumno.soluciones_seleccionadas
+            #Recorremos todas las soluciones y las añadimos al listado de diccionarios soluciones_data
+            for solucion in soluciones:
+                solucion_data={}
+                solucion_data['solucion'] = solucion
+                solucion_data['checked'] = False
+                if solucion in soluciones_seleccionadas:
+                    solucion_data['checked'] = True
+                soluciones_data.append(solucion_data)
+        else:
+            soluciones_seleccionadas = ejercicio_alumno.soluciones_seleccionadas
+            for solucion in soluciones:
+                solucion_data={}
+                solucion_data['solucion'] = solucion
+                solucion_data['checked'] = False
+                if solucion == soluciones_seleccionadas:
+                    solucion_data['checked'] = True
+                soluciones_data.append(solucion_data)
         
+        #Asignamos las soluciones al ejercicio con un checked a true en caso de que el alumno la hubiese seleccionado
+        ejercicio_data['soluciones'] = soluciones_data
+        
+        #ejercicio_data['soluciones_seleccionadas'] = soluciones_seleccionadas
+        #Añadimos la info del ejercicio al set
+        set.append(ejercicio_data)
+
     if request.method == 'POST':
 
         if request.user.is_authenticated:
@@ -439,7 +483,7 @@ def examen(request, examen=None):
 
         form_data = request.POST
         for ejercicio_data in set:
-            ejercicio = ejercicios_examen.get(id=ejercicio_data['id'])
+            ejercicio = Ejercicio.objects.get(id=ejercicio_data['id'])
             if ejercicio.nsoluciones == 1:
                 ejercicio_data['resultado'] = "Respuesta incorrecta el resultado esperado era: " + str(ejercicio.solucion_correcta)
                 correcto=False
@@ -447,7 +491,23 @@ def examen(request, examen=None):
                 #     respuesta = form_data.get(str(ejercicio.id))
                 # else:
                 respuesta = form_data.get(str(ejercicio.id))
-
+                
+                for ej_alum in ejercicios_alumno:
+                    if ej_alum.ejercicio == ejercicio:
+                        ej_alum.soluciones_seleccionadas = respuesta
+                        ej_alum.save()
+                
+                #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
+                soluciones_data=[]
+                for solucion in ejercicio.soluciones.split(";"):
+                    solucion_data={}
+                    solucion_data['solucion'] = solucion
+                    solucion_data['checked'] = False
+                    if solucion == respuesta:
+                        solucion_data['checked'] = True
+                    soluciones_data.append(solucion_data)
+                ejercicio_data['soluciones'] = soluciones_data
+        
                 if str(respuesta) == str(ejercicio.solucion_correcta):
                     ejercicio_data['resultado'] = "¡Respuesta Correcta!"
                     correcto=True
@@ -456,16 +516,33 @@ def examen(request, examen=None):
                 soluciones_correctas = ejercicio.solucion_correcta.split(";")
                 ejercicio_data['resultado'] = "¡Respuesta Correcta!"
                 correcto=True
-                
+
+                for ej_alum in ejercicios_alumno:
+                    if ej_alum.ejercicio == ejercicio:
+                        ej_alum.soluciones_seleccionadas = form_data.getlist(str(ejercicio.id))
+                        ej_alum.save()
+
                 if ejercicio.tipo == 1:
 
                     respuestas = form_data.getlist(str(ejercicio.id))
                 else:
 
                     respuestas = form_data.get(str(ejercicio.id)).split(";")
+                #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
+                soluciones_data=[]
+                print(ejercicio.soluciones)
+                for solucion in ejercicio.soluciones.split(";"):
+                    solucion_data={}
+                    solucion_data['solucion'] = solucion
+                    solucion_data['checked'] = False
+                    if solucion in respuestas:
+                        solucion_data['checked'] = True
+                    soluciones_data.append(solucion_data)
+                ejercicio_data['soluciones'] = soluciones_data
 
                 for r in respuestas:
                     flag = False
+
                     for sol in soluciones_correctas:
                         if str(r) == str(sol):
                             flag = True
@@ -474,9 +551,13 @@ def examen(request, examen=None):
                         correcto=False 
             
             if alumno:
-                añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)           
+                añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)   
+    examen_data={}
+    examen_data['ejercicios'] = set
+    examen_data['examen'] = Examen.objects.get(id=examen)
+    content['examen_data']=examen_data
     #SI hay user authenticated poner Alumno a True
-    return render(request,'divermat/examen.html', context=content,)
+    return render(request,'divermat/examen.html', context=content)
 
 def videos(request):
     #Mostrar en pequeño la ventana del video
@@ -1032,35 +1113,41 @@ def getFilteredContent(todos_elem,request):
 
 def  getExamen(usuario,temas,curso,crono):
     if usuario:
+        #Dividimos los 10 ejercicios totales entre el total de temas para saber el nº de ej por tema
         nejercicios = 10/len(temas)
         ejercicios_examen = []
         temas_examen = []
         titulo = ""
-        #Tenemos que guardar el objeto para que al hacer Set las relaciones manytomany se puedan establecer correctamente
-        #Ya que si no lo hemos guardado no tiene un id al que asociarlo
-
         ejercicios = []
+        #Recorremos los ids de los temas seleccionados para el examen
         for t in temas:
             tema = Tema.objects.get(id=t.id)
             if tema:
+                #Añadimos el tema a la lista de temas del examen
                 temas_examen.append(tema.id)
-
+                #Concatenamos el tema en el título del examen
                 titulo += ", "+ str(tema.tema)
+                #Obtenemos los ejercicios de ese tema
                 ejer_tema = Ejercicio.objects.filter(tema=tema)
-
+                #Si hay más ejercicios de los requeridos
                 if len(ejer_tema) >= nejercicios:
                     j=0
                     while j < nejercicios:
+                        #Obtenemos número aleatorio que servirá como índice para coger un ejercicio
                         i = random.randint(0,len(ejer_tema)-1)
                         ejercicio = ejer_tema[i]
+                        #Si el ejercicio no está ya lo añadimos a la lista de ejs del examen
                         if ejercicio not in ejercicios_examen:
                             ejercicios_examen.append(ejercicio)
                             j+=1
+                #Si hay menos ejercicios de los requeridos
                 else:
+                    #Recorremos todos los ejercicios del tema
                     for ejercicio in ejer_tema:
+                        #Si el ejercicio todavía no está en el examen lo añadimos a la lista
                         if ejercicio not in ejercicios_examen:
                             ejercicios_examen.append(ejercicio)
-
+        #Creamos el objeto del examen
         examen = Examen.objects.create(titulo="Examen de los temas" + titulo,alumno=usuario,curso=usuario.curso,tiempo=0)
         examen.save()
         
@@ -1068,8 +1155,12 @@ def  getExamen(usuario,temas,curso,crono):
         content['examen'] = examen
         content['ejercicios'] = []
 
+        #Recorremos la lista de ejercicios del examen
         for ejercicio in ejercicios_examen:
-            examen.ejercicios.add(ejercicio)
+            #Creamos el objeto de tipo ejercicio alumno y lo añadimos al examen
+            ejercicioAlumno = EjercicioUsuario.objects.create(ejercicio=ejercicio,alumno=usuario,soluciones_seleccionadas="")
+            examen.ejercicios.add(ejercicioAlumno)
+            #Guardamos la información relevante de los ejercicios en el diccionario a mostrar en el html
             ejercicio_data = {}
             ejercicio_data['id'] = ejercicio.id
             ejercicio_data['enunciado'] = ejercicio.enunciado
@@ -1077,11 +1168,17 @@ def  getExamen(usuario,temas,curso,crono):
             ejercicio_data['tipo'] = ejercicio.tipo
             ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
             soluciones = ejercicio.soluciones.split(";")
-            ejercicio_data['soluciones'] = soluciones
+            ejercicio_data['soluciones'] = []
+            for solucion in soluciones:
+                solucion_data = {}
+                solucion_data['solucion'] = solucion
+                solucion_data['checked'] = False
+                ejercicio_data['soluciones'].append(solucion_data)
+
             content['ejercicios'].append(ejercicio_data)
-        examen.save()
+        
         examen.temas.set(temas_examen)
-        # content['ejercicios'] = examen.ejercicios.all()
+        examen.save()
 
     return content
 

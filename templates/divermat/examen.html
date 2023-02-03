@@ -8,7 +8,7 @@
 <div>
    <h2> {{examen_data.examen}}</h2>
     <ol>
-        <form action="{% url 'examen' examen_data.examen.id %}" method="POST">
+        <form action="{% url 'examen' examen=examen_data.examen.id %}" method="POST">
             {% for ejercicio in examen_data.ejercicios %}
                 <li>
                     {% if ejercicio.nsoluciones is 1%}
@@ -18,7 +18,11 @@
                                 <p>Selecciona la solución correcta</p>
 
                                 {% for sol in ejercicio.soluciones %}
-                                    <input type="radio" id="{{ejercicio.id}}" value="{{sol}}" name="{{ejercicio.id}}" required> {{sol}} </br>
+                                    {% if sol.checked is True%}
+                                        <input checked="checked" type="radio" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" required> {{sol.solucion}} </br>
+                                    {% else %}
+                                        <input type="radio" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" required> {{sol.solucion}} </br>
+                                    {%endif%}
                                 {% endfor %}
 
                             {% else %} <!--Ejercicio de respuesta corta-->
@@ -36,7 +40,11 @@
                                 <p>Selecciona la solución correcta</p>
 
                                 {% for sol in ejercicio.soluciones %}
-                                    <input type="checkbox" id="{{ejercicio.id}}" value="{{sol}}" name="{{ejercicio.id}}" > {{sol}} </br>
+                                    {% if sol.checked is True%}
+                                        <input checked="checked" type="checkbox" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" > {{sol.solucion}} </br>                                        
+                                    {% else %}
+                                        <input type="checkbox" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" > {{sol.solucion}} </br>                                        
+                                    {% endif %}
                                 {% endfor %}  
 
                             {% else %} <!--Ejercicio de respuesta corta con varias soluciones-->

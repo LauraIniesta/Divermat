@@ -53,7 +53,7 @@
                                 {% for examen in examenes%}
 
                                     <ul>
-                                        <a href="{% url 'examen' examen.id %}">{{examen.titulo}}</a>
+                                        <a href="{% url 'examen' examen=examen.id %}">{{examen.titulo}}</a>
                                     </ul>
 
                                 {% endfor %}
