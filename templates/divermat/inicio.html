@@ -40,17 +40,25 @@
         </table>
         
     </div>
-{% else %}
+{% elif Tipo == "Resúmenes" %}
 
     <div class="listamedio">
         <h2>Lista de {{Tipo}}</h2>
         <ol>
             {% for conten in Contenido %}
-            <a href="{% url 'ejercicio' conten.id %}"><li>{{conten.titulo}}</li></a>
+            <a href="{% url 'resumen' conten.id %}"><li>{{conten.titulo}}</li></a>
             {%endfor%}
         </ol>
     </div>
-
+{% else %}
+    <div class="listamedio">
+        <h2>Lista de {{Tipo}}</h2>
+        <ol>
+            {% for conten in Contenido %}
+            <a href="{% url 'video' conten.id %}"><li>{{conten.titulo}}</li></a>
+            {%endfor%}
+        </ol>
+    </div>
 {% endif %}
 
 

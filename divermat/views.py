@@ -272,7 +272,12 @@ def setEjercicios(request,idTema=None):
                 ejercicio_data['tipo'] = ejercicio.tipo
                 ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
                 soluciones = ejercicio.soluciones.split(";")
-                ejercicio_data['soluciones'] = soluciones
+                for solucion in soluciones:
+                    solucion_data={}
+                    solucion_data['solucion'] = solucion
+                    solucion_data['checked'] = False
+                    soluciones_data.append(solucion_data)
+                ejercicio_data['soluciones'] = soluciones_data
                 set.append(ejercicio_data)
                 j+=1
     else:
@@ -284,7 +289,13 @@ def setEjercicios(request,idTema=None):
                 ejercicio_data['tipo'] = ejercicio.tipo
                 ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
                 soluciones = ejercicio.soluciones.split(";")
-                ejercicio_data['soluciones'] = soluciones
+                soluciones_data=[]
+                for solucion in soluciones:
+                    solucion_data={}
+                    solucion_data['solucion'] = solucion
+                    solucion_data['checked'] = False
+                    soluciones_data.append(solucion_data)
+                ejercicio_data['soluciones'] = soluciones_data
                 set.append(ejercicio_data)
     
     if request.method == 'POST':
@@ -306,7 +317,17 @@ def setEjercicios(request,idTema=None):
                 #     respuesta = form_data.get(str(ejercicio.id))
                 # else:
                 respuesta = form_data.get(str(ejercicio.id))
-
+                #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
+                soluciones_data=[]
+                for solucion in ejercicio.soluciones.split(";"):
+                    solucion_data={}
+                    solucion_data['solucion'] = solucion
+                    solucion_data['checked'] = False
+                    if solucion == respuesta:
+                        solucion_data['checked'] = True
+                    soluciones_data.append(solucion_data)
+                ejercicio_data['soluciones'] = soluciones_data
+                
                 if str(respuesta) == str(ejercicio.solucion_correcta):
                     ejercicio_data['resultado'] = "¡Respuesta Correcta!"
                     correcto=True
@@ -322,7 +343,17 @@ def setEjercicios(request,idTema=None):
                 else:
 
                     respuestas = form_data.get(str(ejercicio.id)).split(";")
-
+                #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
+                soluciones_data=[]
+                for solucion in ejercicio.soluciones.split(";"):
+                    solucion_data={}
+                    solucion_data['solucion'] = solucion
+                    solucion_data['checked'] = False
+                    if solucion in respuestas:
+                        solucion_data['checked'] = True
+                    soluciones_data.append(solucion_data)
+                ejercicio_data['soluciones'] = soluciones_data
+                
                 for r in respuestas:
                     flag = False
                     for sol in soluciones_correctas:
@@ -422,6 +453,7 @@ def examen(request, examen=None):
     content = {}
     content['profesor'] = False
     content['registro'] = False
+    content['nota'] = True
     set = []
     #Obtenemos el Examen
     examen_object = Examen.objects.get(id=examen)
@@ -482,6 +514,7 @@ def examen(request, examen=None):
                 alumno = None
 
         form_data = request.POST
+        ejercicios_correctos = 0
         for ejercicio_data in set:
             ejercicio = Ejercicio.objects.get(id=ejercicio_data['id'])
             if ejercicio.nsoluciones == 1:
@@ -540,21 +573,36 @@ def examen(request, examen=None):
                     soluciones_data.append(solucion_data)
                 ejercicio_data['soluciones'] = soluciones_data
 
-                for r in respuestas:
-                    flag = False
+                if len(respuestas) >0:    
+                    
+                    for r in respuestas:
+                        flag = False
 
-                    for sol in soluciones_correctas:
-                        if str(r) == str(sol):
-                            flag = True
-                    if(flag == False):
-                        ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + str(soluciones_correctas)  
-                        correcto=False 
+                        for sol in soluciones_correctas:
+                            if str(r) == str(sol):
+                                flag = True
+                        if(flag == False):
+                            ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + str(soluciones_correctas)  
+                            correcto=False 
+                else:
+                    ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + str(soluciones_correctas)  
+                    correcto=False 
+
             
             if alumno:
                 añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)   
+            if correcto:
+                ejercicios_correctos += 1
+        if ejercicios_correctos > 0:
+            examen_object.nota = (ejercicios_correctos*100)/len(ejercicios_alumno)
+            examen_object.save()
+        else:
+            examen_object.nota = 0
+            examen_object.save()
+
     examen_data={}
     examen_data['ejercicios'] = set
-    examen_data['examen'] = Examen.objects.get(id=examen)
+    examen_data['examen'] = examen_object
     content['examen_data']=examen_data
     #SI hay user authenticated poner Alumno a True
     return render(request,'divermat/examen.html', context=content)
@@ -595,10 +643,14 @@ def videos(request):
     return render(request,'divermat/inicio.html', context=content,)
 
 
-#Mostrar el video como tal para obtener respuesta del usuario
-def video(request):
+#Mostrar el video como tal
+def video(request,idVideo):
+    content = {}
+    content['registro'] = False
+    content['alumno'] = False
+    content['video'] = Video.objects.get(id=idVideo)
 
-    return render(request,'divermat/video.html', )
+    return render(request,'divermat/video.html',content)
 
 
 def resumenes(request):
@@ -637,10 +689,14 @@ def resumenes(request):
     return render(request,'divermat/inicio.html', context=content,)
 
 
-#Mostrar el resumen como tal para obtener respuesta del usuario
-def resumen(request):
+#Mostrar el resumen como tal
+def resumen(request,idResumen):
+    content = {}
+    content['registro'] = False
+    content['alumno'] = False
+    content['resumen'] = Resumen.objects.get(id=idResumen)
 
-    return render(request,'divermat/resumen.html', )
+    return render(request,'divermat/resumen.html', content )
 
 
 #Mostrar el ejercicio como tal para obtener respuesta del usuario
@@ -657,12 +713,22 @@ def ejercicio(request, ejercicio=None):
         content['ejercicio'] = Ejercicio.objects.get(id=ejercicio)
         ejercicio = Ejercicio.objects.get(id=ejercicio)
         soluciones = ejercicio.soluciones.split(";")
-        content['soluciones'] = soluciones
-        solucion = request.GET.getlist('solucion', [])
-        if solucion:
+        content['soluciones'] = []
+        solucion_seleccionada = request.GET.getlist('solucion', [])
+        print(solucion_seleccionada)
+        for solucion in soluciones:
+            solucion_data={}
+            solucion_data['solucion'] = solucion
+            solucion_data['checked'] = False
+            if solucion in solucion_seleccionada:
+                solucion_data['checked'] = True
+
+            content['soluciones'].append(solucion_data)
+
+        if solucion_seleccionada:
             if ejercicio.nsoluciones == 1:
                 
-                if str(ejercicio.solucion_correcta) == str(solucion[0]):
+                if str(ejercicio.solucion_correcta) == str(solucion_seleccionada[0]):
                     content['resultado'] = "¡Respuesta correcta!"
                     correcto = True
                 else:
@@ -672,7 +738,7 @@ def ejercicio(request, ejercicio=None):
                 content['resultado'] = "¡Respuesta correcta!"
                 correcto = True
                 soluciones_correctas = ejercicio.solucion_correcta.split(";")
-                for el in solucion:
+                for el in solucion_seleccionada:
                     flag = False
                     for sol in soluciones_correctas:
                         if str(el) == str(sol):
@@ -684,7 +750,6 @@ def ejercicio(request, ejercicio=None):
             añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)
 
     return render(request,'divermat/ejercicio.html', context=content)
-
 
 @login_required
 def clases(request):

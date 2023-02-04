@@ -6,6 +6,16 @@
 
 {% block body_block %}
 <div>
+    <div class="listamedio">
+        <h2>Video del Tema {{video.tema}}</h2>
+        <h3>{{video.titulo}}</h3>
+    </div>
+        <div>
+            <video width="520px" height="520px" controls="controls" >
+                <source src="{{video.video.url}}" type="video/mp4">
+            </video>
+        </div>
+
 </div>
 
 

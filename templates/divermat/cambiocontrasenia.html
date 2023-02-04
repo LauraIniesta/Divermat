@@ -5,18 +5,18 @@
 {% endblock %}
 
 {% block body_block %}
-<form  method="post"> {% csrf_token %}
-    <div class="...">
+<form  method="post"> 
+    {% csrf_token %}
+    <div class="">
+        <p>Introduzca su contraseña actual:</p>
         {{ form.old_password }}
+        <p>Introduzca la nueva contraseña:</p>
+        {{ form.new_password1 }}
+        <p>Repite la nueva contraseña:</p>
+        {{ form.new_password2 }}<br><br>
+        <button type="submit">Cambiar</button>
+    
     </div>
-    <div class="...">
-        <div class="...">
-            {{ form.new_password1 }}
-        </div>
-    </div>
-    <section>
-        {{ form.new_password2 }}
-    </section>
-    <button type="submit">Cambiar</button>
+
 </form>
 {% endblock %}

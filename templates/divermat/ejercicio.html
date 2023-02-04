@@ -14,7 +14,11 @@
                 {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test-->
                     <p>Selecciona la solución correcta</p>
                     {% for sol in soluciones %}
-                        <input type="radio" id="solucion" value="{{sol}}" name="solucion"> {{sol}} </br>
+                        {% if sol.checked is True%}
+                            <input checked="checked" type="radio" id="solucion" value="{{sol.solucion}}" name="solucion"> {{sol.solucion}} </br>
+                        {% else %}
+                            <input type="radio" id="solucion" value="{{sol.solucion}}" name="solucion"> {{sol.solucion}} </br>
+                        {% endif %}
                     {% endfor %}
                     <input type="submit" value="Aceptar">   
                 {% else %} <!--Ejercicio de respuesta corta-->
@@ -29,8 +33,12 @@
                 {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test con varias soluciones-->
                     <p>Selecciona la solución correcta</p>
                     {% for sol in soluciones %}
-                        <input type="checkbox" id="solucion" value="{{sol}}" name="solucion"> {{sol}} </br>
-                    {% endfor %}
+                        {% if sol.checked is True%}
+                            <input checked="checked" type="checkbox" id="solucion" value="{{sol.solucion}}" name="solucion"> {{sol.solucion}} </br>
+                        {% else %}
+                            <input type="checkbox" id="solucion" value="{{sol.solucion}}" name="solucion"> {{sol.solucion}} </br>
+                        {% endif %}
+                    {% endfor %}  
                     <input type="submit" value="Aceptar">   
                 {% else %} <!--Ejercicio de respuesta corta con varias soluciones-->
                 

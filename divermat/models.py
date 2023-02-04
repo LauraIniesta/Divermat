@@ -118,7 +118,7 @@ class Video(models.Model):
                                  on_delete=models.CASCADE,
                                  default=None, null=True)
     titulo = models.CharField(max_length=50, default=None)
-    #Link o video ver como se cargan
+    video = models.FileField(upload_to='media/videos/%y',blank=True,null=False)
 
     class Meta:
         ordering = ('curso', 'tema', 'titulo', )
@@ -137,6 +137,7 @@ class Resumen(models.Model):
                                  default=None, null=True)
     titulo = models.CharField(max_length=50, default=None) 
     texto =  models.CharField(max_length=10000, default=None)
+    resumen = models.FileField(upload_to='media/resumenes',blank=True,null=True)
 
     class Meta:
         ordering = ('curso', 'tema', 'titulo', )
@@ -166,7 +167,8 @@ class Examen(models.Model):
     ejercicios = models.ManyToManyField(EjercicioUsuario,
                                  default=None)#Lista con un dic que tenga los ids de los ejercicios asignados y lista alum hecho
     cronometrado = models.CheckConstraint(name="Cronometrado", check=['Si', 'No'])
-    tiempo = models.FloatField(default=None,null=True) # Tengo que decidir tipos de ejs y ponerlos con numeracion
+    tiempo = models.FloatField(default=None,null=True)
+    nota = models.FloatField(default=None,null=True)
     
     class Meta:
         ordering = ('curso', 'titulo', )
