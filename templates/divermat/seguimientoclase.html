@@ -7,47 +7,49 @@
 {% block body_block %}
 <div class="flex-container">
     <h1>{{Clase.nombre}}</h1>
-
     <table>
         <tr>
             <td>
-                <div>
-                    <table>
-                        <tr>
-                            <td>
-                               <h3>Tema</h3>
-                            </td>
-                            <td>
-                                <h3>%Acierto</h3>
-                            </td>
-                            <td>
-                                <h3>Nº_Ejercicios</h3>
-                            </td>
-                            <td>
-                                <h3>Ejercicios_Asignados</h3>
-                            </td>
-                        </tr>
-                        <!--Seguimiento alumno-->
-                        {% for infor in informacion%}
-                        <tr>
-                            <td>
-                                {{infor.tema}}
-                            </td>
-                            <td>
-                                {{infor.acierto}}
-                            </td>
-                            <td>
-                                {{infor.ejercicios}}
-                            </td>
-                            <td>
-                                {{ejercicios_asignados}}
-                            </td>
-                        </tr>
-                        {%endfor%}
-                    </table>
-                </div>
+                <h3>Tema</h3>
+            </td>
+            <td>
+                <h3>%Acierto</h3>
+            </td>
+            <td>
+                <h3>Nº_Ejercicios</h3>
+            </td>
+
+        </tr>
+        <!--Seguimiento alumno-->
+        {% for infor in informacion%}
+        <tr>
+            <td >
+                {{infor.tema}}
+            </td>
+            <td style="text-align: center">
+
+                {{infor.acierto}}
+            </td>
+            <td style="text-align: center">
+                {{infor.ejercicios}}
             </td>
         </tr>
+        {%endfor%}
+    </table>
+    <table>
+        <tr>
+            <td>
+                <h3>Ejercicios_Asignados</h3>
+            </td>
+        </tr>
+
+        {% for ejercicio in ejercicios_asignados%}
+            <tr>
+                <td>
+                    {{ejercicio}}
+                </td>
+            </tr>
+        {%endfor%}
     </table>
 </div>
       

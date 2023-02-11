@@ -3,11 +3,7 @@
     Registro
 {% endblock %}
 
-{% block body_block %}
-
-    <h3>Iniciar Sesión</h3></br></br>
-
-   
+{% block body_block %} 
 
     <div class ="flex-container">
         <div>
@@ -15,13 +11,32 @@
           <form id="InicioSesionForm" action="iniciar_sesion" method="POST">
 
                 <table>
-                    {{form}}
+                    <tr>
+                        <td>
+                            <h3>Iniciar Sesión</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{form.username.label}}<br>
+                            {{form.username}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Introduce tu contraseña:<br>
+                            {{form.password}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="submit" value="Aceptar">   
+                            <input type="submit" value="Cancelar">            
+                        </td>
+                    </tr>
                 </table>
                 {% csrf_token %}
-
-                <input type="submit" value="Aceptar">   
-                <input type="submit" value="Cancelar">
-
+              
             </form>
 
                

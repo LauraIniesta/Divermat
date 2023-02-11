@@ -29,21 +29,21 @@
                             <td>
                                 <h3>% Acierto</h3>
                             </td>
-                            <td>
+                            <td style="text-align: center">
                                <h3>Nº Ejercicios Hechos</h3> 
                             </td>
                         </tr>
                         <!--Seguimiento alumno-->
                         {% for infor in informacion%}
                         <tr>
-                            <td>
+                            <td >
                                 {{infor.tema}}
                             </td>
-                            <td>
+                            <td style="text-align: center">
                                 {{infor.acierto}}
                             </td>
-                            <td>
-                                {{infor.ejercicios}}
+                            <td style="text-align: center">
+                                {{infor.n_ejercicios}}
                             </td>
                         </tr>
                         {%endfor%}

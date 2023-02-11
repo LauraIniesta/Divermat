@@ -7,16 +7,46 @@
 {% block body_block %}
 <form  method="post"> 
     {% csrf_token %}
-    <div class="">
-        <p>Introduzca su contraseña actual:</p>
-        {{ form.old_password }}
-        <p>Introduzca la nueva contraseña:</p>
-        {{ form.new_password1 }}
-        <p>Repite la nueva contraseña:</p>
-        {{ form.new_password2 }}<br><br>
-        <button type="submit">Cambiar</button>
-    
-    </div>
+    <table>
+        <tr>
+            <td>
+                <h3>Cambio de Contraseña</h3>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Introduzca su contraseña actual:<br>
+                {{ form.old_password }}
+                <p style="color:crimson">{{form.old_password.errors}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Introduzca la nueva contraseña:<br>
+                {{ form.new_password1}}
+                <p style="color:crimson">{{form.new_password1.errors}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Repite la nueva contraseña:<br>
+                {{ form.new_password2 }}
+                <p style="color:crimson">{{form.new_password2.errors}}</p>
+                <p>{{ form.new_password1.help_text }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button type="submit">Cambiar</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                
+            </td>
+        </tr>
+    </table>
+
 
 </form>
 {% endblock %}

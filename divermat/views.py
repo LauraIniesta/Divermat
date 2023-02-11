@@ -247,7 +247,8 @@ def cambiarInformacionAlumno(request):
 class PasswordChangeView(PasswordChangeView):
     template_name = 'divermat/cambiocontrasenia.html' # El tamplate_name por defecto es: 'registration/password_change_form.html'
     form_class = PasswordChangeForm
-    success_url = 'divermat/perfil.html' 
+    success_url = 'divermat/perfil.html'
+     
 
 @login_required
 def setEjercicios(request,idTema=None):
@@ -715,7 +716,7 @@ def ejercicio(request, ejercicio=None):
         soluciones = ejercicio.soluciones.split(";")
         content['soluciones'] = []
         solucion_seleccionada = request.GET.getlist('solucion', [])
-        print(solucion_seleccionada)
+
         for solucion in soluciones:
             solucion_data={}
             solucion_data['solucion'] = solucion
@@ -746,8 +747,8 @@ def ejercicio(request, ejercicio=None):
                     if(flag == False):
                         content['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + str(soluciones_correctas)
                         correcto = False
-        if alumno!=None:
-            añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)
+            if alumno!=None:
+                añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)
 
     return render(request,'divermat/ejercicio.html', context=content)
 
@@ -960,7 +961,7 @@ def claseAlumno(request,clase=None):
 def infoclase(request, claseid=None):
     content={}
     content['registro'] = False
-
+    print("HOLA")
     if claseid:
         for c in Clase.objects.all():
             if c.id == int(claseid):
@@ -1007,7 +1008,7 @@ def alumnosclase(request, claseid=None):
     content={}
     content['registro'] = False
     content['profesor'] = True
-
+    print("HOLA")
     if claseid:
         for c in Clase.objects.all():
             if c.id == int(claseid):
@@ -1082,7 +1083,7 @@ def seguimientoclase(request, claseid=None):
                 informacion.append(calcularAcierto(t,c))
             content['informacion'] = informacion
             #Comprobarlo cuando estén los alumnos listos
-            content['ejercicios_asignados'] = c.ejercicios
+            content['ejercicios_asignados'] = c.ejercicios.all()
 
     return render(request,'divermat/seguimientoclase.html', context=content,)
 
@@ -1098,9 +1099,9 @@ def calcularAcierto(tema,clase):
         for segui in Seguimiento.objects.filter(alumno=alumno):
             if segui.tema == tema:
                 acierto += segui.acierto
-                n_ejercicios += segui.ejercicios
+                n_ejercicios += segui.n_ejercicios
                 break
-    infor['acierto'] = acierto/clase.n_alumnos
+    infor['acierto'] = round(acierto/clase.n_alumnos,2)
     infor['ejercicios'] = n_ejercicios
     return infor
 
@@ -1125,40 +1126,46 @@ def getFilteredContent(todos_elem,request):
     tema = request.GET.get('tema', '')
     tipo = request.GET.get('tipo', '')
 
-    contenido = []
+  
+    elem_filtrados = []
     if busqueda and busqueda != "Buscar":
-        
+        contenido = []
         for elem in todos_elem:
             if unidecode(busqueda.lower()) in unidecode(elem.titulo.lower()):
                 conten = {}
                 conten['id'] = elem.id
                 conten['titulo'] = elem.titulo
-                if conten not in contenido:
-                    contenido.append(conten)
+                contenido.append(conten)
+                elem_filtrados.append(elem)
         contenFinal = contenido
-
+        todos_elem=elem_filtrados
 
     if curso and curso != "Curso":
+        contenido = []
         for elem in todos_elem:
             if str(curso[0]) == str(elem.curso):
                 conten = {}
                 conten['id'] = elem.id
                 conten['titulo'] = elem.titulo
-                if conten not in contenido:
-                    contenido.append(conten)
+                contenido.append(conten)
+                elem_filtrados.append(elem)
         contenFinal = contenido
+        todos_elem=elem_filtrados
 
     if tema and tema != "Tema":
+        contenido = []
         for elem in todos_elem:
             if str(tema) in str(elem.tema):
                 conten = {}
                 conten['id'] = elem.id
                 conten['titulo'] = elem.titulo
-                if conten not in contenido:
-                    contenido.append(conten)
+                contenido.append(conten)
+                elem_filtrados.append(elem)
         contenFinal = contenido
+        todos_elem=elem_filtrados
 
     if tipo and tipo != "Tipo":
+        contenido = []
         if tipo == "Test":
             tipos = 1
         elif tipo == "Respuesta corta":
@@ -1170,9 +1177,10 @@ def getFilteredContent(todos_elem,request):
                 conten = {}
                 conten['id'] = elem.id
                 conten['titulo'] = elem.titulo
-                if conten not in contenido:
-                    contenido.append(conten)
+                contenido.append(conten)
+                elem_filtrados.append(elem)
         contenFinal = contenido
+        todos_elem=elem_filtrados
 
     return contenFinal
 
@@ -1251,6 +1259,7 @@ def añadirEjSeguimientoAlumno(alumno,ejercicio,correcto):
     try:
         seguimiento_alumno = Seguimiento.objects.get(alumno=alumno, tema=ejercicio.tema)
         n_ej_correctos = seguimiento_alumno.acierto*seguimiento_alumno.n_ejercicios/100
+        print(seguimiento_alumno.n_ejercicios)
         seguimiento_alumno.n_ejercicios += 1
         if correcto:
             seguimiento_alumno.acierto = (n_ej_correctos+1)*100/seguimiento_alumno.n_ejercicios
@@ -1266,6 +1275,7 @@ def añadirEjSeguimientoAlumno(alumno,ejercicio,correcto):
             seguimiento_alumno.acierto = 100
         else:
             seguimiento_alumno.acierto = 0
+    seguimiento_alumno.acierto=round(seguimiento_alumno.acierto,2)
     seguimiento_alumno.save()
     seguimiento_alumno.ejercicios.add(ejercicio)
     seguimiento_alumno.save()
