@@ -166,8 +166,9 @@ class Examen(models.Model):
     temas = models.ManyToManyField(Tema) #el usuario seleccionará varios temas
     ejercicios = models.ManyToManyField(EjercicioUsuario,
                                  default=None)#Lista con un dic que tenga los ids de los ejercicios asignados y lista alum hecho
-    cronometrado = models.CheckConstraint(name="Cronometrado", check=['Si', 'No'])
-    tiempo = models.FloatField(default=None,null=True)
+    cronometrado = models.BooleanField(default=1, choices=[(0,'Si'),(1,'No')], null=True)
+    inicio = models.DateTimeField(default=None,null=False)
+    fin=models.DateTimeField(default=None,null=True)
     nota = models.FloatField(default=0,null=True)
     
     class Meta:

@@ -17,6 +17,7 @@ from django.contrib.auth import login, authenticate
 from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.auth.decorators import login_required
+from datetime import datetime, timezone
 from strgen import StringGenerator
 from unidecode import unidecode
 import random
@@ -412,7 +413,6 @@ def examenes(request):
         return examenesExterno(request)
     return render(request,'divermat/examenes.html', context=content)
 
-
 def examenesAlumno(alumno,request):
     content = {}
     content['registro'] = False
@@ -629,11 +629,22 @@ def examen(request, examen=None):
             examen_object.nota = 0
             examen_object.save()
 
+        examen_object.fin=datetime.now(timezone.utc)
+        examen_object.save()
     examen_data={}
+    
+    if examen_object.cronometrado is True:
+        examen_data['cronometrado'] = True
+        examen_data['tiempo'] = examen_object.fin - examen_object.inicio
+        examen_object.save()
+    
     examen_data['ejercicios'] = set
     examen_data['examen'] = examen_object
     content['examen_data']=examen_data
     content['hacer_examen'] = False
+    print(examen_object.cronometrado)
+    print(examen_object.inicio)
+    print(examen_object.fin)
 
     #SI hay user authenticated poner Alumno a True
     return render(request,'divermat/examen.html', context=content)
@@ -681,7 +692,6 @@ def video(request,idVideo):
     content['video'] = Video.objects.get(id=idVideo)
 
     return render(request,'divermat/video.html',content)
-
 
 def resumenes(request):
 
@@ -1244,7 +1254,7 @@ def getExamenAlumno(usuario,temas,crono):
                     if ejercicio not in ejercicios_examen:
                         ejercicios_examen.append(ejercicio)
     #Creamos el objeto del examen
-    examen = Examen.objects.create(titulo="Examen de los temas" + titulo,alumno=usuario,curso=usuario.curso,tiempo=0)
+    examen = Examen.objects.create(titulo="Examen de los temas" + titulo,alumno=usuario,cronometrado=crono,curso=usuario.curso,inicio=datetime.now(timezone.utc))
     examen.save()
     
     content = {}
@@ -1314,7 +1324,8 @@ def getExamenExterno(temas,curso,crono):
                     if ejercicio not in ejercicios_examen:
                         ejercicios_examen.append(ejercicio)
     #Creamos el objeto del examen
-    examen = Examen.objects.create(titulo="Examen de los temas" + titulo,alumno=None,curso=curso,tiempo=0)
+    examen = Examen.objects.create(titulo="Examen de los temas" + titulo,alumno=None,curso=curso,cronometrado=crono,inicio=datetime.now(timezone.utc))
+    examen.cronometrado=crono
     examen.save()
     
     content = {}

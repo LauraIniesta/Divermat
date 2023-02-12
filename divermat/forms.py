@@ -13,7 +13,7 @@ from divermat.models import Curso, Tema, Examen, Profesor, Alumno, Clase
 
 class NuevoExamen(forms.Form):
     
-    crono = forms.ChoiceField(label="¿Quieres que el examen sea cronometrado?",choices=[('Si','Si'), ('No','No')],required=True, initial='Si')
+    crono = forms.ChoiceField(label="¿Quieres que el examen sea cronometrado?",choices=[(True,'Si'), (False,'No')],required=True, initial='Si')
     
     """class Meta:
         model = Examen

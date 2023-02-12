@@ -7,13 +7,26 @@
 {% block body_block %}
 <div>
    <h2> {{examen_data.examen}}</h2>
-   {% if nota is True %}
-        {% if examen_data.examen.nota >= 5 %}
-            <h4 style="color:green">NOTA: {{examen_data.examen.nota}}</h4>
-        {% else %}
-            <h4 style="color:crimson">NOTA: {{examen_data.examen.nota}}</h4>
-        {% endif %}
-   {% endif %}
+   <table>
+    <tr>
+        <td style="width:150px;">
+            {% if nota is True %}
+                {% if examen_data.examen.nota >= 5 %}
+                    <h4 style="color:green">NOTA: {{examen_data.examen.nota}}</h4>
+                {% else %}
+                    <h4 style="color:crimson">NOTA: {{examen_data.examen.nota}}</h4>
+                {% endif %}
+            {% endif %}
+        </td>
+        <td style="width:250px;">
+            {% if examen_data.cronometrado is True%}
+                <h4 style="color:cadetblue">TIEMPO: {{examen_data.tiempo}}</h4>
+            {% endif %}
+        </td>
+    </tr>
+   </table>
+   
+
     <ol>
         <form action="{% url 'examen' examen=examen_data.examen.id %}" method="POST">
             {% for ejercicio in examen_data.ejercicios %}
