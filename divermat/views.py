@@ -154,7 +154,7 @@ def iniciar_sesion(request):
         content['form']=form
     else:
         content['form'] = InicioSesion()
-        
+
     return render(request,'divermat/inicio_sesion.html', context=content,)
 
 class cerrar_sesion(LogoutView):
@@ -437,6 +437,7 @@ def examenesAlumno(alumno,request):
         else:
             content['error'] = "Error en el formulario"
         
+        content['hacer_examen'] = True
         return render(request,'divermat/examen.html', context=content)      
 
     else:
@@ -469,7 +470,7 @@ def examenesExterno(request):
             content['n_examen'] = 1                    
         else:
             content['error'] = "Error en el formulario"
-        
+        content['hacer_examen'] = True
         return render(request,'divermat/examen.html', context=content)      
 
     else:
@@ -632,6 +633,8 @@ def examen(request, examen=None):
     examen_data['ejercicios'] = set
     examen_data['examen'] = examen_object
     content['examen_data']=examen_data
+    content['hacer_examen'] = False
+
     #SI hay user authenticated poner Alumno a True
     return render(request,'divermat/examen.html', context=content)
 

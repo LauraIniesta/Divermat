@@ -67,7 +67,9 @@
                 </li>
             {% endfor %}
             {% csrf_token %}
-            <input type="submit" value="Aceptar">   
+            {% if hacer_examen is True%}
+                <input type="submit" value="Aceptar"> 
+            {%endif%}  
         </form>
 
     </ol>
