@@ -34,15 +34,17 @@
                             <input type="submit" value="Cancelar">            
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <p style="color:crimson;">{{error}}</p>
+                        </td>
+                    </tr>
                 </table>
                 {% csrf_token %}
               
             </form>
 
                
-        </div>
-        <div>
-            {{error}}
         </div>
     </div>
 

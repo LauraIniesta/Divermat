@@ -45,8 +45,10 @@
 
         {% for ejercicio in ejercicios_asignados%}
             <tr>
-                <td>
-                    {{ejercicio}}
+                <td style="width: 250px;">
+                    <!-- <input type="checkbox"> -->
+                        <a href="{% url 'ejercicio' ejercicio.id %}">{{ejercicio.titulo}}</a>
+                    <!-- </input>  -->
                 </td>
             </tr>
         {%endfor%}

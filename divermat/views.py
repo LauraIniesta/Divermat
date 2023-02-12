@@ -113,6 +113,7 @@ class registro(CreateView):
 
 def iniciar_sesion(request):
     content = {}
+    error=False
     if request.method == 'POST':
         form = InicioSesion(request.POST)
 
@@ -125,17 +126,28 @@ def iniciar_sesion(request):
                 alumno = Alumno.objects.get(username=username)
                 if alumno.password_temporal == password:
                     usuario = authenticate(username=username, password=password)
-                    login(request, usuario)
-                    return redirect('cambiar_contrasenia')
+                    if usuario:
+                        login(request, usuario)
+                        return redirect('cambiar_contrasenia')
+                    else:
+                        content['error']="Usuario o contraseña incorrectos"
+                        error = True
             except Alumno.DoesNotExist:
                 alumno = None
-                content['error'] = "El usuario de tipo Alumno con ese nombre de usuario no existe."              
+                content['error'] = "El usuario de tipo Alumno con ese nombre de usuario no existe."  
+                error = True            
             
             usuario = authenticate(username=username, password=password)
-            login(request, usuario)
-            return redirect('/')
-
-    content['form'] = InicioSesion()
+            if usuario:
+                login(request, usuario)
+                return redirect('/')
+            else:
+                content['error']="Usuario o contraseña incorrectos"
+                error = True
+    if error is True:
+        content['form']=form
+    else:
+        content['form'] = InicioSesion()
     return render(request,'divermat/inicio_sesion.html', context=content,)
 
 class cerrar_sesion(LogoutView):
@@ -246,7 +258,7 @@ def cambiarInformacionAlumno(request):
         return redirect('/')
 
 class PasswordChangeView(PasswordChangeView):
-    template_name = 'divermat/cambiocontrasenia.html' # El tamplate_name por defecto es: 'registration/password_change_form.html'
+    template_name = 'divermat/cambiocontrasenia.html'
     form_class = PasswordChangeForm
     success_url = 'divermat/perfil.html'
      
@@ -978,24 +990,22 @@ def infoclase(request, claseid=None):
             content['centro'] = c.centro
             if request.method == 'POST':
                 form = NuevaInfoClase(request.POST)
-                print(form)
                 if form.is_valid():
-                    print("ENTRA")
                     curso = form.cleaned_data['curso']
                     ano_academico = form.cleaned_data['ano_academico']
                     nombre = form.cleaned_data['nombre']
                     centro = form.cleaned_data['centro']
-                    if curso != "":
+                    if curso != "" and curso !=None:
                         c.curso = curso
                         c.save()
-                    if ano_academico != None:
+                    if ano_academico != None and ano_academico!="":
                         c.ano_academico = ano_academico
                         c.save()
-                    if nombre != "":
+                    if nombre != "" and nombre !=None:
                         print(nombre)
                         c.nombre = nombre
                         c.save()
-                    if centro != "":
+                    if centro != "" and centro != None:
                         c.centro = centro
                         c.save()
 
