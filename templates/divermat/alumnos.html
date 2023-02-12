@@ -6,67 +6,53 @@
 
 {% block body_block %}
 <div class="flex-container">
-    <table>
+    <table style="margin-left: 150px;">
         <tr>
             <td>
                 <h2>Alumnos</h2>
             </td>
-            <td>
+        </tr>
+
+        {% for alum in alumnos %}
+            <tr>
+                <td style="width:300px;">
+                    <a href="{% url 'alumnos' alum.id %}">{{alum}}</a> -> {{alum.password_temporal}}
+                </td>
+            </tr>
+        {%endfor%}
+
+    </table>
+    <table style="margin-left: auto;">
+        <tr> 
+            <td style="width: 300px;">
                 <h2>Seguimiento {{alumno}}</h2>
             </td>
         </tr>
         <tr>
-            <td>
-
+            <td style="width:100px; text-align: center;">
+               <h3>Tema</h3>
             </td>
-            <td>
-                <div>
-                    <table>
-                        <tr>
-                            <td>
-                               <h3>Tema</h3>
-                            </td>
-                            <td>
-                                <h3>% Acierto</h3>
-                            </td>
-                            <td style="text-align: center">
-                               <h3>Nº Ejercicios Hechos</h3> 
-                            </td>
-                        </tr>
-                        <!--Seguimiento alumno-->
-                        {% for infor in informacion%}
-                        <tr>
-                            <td >
-                                {{infor.tema}}
-                            </td>
-                            <td style="text-align: center">
-                                {{infor.acierto}}
-                            </td>
-                            <td style="text-align: center">
-                                {{infor.n_ejercicios}}
-                            </td>
-                        </tr>
-                        {%endfor%}
-                    </table>
-                </div>
+            <td style="width:150px;">
+                <h3>% Acierto</h3>
+            </td>
+            <td style="width:150px">
+               <h3>Nº Ejercicios</h3> 
             </td>
         </tr>
+        <!--Seguimiento alumno-->
+        {% for infor in informacion%}
         <tr>
-            <td>
-            
-                <table>
-                        {% for alum in alumnos %}
-                        <tr><td><a href="{% url 'alumnos' alum.id %}"><li>{{alum}}</li></a>{{alum.password_temporal}}</td></tr>
-                        {%endfor%}
-                </table>
-
+            <td >
+                {{infor.tema}}
             </td>
-    
-            
-            <td>
-               
+            <td style="text-align: center">
+                {{infor.acierto}}
+            </td>
+            <td style="text-align: center">
+                {{infor.n_ejercicios}}
             </td>
         </tr>
+        {%endfor%}
     </table>
 </div>
 

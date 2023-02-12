@@ -130,15 +130,18 @@ class NuevaInfoAlumno(forms.ModelForm):
         }
 
 class NuevaInfoClase(forms.ModelForm):
-
+    nombre = forms.CharField(max_length=15,required=False)
+    curso = forms.ModelChoiceField(queryset=Curso.objects,required=False, widget=forms.widgets.Select(),initial='Curso')
+    centro = forms.CharField(max_length=150, required=False)
+    ano_academico = forms.DateField(required=False)
     class Meta:
         model = Clase
-        fields = (
+        fields = [
             'nombre',
             'curso',
             'ano_academico',
             'centro',
-        )
+            ]
         help_texts = {
         "nombre": None,
         "centro": None,
@@ -155,7 +158,7 @@ class NuevaInfoClase(forms.ModelForm):
 
 class NuevoAlumno(forms.Form):
     
-    n_alumnos = forms.IntegerField(label="Selecciona el curso")
+    n_alumnos = forms.IntegerField(label="Indica el nº de alumnos")
     
     def clean_input(self):
         data = self.cleaned_data

@@ -168,7 +168,7 @@ class Examen(models.Model):
                                  default=None)#Lista con un dic que tenga los ids de los ejercicios asignados y lista alum hecho
     cronometrado = models.CheckConstraint(name="Cronometrado", check=['Si', 'No'])
     tiempo = models.FloatField(default=None,null=True)
-    nota = models.FloatField(default=None,null=True)
+    nota = models.FloatField(default=0,null=True)
     
     class Meta:
         ordering = ('curso', 'titulo', )

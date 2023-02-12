@@ -5,54 +5,35 @@
 {% endblock %}
 
 {% block body_block %}
-<div class="flex-container">
-    <table>
-        <tr>
-            <td>
-                <h2>Alumnos</h2>
-            </td>
-            
-        </tr>
-        <tr>
-            <td>
+    <div class="flex-container">
 
-            </td>
-           
-        </tr>
-        <tr>
-            <td>
-                <form id="borrarAlumno" action="" method="POST">
-                    {% csrf_token %}
+        <form id="borrarAlumno" action="" method="POST">
+            {% csrf_token %}
 
-                    <table>
-                            {% for alum in alumnos %}
-                            <tr><td> 
-                                <input type="checkbox" name="Alumnos" value={{alum.id}}>
-                                   <li>{{alum}}</li>
-                                </input>
-                            </td></tr>
-                            {%endfor%}
-                    </table>
-                    <input type="submit" value="Borrar"></input>
-                </form>
+            <table>
+                <tr>
+                    <h2>Alumnos</h2>
+                </tr>
+                    {% for alum in alumnos %}
+                    <tr>
+                        <td style="width: 100px;"> 
+                            <input type="checkbox" name="Alumnos" value={{alum.id}}>{{alum}}</input>
+                        </td>
+                    </tr>
+                    {%endfor%}
+            </table>
+            <input type="submit" value="Borrar"></input>
+        </form>
+        <div style="margin-left: 100px;">
+            <form id="NuevoAlumno" method="post">
+                <p>{{form.n_alumnos.label}}</p>
+                <p>{{form.n_alumnos}}</p>
+                {% csrf_token %}
+                <input type="submit" value="Generar">   
+            </form>
+        </div>
+    </div>
 
-            </td>
-    
-            
-            <td>
-                <div>
-                    <form id="NuevoAlumno" method="post">
-                        <table>
-                            {{form}}
-                        </table>
-                        {% csrf_token %}
-                        <input type="submit" value="NuevoAlumno">   
-                    </form>
-                </div>                
-            </td>
-        </tr>
-    </table>
-</div>
 
       
 {% endblock %}

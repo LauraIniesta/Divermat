@@ -15,14 +15,14 @@
             <td>
                 <ol>
                     {% for video in videos %}
-                    <a href="{% url 'video' %}"><li>{{video.titulo}}</li></a>
+                    <a href="{% url 'video' video.id %}"><li>{{video.titulo}}</li></a>
                     {%endfor%}
                 </ol>
             </td>
             <td>
                 <ol>
                     {% for resumen in resumenes%}
-                    <a href="{% url 'resumen' %}"><li>{{resumen.titulo}}</li></a>
+                    <a href="{% url 'resumen' resumen.id %}"><li>{{resumen.titulo}}</li></a>
                     {%endfor%}
                 </ol>
             </td>
