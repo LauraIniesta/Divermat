@@ -10,8 +10,8 @@
     {% if alumno is False %}
         <table>
             <tr>
-                <td>
-                    <h2>Alumnos-Usuario-Contrasenia</h2>
+                <td style="width: 350px;">
+                    <h2>Alumno-Contraseña</h2>
                 </td>
                 <td>
                     <h2>Informacion</h2>
@@ -31,8 +31,10 @@
                             <td>
                                 {{alumno.username}}
                             </td>
-                            <td>
-                                {{alumno.password_temporal}}
+                            <td style="width:200px">
+                                {% if alumno.password_temporal %}
+                                    -> {{alumno.password_temporal}}
+                                {%endif%}
                             </td>
                         </tr>
                         {%endfor%}

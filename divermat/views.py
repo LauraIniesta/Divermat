@@ -124,18 +124,23 @@ def iniciar_sesion(request):
 
             try:
                 alumno = Alumno.objects.get(username=username)
-                if alumno.password_temporal == password:
-                    usuario = authenticate(username=username, password=password)
-                    if usuario:
+                usuario = authenticate(username=username, password=password)
+                if usuario:
+                    
+                    if alumno.password_temporal == password:
                         login(request, usuario)
                         return redirect('cambiar_contrasenia')
                     else:
-                        content['error']="Usuario o contraseña incorrectos"
-                        error = True
+                        usuario.password_temporal = None
+                        usuario.save()
+                        login(request, usuario)
+                        return redirect('/')
+                else:
+                    content['error']="Usuario o contraseña incorrectos"
+                    error = True
+
             except Alumno.DoesNotExist:
-                alumno = None
-                content['error'] = "El usuario de tipo Alumno con ese nombre de usuario no existe."  
-                error = True            
+                alumno = None      
             
             usuario = authenticate(username=username, password=password)
             if usuario:
@@ -144,10 +149,12 @@ def iniciar_sesion(request):
             else:
                 content['error']="Usuario o contraseña incorrectos"
                 error = True
+
     if error is True:
         content['form']=form
     else:
         content['form'] = InicioSesion()
+        
     return render(request,'divermat/inicio_sesion.html', context=content,)
 
 class cerrar_sesion(LogoutView):

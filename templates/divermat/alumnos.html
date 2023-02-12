@@ -16,7 +16,10 @@
         {% for alum in alumnos %}
             <tr>
                 <td style="width:300px;">
-                    <a href="{% url 'alumnos' alum.id %}">{{alum}}</a> -> {{alum.password_temporal}}
+                    <a href="{% url 'alumnos' alum.id %}">{{alum}}</a>
+                    {% if alum.password_temporal%}
+                        -> {{alum.password_temporal}}
+                    {%endif%}
                 </td>
             </tr>
         {%endfor%}
