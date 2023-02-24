@@ -11,6 +11,10 @@
             <div>
                 <h2>Ejercicio:  {{ejercicio.titulo}}</h2>
                 <h3>{{ejercicio.enunciado}}</h3>
+                {% if ejercicio.foto %}
+                <img width=350px height= 250px src="{{ejercicio.foto.url}}" alt="error en la imagen">
+                {%endif%}
+
                 {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test-->
                     <p>Selecciona la solución correcta</p>
                     {% for sol in soluciones %}
@@ -20,7 +24,8 @@
                             <input type="radio" id="solucion" value="{{sol.solucion}}" name="solucion"> {{sol.solucion}} </br>
                         {% endif %}
                     {% endfor %}
-                    <input type="submit" value="Aceptar">   
+                    <br>                   
+                    <input class="boton" type="submit" value="Aceptar">   
                 {% else %} <!--Ejercicio de respuesta corta-->
                     <input label="Introduce la solución: " type="text" name="solucion" value="Solucion"></br></br>
 
@@ -30,6 +35,9 @@
             <div>
                 <h2>Ejercicio:  {{ejercicio.titulo}}</h2>
                 <h3>{{ejercicio.enunciado}}</h3>
+                {% if ejercicio.foto %}
+                <img width=350px height= 250px src="{{ejercicio.foto.url}}" alt="error en la imagen">
+                {%endif%}
                 {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test con varias soluciones-->
                     <p>Selecciona la solución correcta</p>
                     {% for sol in soluciones %}
@@ -39,7 +47,8 @@
                             <input type="checkbox" id="solucion" value="{{sol.solucion}}" name="solucion"> {{sol.solucion}} </br>
                         {% endif %}
                     {% endfor %}  
-                    <input type="submit" value="Aceptar">   
+                    <br>
+                    <input class="boton" type="submit" value="Aceptar">   
                 {% else %} <!--Ejercicio de respuesta corta con varias soluciones-->
                 
                     <input label="Introduce las soluciones separadas por ';': " type="text" name="solucion" value="Solucion"></br></br>

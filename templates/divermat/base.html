@@ -10,7 +10,7 @@
         </title>    
         <link rel="stylesheet" type="text/css" href="{% static 'estilo.css' %}" />
     </head>
-    <body>            
+    <body class="grid">            
         <div class = "cab">
             <table >
                 <tr>
@@ -26,7 +26,7 @@
                             <a href="{% url 'cerrar_sesion' %}">Cerrar_Sesión</a>
                         </td>                        
                         <td>
-                            <a href="{% url 'perfil' %}">Mi_Perfil</a>
+                            <a href="{% url 'perfil' %}"><img width=40px height= 40px src="{{fotos.foto.url}}" alt="Mi_Perfil"></a>
                         </td>
                     {% else %}
                         <td>

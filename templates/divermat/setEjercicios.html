@@ -17,6 +17,8 @@
                     {% if ejercicio.nsoluciones is 1%}
                         <div>
                             <h4>{{ejercicio.titulo}}: {{ejercicio.enunciado}}</h4>
+                            <img width=350px height= 250px src="{{ejercicio.foto.url}}" alt="error en la imagen">
+
                             {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test-->
                                 <p>Selecciona la solución correcta</p>
 
@@ -38,6 +40,8 @@
                         <div>
                             <h4>Ejercicio:  {{ejercicio.titulo}}</h4>
                             <h5>{{ejercicio.enunciado}}</h5>
+                            <img width=350px height= 250px src="{{ejercicio.foto.url}}" alt="error en la imagen">
+
                             {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test con varias soluciones-->
 
                                 <p>Selecciona la solución correcta</p>
@@ -63,7 +67,7 @@
                 </li>
             {% endfor %}
             {% csrf_token %}
-            <input type="submit" value="Aceptar">   
+            <input class="boton" type="submit" value="Aceptar">   
         </form>
 
     </ol>

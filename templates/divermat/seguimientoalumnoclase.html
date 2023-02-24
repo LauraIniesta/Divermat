@@ -1,0 +1,81 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Seguimiento Alumno
+{% endblock %}
+
+{% block body_block %}
+
+    <div>
+        <table>
+            <tr>
+                <td><h3>Información {{username}}</h3></td>
+                <td><h3>Seguimiento</h3></td>
+            </tr>
+            
+            <tr>
+                <td>
+                    <!--Poner lo de ordenar la tabla-->
+                    <table>
+                        <tr>
+
+                            <td>
+                                Nombre de usuario: {{username}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Nombre: {{nombre}}
+                            </td>
+                        </tr> 
+                        
+                        <tr>
+                            <td>
+                                Apellidos: {{apellidos}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Centro educativo: {{centro}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Clase:<a href="{% url 'clase' clase.id %}"> {{clase.curso}}º ESO {{clase.nombre}}</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table>
+                        <tr>
+                            <td>
+                                    <h4>Temas</h4>
+                            </td>
+                            <td>
+                                    <h4>% Acierto</h4>
+                            </td>
+                            <td style="text-align: center">
+                                    <h4>Nº Ejercicios Hechos</h4>
+                            </td>
+                        </tr>
+                        {% for seg in seguimiento%}
+                            <tr>
+                                <td>
+                                    {{seg.tema}}
+                                </td>
+                                <td>
+                                    {{seg.acierto}}
+                                </td>
+                                <td style="text-align: center">
+                                    {{seg.n_ejercicios}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>      
+        </table>
+    </div>
+
+{% endblock %}

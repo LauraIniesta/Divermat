@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'infoclase/(?P<claseid>[\w]+)/$', views.infoclase, name='infoclase'),
     url(r'^alumnosclase/(?P<claseid>[\w]+)/$', views.alumnosclase, name='alumnosclase'),
     url(r'^seguimientoclase/(?P<claseid>[\w]+)/$', views.seguimientoclase, name='seguimientoclase'),
+    url(r'^seguimientoalumnoclase/(?P<alumnoid>[\w]+)/$', views.seguimientoalumnoclase, name='seguimientoalumnoclase'),
     url(r'clases', views.clases, name='clases'),
     url(r'clase/(?P<clase>[\w]+)/$', views.clase, name='clase'),
     url(r'clase', views.clase, name='clase'),

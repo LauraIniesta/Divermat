@@ -1,4 +1,5 @@
 {% extends "divermat/base.html" %}
+{% include "divermat/filtro.html"%}
 
 {% block title_block %}
     Inicio
@@ -33,7 +34,7 @@
                             </table>
                             {% csrf_token %}
             
-                            <input type="submit" value="Generar">           
+                            <input class="boton" type="submit" value="Generar">           
                         </form>
                     </td>
                 </tr>
@@ -73,8 +74,7 @@
 {% endif %}
 
 
- 
- <div class="lateral">
+<div class="lateral">
     <div class ="flex-container">
         <div class="medio">
             <a>Buscar</a></br></br>
@@ -117,6 +117,4 @@
         </div>
     </div>
 </div>
-
-
 {% endblock %}

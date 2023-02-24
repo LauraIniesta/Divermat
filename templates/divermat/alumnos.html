@@ -25,38 +25,40 @@
         {%endfor%}
 
     </table>
-    <table style="margin-left: auto;">
-        <tr> 
-            <td style="width: 300px;">
-                <h2>Seguimiento {{alumno}}</h2>
-            </td>
-        </tr>
-        <tr>
-            <td style="width:100px; text-align: center;">
-               <h3>Tema</h3>
-            </td>
-            <td style="width:150px;">
-                <h3>% Acierto</h3>
-            </td>
-            <td style="width:150px">
-               <h3>Nº Ejercicios</h3> 
-            </td>
-        </tr>
-        <!--Seguimiento alumno-->
-        {% for infor in informacion%}
-        <tr>
-            <td >
-                {{infor.tema}}
-            </td>
-            <td style="text-align: center">
-                {{infor.acierto}}
-            </td>
-            <td style="text-align: center">
-                {{infor.n_ejercicios}}
-            </td>
-        </tr>
-        {%endfor%}
-    </table>
+    {% if seguimiento is True%}
+        <table style="margin-left: auto;">
+            <tr> 
+                <td style="width: 300px;">
+                    <h2>Seguimiento <a href="{% url 'seguimientoalumnoclase' alumno.id %}">{{alumno}}</a></h2>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:100px; text-align: center;">
+                <h3>Tema</h3>
+                </td>
+                <td style="width:150px;">
+                    <h3>% Acierto</h3>
+                </td>
+                <td style="width:150px">
+                <h3>Nº Ejercicios</h3> 
+                </td>
+            </tr>
+            <!--Seguimiento alumno-->
+            {% for infor in informacion%}
+            <tr>
+                <td >
+                    {{infor.tema}}
+                </td>
+                <td style="text-align: center">
+                    {{infor.acierto}}
+                </td>
+                <td style="text-align: center">
+                    {{infor.n_ejercicios}}
+                </td>
+            </tr>
+            {%endfor%}
+        </table>
+    {%endif%}
 </div>
 
 <div class="lateral">
@@ -75,7 +77,7 @@
                             <option>4º ESO </option>      
                         </select></br></br>
                     </div>
-                    <input type="submit" value="Aceptar"></input>
+                    <input class="botonLateral" type="submit" value="Aceptar"></input>
                 </div>
             </form>
         </div>

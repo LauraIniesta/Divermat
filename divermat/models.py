@@ -63,6 +63,9 @@ class Ejercicio(models.Model):
     nsoluciones = models.IntegerField(default=None,null=True) #Numero de soluciones correctas
     soluciones = models.CharField(max_length=1000, default = None) #Cada solucion divididad por ; incluye la solucion correcta y las erroneas en caso de Test
     solucion_correcta = models.CharField(max_length=1024, default = None)
+    foto = models.FileField(upload_to='media/fotos/%y',blank=True,null=False)
+    
+    
     #Primero tipo test y respuesta con hueco problemas más adelante un ej tipo por curso y temática
 
     class Meta:
@@ -194,3 +197,9 @@ class Seguimiento(models.Model):
 
     def __str__(self):
         return str(self.alumno) + " " + str(self.tema) + " "
+
+
+class Foto(models.Model):
+
+    perfil = models.BooleanField(max_length=50, default=True)
+    foto = models.FileField(upload_to='media/fotos/%y',blank=True,null=False)

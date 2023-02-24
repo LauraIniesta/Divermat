@@ -32,13 +32,51 @@
                             <div>
                             
                                 <form id="NuevoExamenForm" action="examenes" method="POST">
-        
-                                    
-                                    {{form.as_p}}
+                                    <table>
+                                        <tr>
+                                            <td>
+                                               <p>
+                                                {{form.crono.label}}<br><br> 
+                                                {{form.crono}}
+                                               </p> 
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {{form.curso.label}}:
+                                                {{form.curso}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {{form.temas.label}}:
+                                                {% if form.temas.errors %}
+                                                    {% for error in form.temas.errors %}
+                                                        <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                                                    {% endfor %}
+                                                {% endif %}
+
+                                                <ul>
+                                                    {% for tema in form.temas %}
+                                                        {% if tema.field.curso is form.curso.value.field.curso %}   
+                                                        {{form.curso.field.curso}}
+                                                            <li>
+                                                                {{tema}}
+                                                            </li>
+                                                        {% endif %}
+                                                    {% endfor%}
+                                                </ul>
+                                            </td>
+                                        </tr>
+
                                     {% csrf_token %}
+                                    <tr>
+                                        <td>
+                                            <input class="boton" type="submit" value="Aceptar">   
+                                        </td>
+                                    </tr>
         
-                                    <input type="submit" value="Aceptar">   
-                                    <input type="submit" value="Cancelar">
+                                   
         
                                 </form>
         

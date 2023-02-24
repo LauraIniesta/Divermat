@@ -4,7 +4,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 
 from divermat.models import (Profesor, Alumno, Usuario, User,
-                    Clase, Curso, Ejercicio,Seguimiento,
+                    Clase, Curso, Ejercicio,Seguimiento,Foto,
                     Examen, Video, Resumen,Tema,EjercicioUsuario)
 
 from divermat.forms import (NuevoAlumno, NuevoExamen, Registro,
@@ -25,6 +25,7 @@ import random
 
 def index(request):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     content['Tipo'] = 'Ejercicios'
     content['alumno'] = False
@@ -114,6 +115,7 @@ class registro(CreateView):
 
 def iniciar_sesion(request):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     error=False
     if request.method == 'POST':
         form = InicioSesion(request.POST)
@@ -178,6 +180,7 @@ def perfil(request):
 def perfilProfesor(request,profesor):
     #Opcion de cambiar contraseña username o centro anñadr
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
 
     if request.method == 'POST':
@@ -205,6 +208,7 @@ def perfilProfesor(request,profesor):
 @login_required
 def perfilAlumno(request,alumno):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
 
     if request.method == 'POST':
@@ -226,12 +230,6 @@ def perfilAlumno(request,alumno):
     content['centro'] = alumno.centro
     content['alumno'] = True
     content['clase'] = alumno.clase
-    #Para que se vea que funciona el seguimiento
-    # segui = Seguimiento()
-    # segui.alumno = alumno
-    # segui.acierto=1
-    # segui.n_ejercicios=0
-    # segui.save()
     content['seguimiento'] = Seguimiento.objects.filter(alumno=alumno)
     
     return render(request,'divermat/perfil.html', context=content,)
@@ -239,6 +237,7 @@ def perfilAlumno(request,alumno):
 @login_required
 def cambiarInformacionAlumno(request):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     try:
         alumno = Alumno.objects.get(username=request.user)
@@ -293,6 +292,7 @@ def setEjercicios(request,idTema=None):
                 ejercicio_data['titulo'] = ejercicio.titulo
                 ejercicio_data['tipo'] = ejercicio.tipo
                 ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
+                ejercicio_data['foto'] = ejercicio.foto
                 soluciones = ejercicio.soluciones.split(";")
                 for solucion in soluciones:
                     solucion_data={}
@@ -310,6 +310,8 @@ def setEjercicios(request,idTema=None):
                 ejercicio_data['titulo'] = ejercicio.titulo
                 ejercicio_data['tipo'] = ejercicio.tipo
                 ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
+                ejercicio_data['foto'] = ejercicio.foto
+
                 soluciones = ejercicio.soluciones.split(";")
                 soluciones_data=[]
                 for solucion in soluciones:
@@ -394,11 +396,13 @@ def setEjercicios(request,idTema=None):
 
 def examenes(request):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     content['alumno'] = False
     content['examen'] = False
     if request.user.is_authenticated:
         content = {}
+        content['fotos'] = Foto.objects.get(perfil=True)
         content['registro'] = False
         content['examen'] = False
 
@@ -415,6 +419,7 @@ def examenes(request):
 
 def examenesAlumno(alumno,request):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     content['examen'] = False
     content['alumno'] = True
@@ -451,6 +456,7 @@ def examenesAlumno(alumno,request):
 
 def examenesExterno(request):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     content['examen'] = False
     content['alumno'] = False
@@ -467,11 +473,12 @@ def examenesExterno(request):
             content['examen_data'] = getExamenExterno(temas,curso,crono)
 
             content['examen'] = True
-            content['n_examen'] = 1                    
+            content['n_examen'] = 1      
+            content['hacer_examen'] = True
+            return render(request,'divermat/examen.html', context=content)              
         else:
+            content['form'] = form
             content['error'] = "Error en el formulario"
-        content['hacer_examen'] = True
-        return render(request,'divermat/examen.html', context=content)      
 
     else:
         form = NuevoExamen(curso=None)
@@ -481,6 +488,7 @@ def examenesExterno(request):
 
 def examen(request, examen=None):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['profesor'] = False
     content['registro'] = False
     content['nota'] = True
@@ -652,6 +660,7 @@ def examen(request, examen=None):
 def videos(request):
     #Mostrar en pequeño la ventana del video
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     content['alumno'] = False
     content['Tipo'] = 'Videos'
@@ -687,6 +696,7 @@ def videos(request):
 #Mostrar el video como tal
 def video(request,idVideo):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     content['alumno'] = False
     content['video'] = Video.objects.get(id=idVideo)
@@ -696,6 +706,7 @@ def video(request,idVideo):
 def resumenes(request):
 
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     content['alumno'] = False
     content['Tipo'] = 'Resúmenes'
@@ -732,6 +743,7 @@ def resumenes(request):
 #Mostrar el resumen como tal
 def resumen(request,idResumen):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     content['alumno'] = False
     content['resumen'] = Resumen.objects.get(id=idResumen)
@@ -742,6 +754,7 @@ def resumen(request,idResumen):
 #Mostrar el ejercicio como tal para obtener respuesta del usuario
 def ejercicio(request, ejercicio=None):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     alumno = None
     if request.user.is_authenticated:
@@ -796,6 +809,7 @@ def ejercicio(request, ejercicio=None):
 def clases(request):
 
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     profesor = Profesor.objects.get(username=request.user)
     content['profesor'] = True
@@ -866,6 +880,7 @@ def alumnos(request, alumno=None):
     busqueda = request.GET.get('buscar', '')
     filtro = request.GET.get('curso', '')
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     content['profesor'] = True
     content['alumnos'] = []
@@ -887,11 +902,12 @@ def alumnos(request, alumno=None):
                 alumnos_filtered.append(a)
         alumnos=alumnos_filtered
     content['alumnos'] = alumnos
-
+    content["seguimiento"] = False
     if alumno:
         for alum in Alumno.objects.all():
             if alum.id == int(alumno):
-                content['alumno'] = alum
+                content['alumno'] = alum    
+                content["seguimiento"] = True
                 break
         content['informacion'] = Seguimiento.objects.filter(alumno=alum)
         
@@ -900,6 +916,7 @@ def alumnos(request, alumno=None):
 @login_required
 def contenido(request):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
 
     try :
@@ -930,6 +947,7 @@ def contenido(request):
 def clase(request,clase=None):
 
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
 
     if clase:
@@ -954,6 +972,7 @@ def clase(request,clase=None):
 @login_required
 def claseProfesor(request,clase):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     content['clase'] = clase
     content['curso'] = clase.curso
@@ -978,6 +997,7 @@ def claseProfesor(request,clase):
 @login_required
 def claseAlumno(request,clase=None):
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
     content['clase'] = clase
     content['curso'] = clase.curso
@@ -1117,6 +1137,30 @@ def seguimientoclase(request, claseid=None):
             content['ejercicios_asignados'] = c.ejercicios.all()
 
     return render(request,'divermat/seguimientoclase.html', context=content,)
+
+@login_required
+def seguimientoalumnoclase(request, alumnoid=None):
+    content={}
+    content['foto'] = Foto.objects.get(perfil=True)
+    content['registro'] = False
+    content['profesor'] = True
+    content['alumno'] = False
+
+    if alumnoid:
+        try:
+            alumno=Alumno.objects.get(id=alumnoid)
+            content['nombre'] = alumno.first_name 
+            content['apellidos'] = alumno.last_name
+            content['username'] = alumno.username
+            content['centro'] = alumno.centro
+            content['clase'] = alumno.clase
+            content['seguimiento'] = Seguimiento.objects.filter(alumno=alumno)
+
+        except Alumno.DoesNotExist:
+            content['error'] = "Error obteniendo la informacion del alumno"
+
+    return render(request,'divermat/seguimientoalumnoclase.html', context=content,)
+
 
 #Metodos que se usan internamente
 
@@ -1258,6 +1302,7 @@ def getExamenAlumno(usuario,temas,crono):
     examen.save()
     
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['examen'] = examen
     content['ejercicios'] = []
 
@@ -1273,6 +1318,8 @@ def getExamenAlumno(usuario,temas,crono):
         ejercicio_data['titulo'] = ejercicio.titulo
         ejercicio_data['tipo'] = ejercicio.tipo
         ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
+        ejercicio_data['foto'] = ejercicio.foto
+
         soluciones = ejercicio.soluciones.split(";")
         ejercicio_data['soluciones'] = []
         for solucion in soluciones:
@@ -1329,6 +1376,7 @@ def getExamenExterno(temas,curso,crono):
     examen.save()
     
     content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
     content['examen'] = examen
     content['ejercicios'] = []
 
@@ -1344,6 +1392,7 @@ def getExamenExterno(temas,curso,crono):
         ejercicio_data['titulo'] = ejercicio.titulo
         ejercicio_data['tipo'] = ejercicio.tipo
         ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
+        ejercicio_data['foto'] = ejercicio.foto
         soluciones = ejercicio.soluciones.split(";")
         ejercicio_data['soluciones'] = []
         for solucion in soluciones:

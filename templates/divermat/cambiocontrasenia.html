@@ -16,28 +16,41 @@
         <tr>
             <td>
                 Introduzca su contraseña actual:<br>
+                {% if form.old_password.errors %}
+                    {% for error in form.old_password.errors %}
+                        <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                    {% endfor %}
+                {% endif %}
                 {{ form.old_password }}
-                <p style="color:crimson">{{form.old_password.errors}}</p>
+                
             </td>
         </tr>
         <tr>
             <td>
                 Introduzca la nueva contraseña:<br>
+                {% if form.new_password1.errors %}
+                    {% for error in form.new_password1.errors %}
+                        <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                    {% endfor %}
+                {% endif %}
                 {{ form.new_password1}}
-                <p style="color:crimson">{{form.new_password1.errors}}</p>
             </td>
         </tr>
         <tr>
             <td>
                 Repite la nueva contraseña:<br>
+                {% if form.new_password1.errors %}
+                    {% for error in form.new_password1.errors %}
+                        <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                    {% endfor %}
+                {% endif %}
                 {{ form.new_password2 }}
-                <p style="color:crimson">{{form.new_password2.errors}}</p>
                 <p>{{ form.new_password1.help_text }}</p>
             </td>
         </tr>
         <tr>
             <td>
-                <button type="submit">Cambiar</button>
+                <button class="boton" class="boton" type="submit">Cambiar</button>
             </td>
         </tr>
         <tr>

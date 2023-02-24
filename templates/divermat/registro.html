@@ -18,20 +18,40 @@
                 <tr>
                     <td>
                        <b> {{ form.first_name.label}}:</b>
+                        {% if form.first_name.errors %}
+                            {% for error in form.first_name.errors %}
+                                <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                            {% endfor %}
+                        {% endif %}
                         {{ form.first_name}}
                         <b> {{ form.last_name.label}}:</b>
+                        {% if form.last_name.errors %}
+                            {% for error in form.last_name.errors %}
+                                <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                            {% endfor %}
+                        {% endif %}
                         {{ form.last_name}}
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <b> {{ form.centro.label}}:</b>
+                        {% if form.centro.errors %}
+                            {% for error in form.new_password1.errors %}
+                                <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                            {% endfor %}
+                        {% endif %}
                         {{ form.centro}}
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <b> {{ form.username.label}}:</b>
+                        {% if form.username.errors %}
+                            {% for error in form.username.errors %}
+                                <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                            {% endfor %}
+                        {% endif %}
                         {{ form.username}}
                         <p>{{ form.username.help_text}}</p>
                     </td>
@@ -39,25 +59,39 @@
                 <tr>
                     <td>
                         <b> {{ form.email.label}}:</b>
+                        {% if form.email.errors %}
+                            {% for error in form.email.errors %}
+                                <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                            {% endfor %}
+                        {% endif %}
                         {{ form.email}}
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <b>  Introduzca una contraseña:</b>
+                        {% if form.password1.errors %}
+                            {% for error in form.password1.errors %}
+                                <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                            {% endfor %}
+                        {% endif %}
                         {{ form.password1}}
                     </td>
                 </tr>
                 <tr>                        
                     <td>
                         <b> Repite la contraseña:</b>
+                        {% if form.password2.errors %}
+                            {% for error in form.password2.errors %}
+                                <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                            {% endfor %}
+                        {% endif %}
                         {{ form.password2 }}
                         <p>{{ form.password1.help_text }}</p>
                         
-                        <input type="submit" value="Aceptar">   
-                        <input type="submit" value="Cancelar">
+                        <input class="boton" type="submit" value="Aceptar">   
+                        <input class="boton" type="submit" value="Cancelar">
                     </td>
-
                 </tr>
             </table>
 

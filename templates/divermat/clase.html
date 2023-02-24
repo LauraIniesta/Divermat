@@ -29,7 +29,7 @@
                                 {{alumno.first_name}}
                             </td>
                             <td>
-                                {{alumno.username}}
+                               <a href="{% url 'seguimientoalumnoclase' alumno.id%}" >{{alumno.username}}</a>
                             </td>
                             <td style="width:200px">
                                 {% if alumno.password_temporal %}
