@@ -14,15 +14,6 @@ from divermat.models import Curso, Tema, Examen, Profesor, Alumno, Clase
 class NuevoExamen(forms.Form):
     
     crono = forms.ChoiceField(label="¿Quieres que el examen sea cronometrado?",choices=[(True,'Si'), (False,'No')],required=True, initial='Si')
-    
-    """class Meta:
-        model = Examen
-        fields = ('curso','temas','crono',)
-        widgets = {
-            'temas': CheckBoxSelectMultiple()
-        }
-   """
-    curso = forms.ModelChoiceField(label="Selecciona el curso ", queryset=Curso.objects, widget=forms.widgets.Select(),required=True, initial='Curso')
     temas = forms.ModelMultipleChoiceField(label="Selecciona el Temario del examen",queryset=Tema.objects,widget=forms.widgets.CheckboxSelectMultiple,required=True)
 
     def __init__(self, *args, **kwargs):
@@ -30,8 +21,6 @@ class NuevoExamen(forms.Form):
         super(NuevoExamen,self).__init__(*args, **kwargs)
         if c:
             self.fields['temas'].queryset = Tema.objects.filter(curso=c)
-            self.fields['curso'].queryset = Curso.objects.filter(curso=c)
-            self.fields['curso'].initial = c
 
     def clean_input(self):
         data = self.cleaned_data

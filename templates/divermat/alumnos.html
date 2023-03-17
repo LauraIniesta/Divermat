@@ -6,10 +6,16 @@
 
 {% block body_block %}
 <div class="flex-container">
+
     <table style="margin-left: 150px;">
         <tr>
             <td>
                 <h2>Alumnos</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Lista de alumnos</h3>
             </td>
         </tr>
 
@@ -27,9 +33,12 @@
     </table>
     {% if seguimiento is True%}
         <table style="margin-left: auto;">
+            <tr>
+                
+            </tr>
             <tr> 
                 <td style="width: 300px;">
-                    <h2>Seguimiento <a href="{% url 'seguimientoalumnoclase' alumno.id %}">{{alumno}}</a></h2>
+                    <h3>Seguimiento <a href="{% url 'seguimientoalumnoclase' alumno.id %}">{{alumno}}</a></h3>
                 </td>
             </tr>
             <tr>

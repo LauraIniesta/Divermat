@@ -26,7 +26,7 @@
                     {% endfor %}
                     <br>                   
                 {% else %} <!--Ejercicio de respuesta corta-->
-                    <input label="Introduce la solución: " type="text" name="solucion" value="{{solucion_introducida}}"></br></br>
+                    <input label="Introduce las soluciones separadas por ';': " type="text" name="solucion" value="{{ejercicio.solucion_correcta}}"></br></br>
 
                 {% endif %}
             </div>
@@ -49,12 +49,11 @@
                     <br>
                 {% else %} <!--Ejercicio de respuesta corta con varias soluciones-->
                 
-                    <input label="Introduce las soluciones separadas por ';': " type="text" name="solucion" value="{{solucion_introducida}}"></br></br>
+                    <input label="Introduce las soluciones separadas por ';': " type="text" name="solucion" value="{{ejercicio.solucion_correcta}}"></br></br>
 
                 {% endif %}
             </div>
-        {% endif %}
-        <input class="boton" type="submit" value="Aceptar">   
+        {% endif %}  
     </form>
 
     <h4 style="color:crimson">{{resultado}}</h4>

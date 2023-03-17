@@ -3,9 +3,11 @@
 {% block title_block %}
     Inicio
 {% endblock %}
-
 {% block body_block %}
+<div>
 
+
+    <h2>Examenes</h2>
     {% if Examen is True %}
         <div>
             <h3>Examen nº {{ n_examen }}</h3></br></br>
@@ -29,22 +31,36 @@
                 <tr>
                     <td>
                         <div class ="flex-container">
-                            <div>
-                            
-                                <form id="NuevoExamenForm" action="examenes" method="POST">
-                                    <table>
+                            <div>     
+                                                   
+                                <table>
+                                    <tr>
+                                        <td>
+
+                                            {% if alumno is not True %}
+                                                <form id="FiltrarTemas" action="examenes" method="GET">
+                                                    Selecciona el curso deseado:
+                                                    <select name="curso" id="curso" onchange="myFunction()">
+                                                        <option value="Curso" disabled selected>Curso</option>
+                                                        <option value="1">1º ESO</option>
+                                                        <option value="2">2º ESO</option>
+                                                        <option value="3">3º ESO</option>
+                                                        <option value="4">4º ESO</option>
+                                                    </select>
+                                                    <h2 id='result'></h2>
+                                                    <input type="submit" value="Aceptar" >
+                                                    
+                                                </form>
+                                            {% endif %}
+                                        </td>    
+                                    </tr>
+                                    <form id="NuevoExamenForm" action="examenes" method="POST">
                                         <tr>
                                             <td>
                                                <p>
                                                 {{form.crono.label}}<br><br> 
                                                 {{form.crono}}
                                                </p> 
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                {{form.curso.label}}:
-                                                {{form.curso}}
                                             </td>
                                         </tr>
                                         <tr>
@@ -69,17 +85,15 @@
                                             </td>
                                         </tr>
 
-                                    {% csrf_token %}
-                                    <tr>
-                                        <td>
-                                            <input class="boton" type="submit" value="Aceptar">   
-                                        </td>
-                                    </tr>
-        
-                                   
-        
-                                </form>
-        
+                                        {% csrf_token %}
+                                        <tr>
+                                            <td>
+                                                <input class="boton" type="submit" value="Aceptar">   
+                                            </td>
+                                        </tr>
+
+                                    </form>
+                                </table>
                                 
                             </div>
                         </div>
@@ -104,5 +118,20 @@
         </div>
 
     {% endif %}
+</div>
+<!-- <script>
+    function myFunction() {
+        var x = document.getElementById("curso");
+        console.log(x.value);
+        var temas = document.getElementsByName("form.temas");
+        console.log(temas.values)
+			
+    }
+</script> -->
 
 {% endblock %}
+<!-- 
+{% block javascript %}
+ <script type="text/javascript" src="js/filtros.js"></script>
+
+{% endblock %} -->

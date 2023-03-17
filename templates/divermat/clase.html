@@ -6,18 +6,18 @@
 
 {% block body_block %}
 <div class="flex-container">
-    <h1>{{Clase.nombre}}</h1>
+    <h2>Clase: {{curso}}º {{nombre}}</h2>
     {% if alumno is False %}
         <table>
             <tr>
                 <td style="width: 350px;">
-                    <h2>Alumno-Contraseña</h2>
+                    <h3>Alumno-Contraseña</h3>
                 </td>
                 <td>
-                    <h2>Informacion</h2>
+                    <h3>Informacion</h3>
                 </td>
                 <td>
-                    <h2>Seguimiento</h2>
+                    <h3>Seguimiento</h3>
                 </td>
             </tr>
             <tr>
@@ -89,10 +89,10 @@
         <table>
             <tr>
                 <td>
-                    <h2>Ejercicios Asignados</h2>
+                    <h3>Ejercicios Asignados</h3>
                 </td>
                 <td>
-                    <h2>Informacion</h2>
+                    <h3>Informacion</h3>
                 </td>
             </tr>
             <tr>

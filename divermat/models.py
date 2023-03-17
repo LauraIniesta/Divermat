@@ -158,6 +158,9 @@ class EjercicioUsuario(models.Model):
                                 default=None, null=True)
     soluciones_seleccionadas = models.CharField(max_length=1000, default = None) #Cada solucion divididad por ; incluye las seleccionadas por el usuario
 
+    resultado = models.CharField(max_length=1000, default = None, null=True)
+
+
 class Examen(models.Model):
     titulo = models.CharField(max_length=200, default=None) #COmbinará el usuario con el curso y tema
     alumno = models.ForeignKey(Alumno, 

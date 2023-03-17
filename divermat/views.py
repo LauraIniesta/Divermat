@@ -1,5 +1,5 @@
 from contextlib import nullcontext
-from http.client import HTTPException
+from http.client import HTTPException, HTTPResponse
 from django.http import Http404
 from django.shortcuts import render, redirect
 
@@ -21,6 +21,8 @@ from datetime import datetime, timezone
 from strgen import StringGenerator
 from unidecode import unidecode
 import random
+from django.http import HttpResponse
+import json
 
 
 def index(request):
@@ -334,58 +336,59 @@ def setEjercicios(request,idTema=None):
         form_data = request.POST
         for ejercicio_data in set:
             ejercicio = Ejercicio.objects.get(id=ejercicio_data['id'])
-            if ejercicio.nsoluciones == 1:
-                ejercicio_data['resultado'] = "Respuesta incorrecta el resultado esperado era: " + str(ejercicio.solucion_correcta)
-                correcto=False
-                # if ejercicio.tipo  is 1:
-                #     respuesta = form_data.get(str(ejercicio.id))
-                # else:
-                respuesta = form_data.get(str(ejercicio.id))
-                #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
-                soluciones_data=[]
-                for solucion in ejercicio.soluciones.split(";"):
-                    solucion_data={}
-                    solucion_data['solucion'] = solucion
-                    solucion_data['checked'] = False
-                    if solucion == respuesta:
-                        solucion_data['checked'] = True
-                    soluciones_data.append(solucion_data)
-                ejercicio_data['soluciones'] = soluciones_data
+            ejercicio_data, correcto =  getSolucionesEjercicio(ejercicio_data,ejercicio,None,form_data)
+            # if ejercicio.nsoluciones == 1:
+            #     ejercicio_data['resultado'] = "Respuesta incorrecta el resultado esperado era: " + str(ejercicio.solucion_correcta)
+            #     correcto=False
+            #     # if ejercicio.tipo  is 1:
+            #     #     respuesta = form_data.get(str(ejercicio.id))
+            #     # else:
+            #     respuesta = form_data.get(str(ejercicio.id))
+            #     #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
+            #     soluciones_data=[]
+            #     for solucion in ejercicio.soluciones.split(";"):
+            #         solucion_data={}
+            #         solucion_data['solucion'] = solucion
+            #         solucion_data['checked'] = False
+            #         if solucion == respuesta:
+            #             solucion_data['checked'] = True
+            #         soluciones_data.append(solucion_data)
+            #     ejercicio_data['soluciones'] = soluciones_data
                 
-                if str(respuesta) == str(ejercicio.solucion_correcta):
-                    ejercicio_data['resultado'] = "¡Respuesta Correcta!"
-                    correcto=True
+            #     if str(respuesta).replace(",",".").replace("'",".") == str(ejercicio.solucion_correcta).replace(",",".").replace("'","."):
+            #         ejercicio_data['resultado'] = "¡Respuesta Correcta!"
+            #         correcto=True
 
-            else:
-                soluciones_correctas = ejercicio.solucion_correcta.split(";")
-                ejercicio_data['resultado'] = "¡Respuesta Correcta!"
-                correcto=True
+            # else:
+            #     soluciones_correctas = ejercicio.solucion_correcta.split(";")
+            #     ejercicio_data['resultado'] = "¡Respuesta Correcta!"
+            #     correcto=True
                 
-                if ejercicio.tipo == 1:
+            #     if ejercicio.tipo == 1:
 
-                    respuestas = form_data.getlist(str(ejercicio.id))
-                else:
+            #         respuestas = form_data.getlist(str(ejercicio.id))
+            #     else:
 
-                    respuestas = form_data.get(str(ejercicio.id)).split(";")
-                #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
-                soluciones_data=[]
-                for solucion in ejercicio.soluciones.split(";"):
-                    solucion_data={}
-                    solucion_data['solucion'] = solucion
-                    solucion_data['checked'] = False
-                    if solucion in respuestas:
-                        solucion_data['checked'] = True
-                    soluciones_data.append(solucion_data)
-                ejercicio_data['soluciones'] = soluciones_data
+            #         respuestas = form_data.get(str(ejercicio.id)).split(";")
+            #     #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
+            #     soluciones_data=[]
+            #     for solucion in ejercicio.soluciones.split(";"):
+            #         solucion_data={}
+            #         solucion_data['solucion'] = solucion
+            #         solucion_data['checked'] = False
+            #         if solucion in respuestas:
+            #             solucion_data['checked'] = True
+            #         soluciones_data.append(solucion_data)
+            #     ejercicio_data['soluciones'] = soluciones_data
                 
-                for r in respuestas:
-                    flag = False
-                    for sol in soluciones_correctas:
-                        if str(r) == str(sol):
-                            flag = True
-                    if(flag == False):
-                        ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + str(soluciones_correctas)  
-                        correcto=False 
+            #     for r in respuestas:
+            #         flag = False
+            #         for sol in soluciones_correctas:
+            #             if str(r).replace(",",".").replace("'",".") == str(sol).replace(",",".").replace("'","."):
+            #                 flag = True
+            #         if(flag == False):
+            #             ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + str(soluciones_correctas)  
+            #             correcto=False 
             
             if alumno:
                 añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)                
@@ -467,10 +470,9 @@ def examenesExterno(request):
 
             #Crear un examen que tenga 10 preguntas del tema y curso seleccionado y mostrarlo
             temas = form.cleaned_data['temas']
-            curso = form.cleaned_data['curso'] 
             crono = form.cleaned_data['crono']
 
-            content['examen_data'] = getExamenExterno(temas,curso,crono)
+            content['examen_data'] = getExamenExterno(temas,crono)
 
             content['examen'] = True
             content['n_examen'] = 1      
@@ -481,8 +483,10 @@ def examenesExterno(request):
             content['error'] = "Error en el formulario"
 
     else:
-        form = NuevoExamen(curso=None)
+        curso = request.GET.get('curso', '')
+        form = NuevoExamen(curso=curso)
         content['form'] = form
+        request.method='GET'
 
     return render(request,'divermat/examenes.html', context=content)
 
@@ -504,44 +508,11 @@ def examen(request, examen=None):
         #Obtenemos el ejercicio y guardamos los datos que vamos a necesitar en ejercicio_data
         ejercicio = Ejercicio.objects.get(id=ejercicio_alumno.ejercicio.id)
         ejercicios_examen.append(ejercicio)
-        ejercicio_data = {}
-        ejercicio_data['id'] = ejercicio.id
-        ejercicio_data['enunciado'] = ejercicio.enunciado
-        ejercicio_data['titulo'] = ejercicio.titulo
-        ejercicio_data['tipo'] = ejercicio.tipo
-        ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
-        #Separamos las posibles soluciones del ejercicio
-        soluciones = ejercicio.soluciones.split(";")
-        soluciones_data = []
-        #En caso de que el ejercicio tenga más de una posible solucion
-        if ejercicio.nsoluciones >1:
-            soluciones_seleccionadas = ejercicio_alumno.soluciones_seleccionadas
-            #Recorremos todas las soluciones y las añadimos al listado de diccionarios soluciones_data
-            for solucion in soluciones:
-                solucion_data={}
-                solucion_data['solucion'] = solucion
-                solucion_data['checked'] = False
-                if solucion in soluciones_seleccionadas:
-                    solucion_data['checked'] = True
-                soluciones_data.append(solucion_data)
-        else:
-            soluciones_seleccionadas = ejercicio_alumno.soluciones_seleccionadas
-            for solucion in soluciones:
-                solucion_data={}
-                solucion_data['solucion'] = solucion
-                solucion_data['checked'] = False
-                if solucion == soluciones_seleccionadas:
-                    solucion_data['checked'] = True
-                soluciones_data.append(solucion_data)
-        
-        #Asignamos las soluciones al ejercicio con un checked a true en caso de que el alumno la hubiese seleccionado
-        ejercicio_data['soluciones'] = soluciones_data
-        
-        #ejercicio_data['soluciones_seleccionadas'] = soluciones_seleccionadas
+        ejercicio_data = getEjercicioDataSolucionesSeleccionadas(ejercicio_alumno,ejercicio)
         #Añadimos la info del ejercicio al set
         set.append(ejercicio_data)
 
-    if request.method == 'POST':
+    if request.method == 'POST' and examen_object.fin is None:
         alumno=None
         if request.user.is_authenticated:
             try:
@@ -555,105 +526,33 @@ def examen(request, examen=None):
         ejercicios_correctos = 0
         for ejercicio_data in set:
             ejercicio = Ejercicio.objects.get(id=ejercicio_data['id'])
-            if ejercicio.nsoluciones == 1:
-                ejercicio_data['resultado'] = "Respuesta incorrecta el resultado esperado era: " + str(ejercicio.solucion_correcta)
-                correcto=False
-                # if ejercicio.tipo  is 1:
-                #     respuesta = form_data.get(str(ejercicio.id))
-                # else:
-                respuesta = form_data.get(str(ejercicio.id))
-                
-                for ej_alum in ejercicios_alumno:
-                    if ej_alum.ejercicio == ejercicio:
-                        ej_alum.soluciones_seleccionadas = respuesta
-                        ej_alum.save()
-                
-                #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
-                soluciones_data=[]
-                for solucion in ejercicio.soluciones.split(";"):
-                    solucion_data={}
-                    solucion_data['solucion'] = solucion
-                    solucion_data['checked'] = False
-                    if solucion == respuesta:
-                        solucion_data['checked'] = True
-                    soluciones_data.append(solucion_data)
-                ejercicio_data['soluciones'] = soluciones_data
-        
-                if str(respuesta) == str(ejercicio.solucion_correcta):
-                    ejercicio_data['resultado'] = "¡Respuesta Correcta!"
-                    correcto=True
-
-            else:
-                soluciones_correctas = ejercicio.solucion_correcta.split(";")
-                ejercicio_data['resultado'] = "¡Respuesta Correcta!"
-                correcto=True
-
-                for ej_alum in ejercicios_alumno:
-                    if ej_alum.ejercicio == ejercicio:
-                        ej_alum.soluciones_seleccionadas = form_data.getlist(str(ejercicio.id))
-                        ej_alum.save()
-
-                if ejercicio.tipo == 1:
-
-                    respuestas = form_data.getlist(str(ejercicio.id))
-                else:
-
-                    respuestas = form_data.get(str(ejercicio.id)).split(";")
-                #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
-                soluciones_data=[]
-                for solucion in ejercicio.soluciones.split(";"):
-                    solucion_data={}
-                    solucion_data['solucion'] = solucion
-                    solucion_data['checked'] = False
-                    if solucion in respuestas:
-                        solucion_data['checked'] = True
-                    soluciones_data.append(solucion_data)
-                ejercicio_data['soluciones'] = soluciones_data
-
-                if len(respuestas) >0:    
-                    
-                    for r in respuestas:
-                        flag = False
-
-                        for sol in soluciones_correctas:
-                            if str(r) == str(sol):
-                                flag = True
-                        if(flag == False):
-                            ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + str(soluciones_correctas)  
-                            correcto=False 
-                else:
-                    ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + str(soluciones_correctas)  
-                    correcto=False 
-
+            ejercicio_data,correcto = getSolucionesEjercicio(ejercicio_data,ejercicio,ejercicios_alumno,form_data)
             
             if alumno:
                 añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)   
             if correcto:
                 ejercicios_correctos += 1
+
         if ejercicios_correctos > 0:
-            examen_object.nota = (ejercicios_correctos*100)/len(ejercicios_alumno)
-            examen_object.save()
+            examen_object.nota = round((ejercicios_correctos*100)/len(ejercicios_alumno),2)
         else:
             examen_object.nota = 0
-            examen_object.save()
-
+        
         examen_object.fin=datetime.now(timezone.utc)
         examen_object.save()
+
     examen_data={}
     
     if examen_object.cronometrado is True:
         examen_data['cronometrado'] = True
-        examen_data['tiempo'] = examen_object.fin - examen_object.inicio
+        tiempo = str(examen_object.fin - examen_object.inicio)
+        examen_data['tiempo'] = tiempo.split(".")[0]
         examen_object.save()
     
     examen_data['ejercicios'] = set
     examen_data['examen'] = examen_object
     content['examen_data']=examen_data
     content['hacer_examen'] = False
-    print(examen_object.cronometrado)
-    print(examen_object.inicio)
-    print(examen_object.fin)
-
     #SI hay user authenticated poner Alumno a True
     return render(request,'divermat/examen.html', context=content)
 
@@ -756,6 +655,8 @@ def ejercicio(request, ejercicio=None):
     content = {}
     content['fotos'] = Foto.objects.get(perfil=True)
     content['registro'] = False
+    content['profesor'] = False
+    content['alumno'] = True
     alumno = None
     if request.user.is_authenticated:
         try:
@@ -763,6 +664,8 @@ def ejercicio(request, ejercicio=None):
             correcto = False
         except Alumno.DoesNotExist:
             alumno = None
+            profesor = Profesor.objects.get(username=request.user)
+            return ejercicioProfesor(request,ejercicio)
     if ejercicio:
         content['ejercicio'] = Ejercicio.objects.get(id=ejercicio)
         ejercicio = Ejercicio.objects.get(id=ejercicio)
@@ -780,13 +683,15 @@ def ejercicio(request, ejercicio=None):
             content['soluciones'].append(solucion_data)
 
         if solucion_seleccionada:
+            solucion_esperada_string = str(ejercicio.solucion_correcta).replace("'",".").replace(",",".").replace(";",", ")
+
             if ejercicio.nsoluciones == 1:
                 
-                if str(ejercicio.solucion_correcta) == str(solucion_seleccionada[0]):
+                if str(ejercicio.solucion_correcta).replace(",",".").replace("'",".") == str(solucion_seleccionada[0]).replace(",",".").replace("'","."):
                     content['resultado'] = "¡Respuesta correcta!"
                     correcto = True
                 else:
-                    content['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + str(ejercicio.solucion_correcta)
+                    content['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string
                     correcto = False
             else:
                 content['resultado'] = "¡Respuesta correcta!"
@@ -795,15 +700,53 @@ def ejercicio(request, ejercicio=None):
                 for el in solucion_seleccionada:
                     flag = False
                     for sol in soluciones_correctas:
-                        if str(el) == str(sol):
+                        if str(el).replace(",",".").replace("'",".") == str(sol).replace(",",".").replace("'","."):
                             flag = True
                     if(flag == False):
-                        content['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + str(soluciones_correctas)
+                        content['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string
                         correcto = False
             if alumno!=None:
                 añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)
+        
+        if ejercicio.tipo == 2:
+            content['solucion_introducida']=str(solucion_seleccionada).replace("[","").replace("]","").replace(",",".").replace("'","").replace(" ","")
 
     return render(request,'divermat/ejercicio.html', context=content)
+
+def ejercicioProfesor(request,ejercicio):
+    content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
+    content['registro'] = False
+    content['profesor'] = True
+    content['alumno'] = False
+    if ejercicio:
+        content['ejercicio'] = Ejercicio.objects.get(id=ejercicio)
+        ejercicio = Ejercicio.objects.get(id=ejercicio)
+        soluciones = ejercicio.soluciones.split(";")
+        content['soluciones'] = []
+
+        if ejercicio.nsoluciones == 1:
+            print("1 solucion")
+            for solucion in soluciones:
+                solucion_data={}
+                solucion_data['solucion'] = solucion
+                solucion_data['checked'] = False
+                if ejercicio.solucion_correcta == solucion:
+                    solucion_data['checked'] = True
+                content['soluciones'].append(solucion_data)              
+        else:
+
+            soluciones_correctas = ejercicio.solucion_correcta.split(";")
+            for solucion in soluciones:
+                solucion_data={}
+                solucion_data['solucion'] = solucion
+                solucion_data['checked'] = False
+                if solucion in soluciones_correctas:
+                    solucion_data['checked'] = True
+                content['soluciones'].append(solucion_data)
+
+
+    return render(request,'divermat/ejercicioProfesor.html', context=content)
 
 @login_required
 def clases(request):
@@ -1076,7 +1019,7 @@ def alumnosclase(request, claseid=None):
         for alum in lista:
             alumnoid = alum
             alumno = Alumno.objects.get(id=alumnoid)
-            Alumno.objects.filter(id=alumnoid).update(clase=None)
+            alumno.delete()
             alumnos = getAlumnosClase(claseid)
             #La lista sale actualizada al haber puesto clase a None en el alumno
             #Clase.objects.filter(id=claseid).update(alumnos=alumnos)
@@ -1309,7 +1252,7 @@ def getExamenAlumno(usuario,temas,crono):
     #Recorremos la lista de ejercicios del examen
     for ejercicio in ejercicios_examen:
         #Creamos el objeto de tipo ejercicio alumno y lo añadimos al examen
-        ejercicioAlumno = EjercicioUsuario.objects.create(ejercicio=ejercicio,alumno=usuario,soluciones_seleccionadas="")
+        ejercicioAlumno = EjercicioUsuario.objects.create(ejercicio=ejercicio,alumno=usuario,soluciones_seleccionadas="",resultado=None)
         examen.ejercicios.add(ejercicioAlumno)
         #Guardamos la información relevante de los ejercicios en el diccionario a mostrar en el html
         ejercicio_data = {}
@@ -1335,7 +1278,7 @@ def getExamenAlumno(usuario,temas,crono):
 
     return content
 
-def getExamenExterno(temas,curso,crono):
+def getExamenExterno(temas,crono):
 #Dividimos los 10 ejercicios totales entre el total de temas para saber el nº de ej por tema
     nejercicios = 10/len(temas)
     ejercicios_examen = []
@@ -1343,7 +1286,9 @@ def getExamenExterno(temas,curso,crono):
     titulo = ""
     ejercicios = []
     #Recorremos los ids de los temas seleccionados para el examen
+    curso = None
     for t in temas:
+        curso = t.curso
         tema = Tema.objects.get(id=t.id)
         if tema:
             #Añadimos el tema a la lista de temas del examen
@@ -1383,7 +1328,7 @@ def getExamenExterno(temas,curso,crono):
     #Recorremos la lista de ejercicios del examen
     for ejercicio in ejercicios_examen:
         #Creamos el objeto de tipo ejercicio alumno y lo añadimos al examen
-        ejercicioAlumno = EjercicioUsuario.objects.create(ejercicio=ejercicio,alumno=None,soluciones_seleccionadas="")
+        ejercicioAlumno = EjercicioUsuario.objects.create(ejercicio=ejercicio,alumno=None,soluciones_seleccionadas="",resultado=None)
         examen.ejercicios.add(ejercicioAlumno)
         #Guardamos la información relevante de los ejercicios en el diccionario a mostrar en el html
         ejercicio_data = {}
@@ -1433,3 +1378,117 @@ def añadirEjSeguimientoAlumno(alumno,ejercicio,correcto):
     seguimiento_alumno.save()
 
     return seguimiento_alumno
+
+def getEjercicioDataSolucionesSeleccionadas(ejercicio_alumno,ejercicio):
+    ejercicio_data = {}
+    ejercicio_data['id'] = ejercicio.id
+    ejercicio_data['enunciado'] = ejercicio.enunciado
+    ejercicio_data['titulo'] = ejercicio.titulo
+    ejercicio_data['tipo'] = ejercicio.tipo
+    ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
+    if ejercicio_alumno.resultado != None:
+        ejercicio_data['resultado'] = ejercicio_alumno.resultado
+    #Separamos las posibles soluciones del ejercicio
+    soluciones = ejercicio.soluciones.split(";")
+    soluciones_data = []
+    #En caso de que el ejercicio tenga más de una posible solucion
+    if ejercicio.nsoluciones >1:
+        soluciones_seleccionadas = ejercicio_alumno.soluciones_seleccionadas
+        #Recorremos todas las soluciones y las añadimos al listado de diccionarios soluciones_data
+        for solucion in soluciones:
+            solucion_data={}
+            solucion_data['solucion'] = solucion
+            solucion_data['checked'] = False
+            if solucion in soluciones_seleccionadas:
+                solucion_data['checked'] = True
+            soluciones_data.append(solucion_data)
+    else:
+        soluciones_seleccionadas = ejercicio_alumno.soluciones_seleccionadas
+        for solucion in soluciones:
+            solucion_data={}
+            solucion_data['solucion'] = solucion
+            solucion_data['checked'] = False
+            if solucion == soluciones_seleccionadas:
+                solucion_data['checked'] = True
+            soluciones_data.append(solucion_data)
+    
+    #Asignamos las soluciones al ejercicio con un checked a true en caso de que el alumno la hubiese seleccionado
+    ejercicio_data['soluciones'] = soluciones_data
+    if ejercicio.tipo == 2:
+        ejercicio_data['solucion_introducida'] =str(ejercicio_alumno.soluciones_seleccionadas).replace("[","").replace("]","").replace(",",";").replace("'","").replace(" ","")
+
+    return ejercicio_data
+
+def getSolucionesEjercicio(ejercicio_data,ejercicio,ejercicios_alumno,form_data):
+    solucion_introducida = ""
+    if ejercicios_alumno is not None:
+        for ej_alum in ejercicios_alumno:
+            if ej_alum.ejercicio == ejercicio:
+                ejercicio_alumno= ej_alum
+    solucion_esperada_string = str(ejercicio.solucion_correcta).replace("'",".").replace(",",".").replace(";",", ")
+    if ejercicio.nsoluciones == 1:
+        ejercicio_data['resultado'] = "Respuesta incorrecta el resultado esperado era: " + solucion_esperada_string
+        correcto=False
+        respuesta = form_data.get(str(ejercicio.id))
+        solucion_introducida = respuesta.replace(",",".").replace("'",".")
+      
+        #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
+        soluciones_data=[]
+        for solucion in ejercicio.soluciones.split(";"):
+            solucion_data={}
+            solucion_data['solucion'] = solucion
+            solucion_data['checked'] = False
+            if solucion == respuesta:
+                solucion_data['checked'] = True
+            soluciones_data.append(solucion_data)
+        ejercicio_data['soluciones'] = soluciones_data
+
+        if str(respuesta).replace(",",".").replace("'",".") == str(ejercicio.solucion_correcta).replace(",",".").replace("'","."):
+            ejercicio_data['resultado'] = "¡Respuesta Correcta!"
+            correcto=True
+
+    else:
+        print(ejercicio.solucion_correcta)
+        soluciones_correctas = ejercicio.solucion_correcta.split(";")
+        ejercicio_data['resultado'] = "¡Respuesta Correcta!"
+        correcto=True
+        if ejercicio.tipo == 1:
+            respuestas = form_data.getlist(str(ejercicio.id))
+        else:
+            respuestas = form_data.get(str(ejercicio.id)).replace("'",".").replace(",",".").split(";")
+        solucion_introducida = respuestas
+        #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
+        soluciones_data=[]
+        for solucion in ejercicio.soluciones.split(";"):
+            solucion_data={}
+            solucion_data['solucion'] = solucion
+            solucion_data['checked'] = False
+            if solucion in respuestas:
+                solucion_data['checked'] = True
+            soluciones_data.append(solucion_data)
+        ejercicio_data['soluciones'] = soluciones_data
+
+        if len(respuestas) >0:    
+            
+            for r in respuestas:
+                flag = False
+
+                for sol in soluciones_correctas:
+                    if str(r).replace(",",".").replace("'",".") == str(sol).replace(",",".").replace("'","."):
+                        flag = True
+                if(flag == False):
+                    ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string 
+                    correcto=False 
+        else:
+            ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string 
+            correcto=False 
+    
+    if ejercicios_alumno is not None:
+        ejercicio_alumno.soluciones_seleccionadas = solucion_introducida
+        ejercicio_alumno.resultado = ejercicio_data['resultado']
+        ejercicio_alumno.save()
+
+    if ejercicio.tipo == 2:
+        ejercicio_data['solucion_introducida']=str(solucion_introducida).replace("[","").replace("]","").replace(",",";").replace("'","").replace(" ","")
+
+    return ejercicio_data,correcto
