@@ -1,0 +1,53 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Alumnos
+{% endblock %}
+
+{% block body_block %}
+
+<div class="flex-container">
+
+    <table style="margin-left: 0px;">
+        <caption style="width:650px">
+            <h2>Ejercicios Asignados a la clase: {{clase.curso}}º {{clase.nombre}}</h2>
+            <br>
+            <h3>Lista de ejercicios Asignados</h3>
+        </caption>
+        <tr>
+            <td>
+                <h4>Ejercicio</h4>
+            </td>
+            <td>
+                <h4>Hechos por </h4>
+            </td>
+        </tr>
+        {% for ejercicio in ejercicios_asignados %}
+            <tr>
+                <td style="width:300px;">
+                    <a href="{% url 'ejerciciosAsignados' clase.id ejercicio.ejercicio.id %}">{{ejercicio.ejercicio}}</a>
+                </td>
+                <td>
+                    {{ejercicio.n_alumnos}} / {{clase.n_alumnos}}
+                </td>
+            </tr>
+        {%endfor%}
+
+    </table>
+    {% if ejercicio is True%}
+        <table>
+            <caption style="width:500px">
+                <br><br>
+                <h3>Alumnos que han realizado el ejercicio:<br> {{ejercicio_seleccionado}}</h3><br>
+            </caption>
+            {% for alumno in alumnos %}
+                <tr>
+                    <td style="text-align:center">
+                        <a href="{% url 'seguimientoalumnoclase' alumno.id %}">{{alumno}}</a>
+                    </td>
+                </tr>
+            {%endfor%}       
+        </table>
+    {%endif%}
+</div>
+{% endblock %}

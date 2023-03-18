@@ -6,8 +6,17 @@
 
 {% block body_block %}
 <div class="flex-container">
-    <h1>{{Clase.nombre}}</h1>
+    
     <table>
+        <tr>
+            <td></td>
+            <td style="width: 350px;">
+                <h2>Clase: {{clase.curso}}º {{clase.nombre}}</h2>
+            </td>
+            <td>
+                <a href="{% url 'ejerciciosAsignados' clase.id %}"> Ejercicios Asignados </a>
+            </td>
+        </tr>
         <tr>
             <td>
                 <h3>Tema</h3>
@@ -36,7 +45,7 @@
         </tr>
         {%endfor%}
     </table>
-    <table>
+    <!-- <table>
         <tr>
             <td>
                 <h3>Ejercicios_Asignados</h3>
@@ -46,13 +55,15 @@
         {% for ejercicio in ejercicios_asignados%}
             <tr>
                 <td style="width: 250px;">
-                    <!-- <input type="checkbox"> -->
-                        <a href="{% url 'ejercicio' ejercicio.id %}">{{ejercicio.titulo}}</a>
+                     <input type="checkbox"> -->
+                        <!-- <a href="{% url 'ejercicio' ejercicio.id %}">{{ejercicio.titulo}}</a> -->
                     <!-- </input>  -->
-                </td>
+               <!-- </td>
             </tr>
         {%endfor%}
-    </table>
+        <br>
+        <br> -->
+    <!-- </table> -->
 </div>
       
 {% endblock %}

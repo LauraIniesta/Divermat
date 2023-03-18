@@ -706,6 +706,7 @@ def ejercicio(request, ejercicio=None):
                         content['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string
                         correcto = False
             if alumno!=None:
+                EjercicioUsuario.objects.create(ejercicio=ejercicio,alumno=alumno,soluciones_seleccionadas=solucion_seleccionada,resultado=content['resultado'])
                 añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)
         
         if ejercicio.tipo == 2:
@@ -713,6 +714,7 @@ def ejercicio(request, ejercicio=None):
 
     return render(request,'divermat/ejercicio.html', context=content)
 
+@login_required
 def ejercicioProfesor(request,ejercicio):
     content = {}
     content['fotos'] = Foto.objects.get(perfil=True)
@@ -1071,7 +1073,8 @@ def seguimientoclase(request, claseid=None):
                 flag = True
                 break
 
-        if flag:  
+        if flag:
+            content['clase'] = c  
             informacion = []
             for t in Tema.objects.filter(curso=c.curso):
                 informacion.append(calcularAcierto(t,c))
@@ -1104,6 +1107,68 @@ def seguimientoalumnoclase(request, alumnoid=None):
 
     return render(request,'divermat/seguimientoalumnoclase.html', context=content,)
 
+@login_required
+def ejerciciosAsignados(request,claseid=None, ejercicioid=None):
+    content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
+    content['registro'] = False
+    try:
+        usuario = Profesor.objects.get(username=request.user)
+        return ejerciciosAsignadosProfesor(request,claseid,ejercicioid)
+    except Profesor.DoesNotExist:
+        try:
+            usuario = Alumno.objects.get(username=request.user)
+            # return ejerciciosAsignadosAlumno(request,claseid)
+            return render(request,'divermat/ejerciciosAsignadosProfesor.html', context=content,)
+
+        except Alumno.DoesNotExist:
+            return render(request,'divermat/ejerciciosAsignadosProfesor.html', context=content,)
+
+
+@login_required
+def ejerciciosAsignadosProfesor(request,claseid,ejercicioid):
+    content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
+    content['registro'] = False
+    content['profesor'] = True
+    content['alumno'] = False
+    if ejercicioid:
+        content['ejercicio'] = True
+    if claseid:
+        # Obtenemos la clase de la que el profesor quiere sacar los ejercicios asignados
+        clase = Clase.objects.get(id=claseid)
+        content['clase'] = clase
+        # Gueneramos la lista en la que añadiremos los ejercicios Asignados a la clase
+        content['ejercicios_asignados'] = []
+        # Obtenemos los alumnos pertenecientes a la clase
+        alumnos = Alumno.objects.filter(clase=clase)
+        if clase.ejercicios is not None:
+            # Recorremos los ejercicios y alumnos para ver qué alumnos han hecho qué ejercicios
+            for ejercicio in clase.ejercicios.all():
+                # Generamos el objeto que tendrá el ejercicio y una lista con los alumnos que lo han realizado
+                ejercicio_asignado = {}
+                ejercicio_asignado['ejercicio'] = ejercicio
+                alumnos_hecho_ej = []
+                for alumno in alumnos:
+                    ejus = EjercicioUsuario.objects.filter(alumno=alumno,ejercicio=ejercicio)
+                    if ejus.count() > 0:
+                        alumnos_hecho_ej.append(alumno)
+                ejercicio_asignado['alumnos'] = alumnos_hecho_ej
+                ejercicio_asignado['n_alumnos'] = len(alumnos_hecho_ej)
+                # Añadimos a la lista de ejercicios asignados la información obtenida
+                content['ejercicios_asignados'].append(ejercicio_asignado)
+                if ejercicioid != None and int(ejercicioid) == ejercicio.id:
+                    content['alumnos'] = alumnos_hecho_ej
+                    content['ejercicio_seleccionado'] = ejercicio
+
+    
+    return render(request,'divermat/ejerciciosAsignadosProfesor.html', context=content,)
+    
+
+    
+@login_required
+def ejerciciosAsignadosAlumno(request,claseid):
+    pass
 
 #Metodos que se usan internamente
 
@@ -1448,7 +1513,6 @@ def getSolucionesEjercicio(ejercicio_data,ejercicio,ejercicios_alumno,form_data)
             correcto=True
 
     else:
-        print(ejercicio.solucion_correcta)
         soluciones_correctas = ejercicio.solucion_correcta.split(";")
         ejercicio_data['resultado'] = "¡Respuesta Correcta!"
         correcto=True
