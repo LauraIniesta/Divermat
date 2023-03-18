@@ -1118,9 +1118,7 @@ def ejerciciosAsignados(request,claseid=None, ejercicioid=None):
     except Profesor.DoesNotExist:
         try:
             usuario = Alumno.objects.get(username=request.user)
-            # return ejerciciosAsignadosAlumno(request,claseid)
-            return render(request,'divermat/ejerciciosAsignadosProfesor.html', context=content,)
-
+            return ejerciciosAsignadosAlumno(request,usuario)
         except Alumno.DoesNotExist:
             return render(request,'divermat/ejerciciosAsignadosProfesor.html', context=content,)
 
@@ -1159,16 +1157,41 @@ def ejerciciosAsignadosProfesor(request,claseid,ejercicioid):
                 content['ejercicios_asignados'].append(ejercicio_asignado)
                 if ejercicioid != None and int(ejercicioid) == ejercicio.id:
                     content['alumnos'] = alumnos_hecho_ej
-                    content['ejercicio_seleccionado'] = ejercicio
-
-    
+                    content['ejercicio_seleccionado'] = ejercicio   
     return render(request,'divermat/ejerciciosAsignadosProfesor.html', context=content,)
     
 
     
 @login_required
-def ejerciciosAsignadosAlumno(request,claseid):
-    pass
+def ejerciciosAsignadosAlumno(request,alumno):
+    content = {}
+    content['fotos'] = Foto.objects.get(perfil=True)
+    content['registro'] = False
+    content['profesor'] = False
+    content['alumno'] = True
+
+    if alumno:
+        # Obtenemos la clase del alumno
+        clase = alumno.clase
+        content['clase'] = clase
+        # Generamos la lista en la que añadiremos los ejercicios Asignados a la clase
+        content['ejercicios_asignados'] = clase.ejercicios.all()
+        # Generamos el objeto que tendrá los ejercicios realizados por el alumno
+        ejercicios_realizados = []
+        ejercicios_pendientes = []
+        # Recorremos los ejercicios asignados a la clase para ver qué ejercicios ha hecho el alumno
+        for ejercicio in clase.ejercicios.all():
+            ejus = EjercicioUsuario.objects.filter(alumno=alumno,ejercicio=ejercicio)
+            if ejus.count() > 0:
+                ejercicios_realizados.append(ejercicio)
+            else:
+                ejercicios_pendientes.append(ejercicio)
+
+        # Declaramos el campo que contendrá todos los ejercicios realizados por el alumno
+        content['ejercicios_realizados'] = ejercicios_realizados
+        content['ejercicios_pendientes'] = ejercicios_pendientes
+
+    return render(request,'divermat/ejerciciosAsignadosAlumno.html', context=content,)
 
 #Metodos que se usan internamente
 

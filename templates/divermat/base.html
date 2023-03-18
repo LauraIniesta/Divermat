@@ -12,12 +12,12 @@
     </head>
     <body class="grid">            
         <div class = "cab">
-            <table >
+            <table>
                 <tr>
                     {% if user.is_authenticated %}
-                    <td>Hola_{{user.get_username}}!</td> 
+                        <td style="width:300px">Hola {{user.get_username}}!</td> 
                     {%else%}
-                    <td>Bienvenido!</td> 
+                        <td>Bienvenido!</td> 
                     {%endif%}
                     <td WIDTH="1600"><izq><h1 class = "izq"><a href="{% url 'index' %}">DIVERMAT!</a></h1></izq></td>
 
@@ -77,11 +77,6 @@
                         <a href="{% url 'examenes' %}">Exámenes</a>
                     </td>
                 {%endif%}
-
-                <!--{% if user.is_authenticated %}
-                    
-                {% endif %}-->
-
             </table>
         </div>
         {% endif %}

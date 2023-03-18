@@ -6,9 +6,11 @@
 
 {% block body_block %}
 <div class="flex-container">
-    <h2>Clase: {{curso}}º {{nombre}}</h2>
     {% if alumno is False %}
         <table>
+            <caption>
+                <h2>Clase: {{curso}}º {{nombre}}</h2>
+            </caption>
             <tr>
                 <td style="width: 350px;">
                     <h3>Alumno-Contraseña</h3>
@@ -77,7 +79,7 @@
                             {%endfor%}
                         <tr>
                             <td>
-                                    <a href="{% url 'seguimientoclase' clase.id %}"> Más Informacion </a>
+                                <a href="{% url 'seguimientoclase' clase.id %}"> Más Informacion </a>
                             </td>
                         </tr> 
                         </table>
@@ -87,6 +89,9 @@
         </table>
     {% else %}
         <table>
+            <caption>
+                <h2>Clase: {{curso}}º {{nombre}}</h2>
+            </caption>
             <tr>
                 <td>
                     <h3>Ejercicios Asignados</h3>
@@ -101,7 +106,8 @@
                         {% for ejercicio in ejercicios.all %}
                             <a href="{% url 'ejercicio' ejercicio.id %}"><li>{{ejercicio.titulo}}</li></a><br>
                         {%endfor%}
-                    </ol>  
+                    </ol> 
+                    <a href="{% url 'ejerciciosAsignados' clase.id %}"> Más Informacion </a> 
                                         
                 </td>
                 <td>

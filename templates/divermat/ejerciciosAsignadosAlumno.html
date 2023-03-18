@@ -1,0 +1,42 @@
+{% extends "divermat/base.html" %}
+
+{% block title_block %}
+    Alumnos
+{% endblock %}
+
+{% block body_block %}
+
+<div class="flex-container">
+
+    <table style="margin-left: 0px;">
+        <caption style="width:650px">
+            <h2>Ejercicios Asignados a la clase: {{clase.curso}}º {{clase.nombre}}</h2>
+        </caption>
+        <tr>
+            <td>
+                <h4>Ejercicio Pendientes</h4>
+            </td>
+            <td>
+                <h4>Ejercicios Hechos</h4>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:300px;">
+                <ul>
+                    {% for ejercicio in ejercicios_pendientes %}
+                        <li><a href="{% url 'ejercicio' ejercicio.id %}">{{ejercicio}}</a></li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {% for ejercicio in ejercicios_realizados %}
+                        <li>{{ejercicio}}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+
+    </table>
+</div>
+{% endblock %}
