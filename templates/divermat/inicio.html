@@ -14,8 +14,11 @@
                     <td>
                         <h2>Lista de {{Tipo}}</h2>
                     </td>
-                    <td>
-                        Generar set de ejercicios personalizados
+                    <td style="width:300px">
+                        <h4>Generar set de ejercicios</h4>
+                    </td>
+                    <td style="width:300px">
+                        <a href="{% url 'ejerciciosAsignados' clase.id %}">Ejercicios Asignados {{clase.curso}}º {{clase.nombre}}</a>
                     </td>
                 </tr>
                 <tr>
@@ -80,7 +83,7 @@
             <a>Buscar</a></br></br>
             <form action={{Tipo}} method="GET">
                 <div>
-                    <input type="text" name="buscar" value="Buscar"></br></br>
+                    <input type="text" onfocus="this.value=''" name="buscar" value="Buscar"></br></br>
                     <div>
                     {% if alumno is False %}
                         <select name="curso">

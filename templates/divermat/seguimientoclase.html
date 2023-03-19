@@ -7,7 +7,7 @@
 {% block body_block %}
 <div class="flex-container">
     
-    <table>
+    <table id ="seguimiento">
         <tr>
             <td></td>
             <td style="width: 350px;">
@@ -18,31 +18,30 @@
             </td>
         </tr>
         <tr>
-            <td>
+            <th onclick="sortTable(0,'seguimiento',2)">
                 <h3>Tema</h3>
-            </td>
-            <td>
+            </th>
+            <th onclick="sortTable(1,'seguimiento',2)">
                 <h3>%Acierto</h3>
-            </td>
-            <td>
-                <h3>Nº_Ejercicios</h3>
-            </td>
-
+            </th>
+            <th onclick="sortTable(2,'seguimiento',2)">
+                <h3>Nº Ejercicios</h3>
+            </th>
         </tr>
         <!--Seguimiento alumno-->
         {% for infor in informacion%}
-        <tr>
-            <td >
-                {{infor.tema}}
-            </td>
-            <td style="text-align: center">
+            <tr>
+                <td >
+                    {{infor.tema}}
+                </td>
+                <td style="text-align: center">
 
-                {{infor.acierto}}
-            </td>
-            <td style="text-align: center">
-                {{infor.ejercicios}}
-            </td>
-        </tr>
+                    {{infor.acierto}}
+                </td>
+                <td style="text-align: center">
+                    {{infor.ejercicios}}
+                </td>
+            </tr>
         {%endfor%}
     </table>
     <!-- <table>

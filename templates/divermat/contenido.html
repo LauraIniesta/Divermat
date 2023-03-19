@@ -8,27 +8,45 @@
 <div class="listamedio">
     <table>
         <tr>
-            <td><h2>Lista de Vídeos</h2></td>
-            <td><h2>Lista de Resúmenes</h2></td>
-        </tr>
-        <tr>
             <td>
-                <ol>
+                <table id="videos">
+                    <tr>
+                        <th onclick="sortTable(0,'videos',1)">
+                            <h2>Lista de Vídeos</h2>
+                        </th>
+                    </tr>
                     {% for video in videos %}
-                    <a href="{% url 'video' video.id %}"><li>{{video.titulo}}</li></a>
+                        <tr>
+                            <td>
+                                <a href="{% url 'video' video.id %}"><li>{{video.curso}}º {{video.titulo}}</li></a>
+                            </td>
+                        </tr>
                     {%endfor%}
-                </ol>
+                    
+                </table>
             </td>
             <td>
-                <ol>
+                <table id="resumenes">
+                    <tr>
+                        <th onclick="sortTable(0,'resumenes',1)">
+                            <h2>Lista de Resúmenes</h2>
+                        </th>
+                    </tr>
                     {% for resumen in resumenes%}
-                    <a href="{% url 'resumen' resumen.id %}"><li>{{resumen.titulo}}</li></a>
+                        <tr>
+                            <td>
+                                <a href="{% url 'resumen' resumen.id %}"><li>{{resumen.curso}}º {{resumen.titulo}}</li></a>
+                            </td>
+                        </tr>
                     {%endfor%}
-                </ol>
+                    
+                </table>
             </td>
         </tr>
-        
     </table>
+
+    
+   
 </div>
 
  
@@ -38,7 +56,7 @@
             <a>Buscar</a></br></br>
             <form action="contenido" method="GET">
                 <div>
-                    <input type="text" name="buscar" value="Buscar"></br></br>
+                    <input type="text" onfocus="this.value=''" name="buscar" value="Buscar"></br></br>
                     <div>
                         {% if alumno is False %}
                             <select name="curso">

@@ -142,6 +142,9 @@ html, body {
   border: none;
   padding: 10px;
 }
+th {
+  cursor: pointer;
+}
 /*.cab table tr{
   padding: 20px;
 }

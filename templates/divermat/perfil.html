@@ -79,17 +79,17 @@
                     </td>
                     <td>
                         <div>
-                            <table>
+                            <table id="seguimiento">
                                 <tr>
-                                    <td>
-                                            <h4>Temas</h4>
-                                    </td>
-                                    <td>
+                                    <th onclick="sortTable(0,'seguimiento',1)">
+                                        <h4>Temas</h4>
+                                    </th>
+                                    <th onclick="sortTable(1,'seguimiento',1)">
                                             <h4>% Acierto</h4>
-                                    </td>
-                                    <td style="text-align: center">
+                                    </th>
+                                    <th onclick="sortTable(2,'seguimiento',1)" style="text-align: center">
                                             <h4>Nº Ejercicios Hechos</h4>
-                                    </td>
+                                    </th>
                                 </tr>
                                 {% for seg in seguimiento%}
                                     <tr>

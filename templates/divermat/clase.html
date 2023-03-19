@@ -8,9 +8,19 @@
 <div class="flex-container">
     {% if alumno is False %}
         <table>
-            <caption>
+            <!-- <caption>
                 <h2>Clase: {{curso}}º {{nombre}}</h2>
-            </caption>
+                <a href="{% url 'ejerciciosAsignados' clase.id%}" >Ejercicios Asignados</a>
+            </caption> -->
+            <tr>
+                <td></td>
+                <td style="width: 350px;">
+                    <h2>Clase: {{curso}}º {{nombre}}</h2>
+                </td>
+                <td>
+                    <a href="{% url 'ejerciciosAsignados' clase.id %}"> Ejercicios Asignados </a>
+                </td>
+            </tr>
             <tr>
                 <td style="width: 350px;">
                     <h3>Alumno-Contraseña</h3>

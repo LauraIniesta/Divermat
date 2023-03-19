@@ -10,19 +10,24 @@
         <form id="borrarAlumno" action="" method="POST">
             {% csrf_token %}
 
-            <table>
+            <table id="myTable">
+
                 <tr>
-                    <h2>Alumnos Clase: {{clase.curso}}º {{clase.nombre}}</h2>
+                    <th onclick="sortTable(0,'myTable',2)">
+                        <h2>Alumnos Clase: {{clase.curso}}º {{clase.nombre}}</h2>
+                    </th>
                 </tr>
                     {% for alum in alumnos %}
                     <tr>
-                        <td style="width: 100px;"> 
+                        <td style="width: 300px;"> 
                             <input type="checkbox" name="Alumnos" value={{alum.id}}>{{alum}}</input>
                         </td>
                     </tr>
                     {%endfor%}
             </table>
             <input class="boton" type="submit" value="Borrar"></input>
+            <!-- <button class="boton" onclick="ResetForm()">Cancelar</button> -->
+
         </form>
         <div style="margin-left: 100px;">
             <form id="NuevoAlumno" method="post">
@@ -34,7 +39,7 @@
                 {% endif %}
                 <p>{{form.n_alumnos}}</p>
                 {% csrf_token %}
-                <input class="boton" type="submit" value="Generar">   
+                <input class="boton" type="submit" value="Generar"> 
             </form>
         </div>
     </div>
@@ -42,3 +47,8 @@
 
       
 {% endblock %}
+<!-- <script>
+    function ResetForm() {
+        document.getElementById("borrarAlumno").reset();
+    }
+</script> -->

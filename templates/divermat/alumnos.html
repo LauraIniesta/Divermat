@@ -6,17 +6,16 @@
 
 {% block body_block %}
 <div class="flex-container">
-
-    <table style="margin-left: 150px;">
+    <table id="myTable" style="margin-left: 150px;">
         <tr>
-            <td>
+            <th>
                 <h2>Alumnos</h2>
-            </td>
+            </th>
         </tr>
         <tr>
-            <td>
+            <th onclick="sortTable(0,'myTable',2)">
                 <h3>Lista de alumnos</h3>
-            </td>
+            </th>
         </tr>
 
         {% for alum in alumnos %}
@@ -29,7 +28,6 @@
                 </td>
             </tr>
         {%endfor%}
-
     </table>
     {% if seguimiento is True%}
         <table style="margin-left: auto;">
@@ -76,7 +74,7 @@
             <a>Buscar</a></br></br>
             <form action="alumnos" method="GET">
                 <div>
-                    <input type="text" name="buscar" value="Buscar Alumno"></br></br>
+                    <input type="text" onfocus="this.value=''" name="buscar" value="Buscar Alumno"></br></br>
                     <div>
                         <select name="curso" value="Curso">
                             <option selected>Curso</option>
@@ -92,5 +90,4 @@
         </div>
     </div>
 </div>
-      
 {% endblock %}

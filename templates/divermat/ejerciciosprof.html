@@ -20,7 +20,7 @@
                 <td>
                     <ol>            
                         {% for conten in Contenido %}
-                            <input type="checkbox" name="Ejercicios" value={{conten.id}}><a href="{% url 'ejercicio' conten.id %}">{{conten.titulo}}</a></input><br>
+                            <input type="checkbox" name="Ejercicios" value={{conten.id}}><a href="{% url 'ejercicio' conten.id %}">{{conten.curso}}º {{conten.titulo}}</a></input><br>
                         {%endfor%}
                     </ol>  
                 </td>
@@ -35,7 +35,15 @@
                 </td>
             </tr>
         </form> 
-    </table>              
+    </table>   
+    {% if error_boolean is True %}
+        <p style="color:crimson;">
+            No se han podido asignar porque no coinciden con el curso de la clase los siguientes Ejercicios:<br>
+            {% for ej in error %}
+                {{ej}}<br>
+            {% endfor %}
+        </p>       
+    {% endif %}    
 </div>
 
  
@@ -45,7 +53,7 @@
             <a>Buscar</a></br></br>
             <form action="index" method="GET">
                 <div>
-                    <input type="text" name="buscar" value="Buscar"></br></br>
+                    <input type="text" onfocus="this.value=''" name="buscar" value="Buscar"></br></br>
                     
                     <select name="curso">
                         <option selected>Curso</option>

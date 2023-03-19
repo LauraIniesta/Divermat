@@ -8,19 +8,19 @@
 
 <div class="flex-container">
 
-    <table style="margin-left: 0px;">
+    <table id="ejerciciosAsignadosTable" style="margin-left: 0px;">
         <caption style="width:650px">
             <h2>Ejercicios Asignados a la clase: {{clase.curso}}º {{clase.nombre}}</h2>
             <br>
             <h3>Lista de ejercicios Asignados</h3>
         </caption>
         <tr>
-            <td>
+            <th onclick="sortTable(0,'ejerciciosAsignadosTable',1)">
                 <h4>Ejercicio</h4>
-            </td>
-            <td>
+            </th>
+            <th onclick="sortTable(1,'ejerciciosAsignadosTable',1)">
                 <h4>Hechos por </h4>
-            </td>
+            </th>
         </tr>
         {% for ejercicio in ejercicios_asignados %}
             <tr>

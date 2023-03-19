@@ -8,32 +8,42 @@
 
 <div class="flex-container">
 
-    <table style="margin-left: 0px;">
+    <table id="ejerciciosAsignadosTable" style="margin-left: 0px;">
         <caption style="width:650px">
             <h2>Ejercicios Asignados a la clase: {{clase.curso}}º {{clase.nombre}}</h2>
         </caption>
         <tr>
             <td>
-                <h4>Ejercicio Pendientes</h4>
-            </td>
-            <td>
-                <h4>Ejercicios Hechos</h4>
-            </td>
-        </tr>
-        <tr>
-            <td style="width:300px;">
-                <ul>
+                <table id="ejerciciosAsignadosTable" style="margin-left: 0px;">
+                    <tr>
+                        <th style="width:300px" onclick="sortTable(0,'ejerciciosAsignadosTable',1)">
+                            <h4>Ejercicio Pendientes</h4>
+                        </th>
+                    </tr>
                     {% for ejercicio in ejercicios_pendientes %}
-                        <li><a href="{% url 'ejercicio' ejercicio.id %}">{{ejercicio}}</a></li>
+                        <tr>
+                            <td style="width:350px;">
+                                <li><a href="{% url 'ejercicio' ejercicio.id %}">{{ejercicio}}</a></li>
+                            </td>
+                        </tr>
                     {% endfor %}
-                </ul>
+                </table>
             </td>
-            <td>
-                <ul>
+            <td >
+                <table id="ejerciciosAsignadosTable2" style="margin-left: 0px;">
+                    <tr>
+                        <th style="width:300px" onclick="sortTable(0,'ejerciciosAsignadosTable2',1)">
+                            <h4>Ejercicio Hechos</h4>
+                        </th>
+                    </tr>
                     {% for ejercicio in ejercicios_realizados %}
-                        <li>{{ejercicio}}</li>
+                        <tr>
+                            <td style="width:350px;">
+                                <li>{{ejercicio}}</li>
+                            </td>
+                        </tr>
                     {% endfor %}
-                </ul>
+                </table>
             </td>
         </tr>
 

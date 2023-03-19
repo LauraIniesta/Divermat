@@ -44,6 +44,7 @@ def index(request):
         try:
             alumno = Alumno.objects.get(username=request.user)
             content['alumno'] = True
+            content['clase'] = alumno.clase
             content['profesor'] = False
 
             todos_ejs = Ejercicio.objects.filter(curso=alumno.curso)
@@ -81,10 +82,16 @@ def index(request):
                         clase = c
                         break
                 if request.method == 'POST':
+                    content['error_boolean'] = False
+                    content['error'] = []
                     if lista and clase:
                         for id in lista:
                             ejercicio = Ejercicio.objects.get(id=id)
-                            clase.ejercicios.add(ejercicio)
+                            if ejercicio.curso == clase.curso:
+                                clase.ejercicios.add(ejercicio)
+                            else:
+                                content['error_boolean'] = True
+                                content['error'].append(str(ejercicio))
                         clase.save()
 
                 content['Contenido'] = getFilteredContent(todos_ejs,request)
@@ -1018,6 +1025,7 @@ def alumnosclase(request, claseid=None):
             content['alumnos'] = alumnos
     if request.method == 'POST':
         lista = request.POST.getlist("Alumnos")
+        print(lista)
         for alum in lista:
             alumnoid = alum
             alumno = Alumno.objects.get(id=alumnoid)
@@ -1039,12 +1047,14 @@ def alumnosclase(request, claseid=None):
 
             #if alumnos_auto == 'Si':
             alumnos = Alumno.objects.all()
+            print(alumnos)
             nalm = 0
             for alm in alumnos:
                 nalm +=1
+            ultimo_id = alumnos[nalm-1].id
             for i in range(0,n_alumnos):
                 alumno = Alumno()
-                alumno.username = "user_" + str(i+nalm)
+                alumno.username = "user_" + str(i+ultimo_id)
                 alumno.password = StringGenerator("[\l\d]{10}").render_list(1,unique=True)[0]
                 alumno.password_temporal = alumno.password
                 alumno.set_password(alumno.password)
@@ -1223,6 +1233,7 @@ def getFilteredContent(todos_elem,request):
     for elem in todos_elem:
         conten = {}
         conten['id'] = elem.id
+        conten['curso'] = elem.curso
         conten['titulo'] = elem.titulo
         contenido.append(conten)
         contenFinal = contenido
@@ -1241,6 +1252,7 @@ def getFilteredContent(todos_elem,request):
             if unidecode(busqueda.lower()) in unidecode(elem.titulo.lower()):
                 conten = {}
                 conten['id'] = elem.id
+                conten['curso'] = elem.curso
                 conten['titulo'] = elem.titulo
                 contenido.append(conten)
                 elem_filtrados.append(elem)
@@ -1254,6 +1266,7 @@ def getFilteredContent(todos_elem,request):
             if str(curso[0]) == str(elem.curso):
                 conten = {}
                 conten['id'] = elem.id
+                conten['curso'] = elem.curso
                 conten['titulo'] = elem.titulo
                 contenido.append(conten)
                 elem_filtrados.append(elem)
@@ -1267,6 +1280,7 @@ def getFilteredContent(todos_elem,request):
             if str(tema) in str(elem.tema):
                 conten = {}
                 conten['id'] = elem.id
+                conten['curso'] = elem.curso
                 conten['titulo'] = elem.titulo
                 contenido.append(conten)
                 elem_filtrados.append(elem)
@@ -1286,6 +1300,7 @@ def getFilteredContent(todos_elem,request):
             if tipos == elem.tipo:
                 conten = {}
                 conten['id'] = elem.id
+                conten['curso'] = elem.curso
                 conten['titulo'] = elem.titulo
                 contenido.append(conten)
                 elem_filtrados.append(elem)
