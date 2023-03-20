@@ -5,12 +5,25 @@
 {% endblock %}
 
 {% block body_block %}
-<div>
-    <div class="listamedio">
-        <h2>Resumen del Tema {{resumen.tema.tema}}</h2>
-        <h3>{{resumen.titulo}}</h3>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <h2>Resumen:&nbsp;{{resumen.titulo}}</h2><hr>
+        </div>
     </div>
-        <p>{{resumen.texto}}</p>
-</div>
+       
+    <div class="row">
+        <div class="col-xs-10 col-md-10 col-lg-10">
+            <p>{{resumen.texto}}</p>
+            <!-- <table id="dtBasicExample" cellspacing="0" width="100%">
+                <tr>
+                    <td>
+                        <p>{{resumen.texto}}</p>
+                    </td>
+                </tr>
+            </table>  -->
+        </div>
+        
+    </div>
 
 {% endblock %}

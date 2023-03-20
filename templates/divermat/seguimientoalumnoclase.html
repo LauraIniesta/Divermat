@@ -5,79 +5,100 @@
 {% endblock %}
 
 {% block body_block %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-4"></div>
-            <div class="col-4">
-                <h2>Alumno {{username}}</h2><br>
-            </div>
-            <div class="col-4"></div>
+
+    <div class="row">
+        <div class="col-xs-5 col-md-5 col-lg-5 offset-md-3">
+            <h2>&nbsp;&nbsp;&nbsp;&nbsp;Alumno:&nbsp;{{username}}</h2><hr>
         </div>
-        <div class="row">
-            <div class="col-2"></div>
-            <div class="col-4">
-                <h3>Información</h3>
-                <table>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-4 col-md-4 col-xl-4 offset-md-1">
+            <table>
+                <thead>
                     <tr>
-                        <td>
-                            Nombre de usuario: {{username}}
-                        </td>
+                        <th>
+                            <h3>Información</h3>
+                        </th>
                     </tr>
+                </thead>
+            </table>
+            
+            <table>
+                <tr>
+                    <td>
+                        <b>Nombre&nbsp;de&nbsp;usuario:&nbsp;</b>{{username}}
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Nombre:&nbsp;</b>{{nombre}}
+                    </td>
+                </tr> 
+                
+                <tr>
+                    <td>
+                        <b>Apellidos:&nbsp;</b>{{apellidos}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Centro&nbsp;educativo:&nbsp;</b>{{centro}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Clase:&nbsp;
+                        </b>
+                        <a href="{% url 'clase' clase.id %}"> {{clase.curso}}º ESO {{clase.nombre}}</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-xs-6 col-md-6 col-xl-6">
+            <table>
+                <thead>
                     <tr>
-                        <td>
-                            Nombre: {{nombre}}
-                        </td>
-                    </tr> 
-                    
-                    <tr>
-                        <td>
-                            Apellidos: {{apellidos}}
-                        </td>
+                        <th>
+                            <h3>Seguimiento</h3>
+                        </th>
                     </tr>
-                    <tr>
-                        <td>
-                            Centro educativo: {{centro}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Clase:<a href="{% url 'clase' clase.id %}"> {{clase.curso}}º ESO {{clase.nombre}}</a>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="col-4">
-                <h3>Seguimiento</h3>
-                <table id="seguimiento">
+                </thead>
+            </table>
+            
+            <table id="seguimiento" class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
+                <thead>
                     <tr>
                         <th onclick="sortTable(0,'seguimiento',1)">
-                            <h4>Temas</h4>
+                            <h5><i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Temas</h5>
                         </th>
                         <th onclick="sortTable(1,'seguimiento',1)">
-                            <h4>%Acierto</h4>
+                            <h5><i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;%&nbsp;Acierto</h5>
                         </th>
                         <th onclick="sortTable(2,'seguimiento',1)" style="text-align: center">
-                            <h4>NºEjercicios</h4>
+                            <h5><i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Nº&nbsp;Ejercicios</h5>
                         </th>
                     </tr>
-                    {% for seg in seguimiento%}
-                        <tr>
-                            <td>
-                                {{seg.tema}}
-                            </td>
-                            <td>
-                                {{seg.acierto}}
-                            </td>
-                            <td style="text-align: center">
-                                {{seg.n_ejercicios}}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            <div class="col-2"></div>
-
+                </thead>
+               
+                {% for seg in seguimiento%}
+                    <tr>
+                        <td>
+                            {{seg.tema}}
+                        </td>
+                        <td>
+                            {{seg.acierto}}
+                        </td>
+                        <td style="text-align: center">
+                            {{seg.n_ejercicios}}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
+        <div class="col-1"></div>
 
     </div>
 {% endblock %}

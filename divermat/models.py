@@ -37,7 +37,7 @@ class Tema(models.Model):
         ordering = ('tema', 'curso', )
 
     def __str__(self):
-        return  str(self.curso) + "ESO Tema:" + str(self.tema) + ". " + self.titulo
+        return  str(self.curso) + "º ESO Tema:" + str(self.tema) + ". " + self.titulo
 
 
 class Profesor(Usuario):

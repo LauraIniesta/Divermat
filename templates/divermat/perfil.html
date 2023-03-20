@@ -7,47 +7,58 @@
 {% block body_block %}
 
     {% if alumno is False%}
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td>
-                        <h2>Mi Perfil</h2>
-                    </td>
-                </tr>
-                <tr>
-                    <td><h3>Información</h3></td>
-                    <td><h3>Cambiar Información</h3></td>
-                    <td><h3><a href="{% url 'cambiar_contrasenia' %}">Cambiar Contraseña</a></h3></td>
-                </tr>
-                
+        <div class="row">
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mi&nbsp;Perfil</h2><hr/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-md-4 col-xl-4 offset-md-1">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <h3>Información</h3>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <tr>
+                            <td>
+                                <b>Nombre&nbsp;de&nbsp;usuario:</b>&nbsp;{{username}}
+                            </td>
+                        </tr>
+                        <td>
+                            <b>Nombre:</b>&nbsp;{{nombre}}
+                        </td>
+                    </tr>
                     <tr>
                         <td>
-                            <table>
-                                <tr>
-                                    <tr>
-                                        <td>
-                                            Nombre de usuario: {{username}}
-                                        </td>
-                                    </tr>
-                                    <td>
-                                        Nombre: {{nombre}}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Apellidos: {{apellidos}}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Centro educativo: {{centro}}
-                                    </td>
-                                </tr>
-                            </table>
+                            <b>Apellidos:</b>&nbsp;{{apellidos}}
                         </td>
+                    </tr>
+                    <tr>
                         <td>
-                            Introduce los nuevos datos:
+                            <b>Centro&nbsp;educativo:</b>&nbsp;{{centro}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-xs-4 col-md-4 col-xl-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <h3>Cambiar&nbsp;Información</h3>
+                            </th>
+                            <th>
+                                <a href="{% url 'cambiar_contrasenia' %}">Cambiar&nbsp;Contraseña</a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>
+                            <h5>Introduce&nbsp;los&nbsp;nuevos&nbsp;datos:</h5>
                             <form id="NuevaInfo" action="perfil" method="POST">
                                 <table>
                                     {{form}}
@@ -60,8 +71,10 @@
                             </form>
                         </td>
                     </tr>      
-            </table>
+                </table>
+            </div>
         </div>
+           
     {% else %}
         <div>
             <table>

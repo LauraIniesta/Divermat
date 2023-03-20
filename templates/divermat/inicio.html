@@ -46,33 +46,83 @@
             
         </div>
     {%else%}
-        <div class="listamedio">
-            <h2>Lista de {{Tipo}}</h2>
-            <ol>
-                {% for conten in Contenido %}
-                <a href="{% url 'ejercicio' conten.id %}"><li>{{conten.titulo}}</li></a>
-                {%endfor%}
-            </ol>
+        <div class="row">
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                <h2>&nbsp;&nbsp;{{Tipo}}</h2><hr/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <h3>Lista&nbsp;de&nbsp;{{Tipo}}</h3>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
+                    <ol>
+                        {% for conten in Contenido %}
+                            <a href="{% url 'ejercicio' conten.id %}"><li>{{conten.titulo}}</li></a>
+                        {%endfor%}
+                    </ol>
+                </div>
+            </div>
         </div>
     {%endif%}
 {% elif Tipo == "Resúmenes" %}
-
-    <div class="listamedio">
-        <h2>Lista de {{Tipo}}</h2>
-        <ol>
-            {% for conten in Contenido %}
-            <a href="{% url 'resumen' conten.id %}"><li>{{conten.titulo}}</li></a>
-            {%endfor%}
-        </ol>
+    <div class="row">
+        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+            <h2>&nbsp;&nbsp;{{Tipo}}</h2><hr/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <h3>Lista&nbsp;de&nbsp;{{Tipo}}</h3>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
+                <ol>
+                    {% for conten in Contenido %}
+                    <a href="{% url 'resumen' conten.id %}"><li>{{conten.titulo}}</li></a>
+                    {%endfor%}
+                </ol>
+            </div>
+        </div>
     </div>
 {% else %}
-    <div class="listamedio">
-        <h2>Lista de {{Tipo}}</h2>
-        <ol>
-            {% for conten in Contenido %}
-            <a href="{% url 'video' conten.id %}"><li>{{conten.titulo}}</li></a>
-            {%endfor%}
-        </ol>
+    <div class="row">
+        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+            <h2>&nbsp;&nbsp;{{Tipo}}</h2><hr/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <h3>Lista&nbsp;de&nbsp;{{Tipo}}</h3>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
+                <ol>
+                    {% for conten in Contenido %}
+                    <a href="{% url 'video' conten.id %}"><li>{{conten.titulo}}</li></a>
+                    {%endfor%}
+                </ol>
+            </div>
+        </div>
     </div>
 {% endif %}
 {% endblock %}
@@ -80,21 +130,22 @@
 <div class="lateral">
     <div class ="flex-container">
         <div class="medio">
-            <h4>Buscador</h4><br>
+            <h4><i class="fa-solid fa-magnifying-glass"></i>&nbsp;Buscador</h4><br>
             
             <form action={{Tipo}} method="GET">
                 <div>
                     <input type="text" onfocus="this.value=''" name="buscar" value="Buscar"></br></br>
                     <div>
-                    {% if alumno is False %}
-                        <select name="curso" style="width:195px; height:28px;">
-                            <option selected>Curso</option>
-                            <option>1º ESO </option>
-                            <option>2º ESO </option>
-                            <option>3º ESO </option>  
-                            <option>4º ESO </option>      
-                        </select></br></br>
-                    {% endif %}
+                        {% if alumno is False %}
+                            <select name="curso" style="width:195px; height:28px;">
+                                <option selected>Curso</option>
+                                <option>1º ESO </option>
+                                <option>2º ESO </option>
+                                <option>3º ESO </option>  
+                                <option>4º ESO </option>      
+                            </select></br></br>
+                        {% endif %}
+                    </div>
                 </div>
                 <div>
                     <select name="tema" style="width:195px; height:28px;">

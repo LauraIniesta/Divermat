@@ -606,6 +606,15 @@ def video(request,idVideo):
     content['registro'] = False
     content['alumno'] = False
     content['video'] = Video.objects.get(id=idVideo)
+    if request.user.is_authenticated:
+        try:
+            alumno = Alumno.objects.get(username=request.user)
+            content['alumno'] = True
+            content['profesor'] = False
+        except Alumno.DoesNotExist:
+            alumno = None
+            content['alumno'] = False
+            content['profesor'] = True
 
     return render(request,'divermat/video.html',content)
 
@@ -653,6 +662,15 @@ def resumen(request,idResumen):
     content['registro'] = False
     content['alumno'] = False
     content['resumen'] = Resumen.objects.get(id=idResumen)
+    if request.user.is_authenticated:
+        try:
+            alumno = Alumno.objects.get(username=request.user)
+            content['alumno'] = True
+            content['profesor'] = False
+        except Alumno.DoesNotExist:
+            alumno = None
+            content['alumno'] = False
+            content['profesor'] = True
 
     return render(request,'divermat/resumen.html', content )
 

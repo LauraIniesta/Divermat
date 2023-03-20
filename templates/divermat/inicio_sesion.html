@@ -4,21 +4,20 @@
 {% endblock %}
 
 {% block body_block %} 
-
-    <div class ="flex-container">
-        <div>
+<div class="row">
+    <div class="col-xs-5 col-md-5 col-lg-5 offset-md-2">
+        <h2>Iniciar&nbsp;Sesión&nbsp;</h2><hr/>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-5 col-md-5 col-lg-5 offset-md-2">
         
           <form id="InicioSesionForm" action="iniciar_sesion" method="POST">
 
                 <table>
                     <tr>
                         <td>
-                            <h3>Iniciar Sesión</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            {{form.username.label}}<br>
+                            Introduce&nbsp;tu&nbsp;nombre&nbsp;de&nbsp;usuario:<br><br>
                             {% if form.username.errors %}
                                 {% for error in form.username.errors %}
                                     <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
@@ -29,7 +28,7 @@
                     </tr>
                     <tr>
                         <td>
-                            Introduce tu contraseña:<br>
+                            Introduce&nbsp;tu&nbsp;contraseña:<br><br>
                             {% if form.password.errors %}
                                 {% for error in form.password.errors %}
                                     <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
@@ -41,7 +40,7 @@
                     <tr>
                         <td>
                             <input class="boton" type="submit" value="Aceptar">   
-                            <input class="boton" type="submit" value="Cancelar">            
+                            <!-- <input class="boton" type="submit" value="Cancelar">             -->
                         </td>
                     </tr>
                     <tr>
@@ -53,9 +52,6 @@
                 {% csrf_token %}
               
             </form>
-
-               
-        </div>
     </div>
-
+</div>
 {% endblock %}

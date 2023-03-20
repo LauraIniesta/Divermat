@@ -9,32 +9,67 @@
     <div class="row">
         <div class="col">
             <div class="row">
-                <div class="col-xs-4 col-md-4 col-lg-4 offset-md-2">
-                    <h2>{{Tipo}}</h2>
-                </div>
-                <div class="col-xs-4 col-md-4 col-lg-4">
-                    Seleccione la clase a la que desea asignar los ejercicios:<br>
+                <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                    <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{Tipo}}</h2><hr/>
                 </div>
             </div>
             <form id="AsignarEjercicio" action="index" method="POST">{% csrf_token %}
                 <div class="row">
                     <div class="col-xs-4 col-md-4 col-lg-4 offset-md-2">
-                        <ol>            
-                            {% for conten in Contenido %}
-                                <input type="checkbox" name="Ejercicios" value={{conten.id}}><a href="{% url 'ejercicio' conten.id %}">&nbsp;&nbsp;{{conten.curso}}º {{conten.titulo}}</a></input><br>
-                            {%endfor%}
-                        </ol> 
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <h3>Lista&nbsp;de&nbsp;Ejercicios</h3>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
+                            <table>
+                                {% for conten in Contenido %}
+
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="Ejercicios" value={{conten.id}}><a href="{% url 'ejercicio' conten.id %}">&nbsp;&nbsp;{{conten.curso}}º&nbsp;{{conten.titulo}}</a></input><br>
+                                    </td>
+                                </tr>
+                                {%endfor%}
+                            </table>
+                        </div>
                     </div>
-                        <div class="col-xs-4 col-md-4 col-lg-4">
-                            <select name="Clase">
-                                <option selected>Clase</option>
-                                {%for clase in clases%}
-                                <option>{{clase}}</option>
-                                {%endfor%}     
-                            </select></br></br>
-                            <input type="submit" value="Asignar"> <br><br>
-                        </div>  
-                    </div>
+                    <div class="col-xs-4 col-md-4 col-lg-4">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <h3>Asignar&nbsp;Ejercicios</h3>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                        <table>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <p>
+                                            Seleccione la clase a la que desea asignar los ejercicios:<br>
+                                        </p>
+                                        <select name="Clase">
+                                            <option selected>Clase</option>
+                                            {%for clase in clases%}
+                                            <option>{{clase}}</option>
+                                            {%endfor%}     
+                                        </select></br></br>
+                                        <input type="submit" value="Asignar">
+                                    </div>
+                                   
+                                </td>
+                                
+                            </tr>
+                        </table>
+                        
+                    </div> 
                 </div>
             </form> 
         </div>
@@ -56,7 +91,7 @@
  <div class="lateral">
     <div class ="flex-container">
         <div class="medio">
-            <h4>Buscador</h4><br>
+            <h4><i class="fa-solid fa-magnifying-glass"></i>&nbsp;Buscador</h4><br>
             
             <form action="index" method="GET">
                 <div>

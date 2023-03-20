@@ -5,51 +5,71 @@
 {% endblock %}
 
 {% block body_block %}
-<div class="flex-container">
+
     <!-- <div class="col"> -->
         <div class="row">
-            <div class="col-6">
-                <table id="videos">
-                    <tr>
-                        <th onclick="sortTable(0,'videos',1)">
-                            <h2>Vídeos</h2>
-                        </th>
-                    </tr>
-                    {% for video in videos %}
-                        <tr>
-                            <td>
-                                <a href="{% url 'video' video.id %}"><li>{{video.curso}}º {{video.titulo}}</li></a>
-                            </td>
-                        </tr>
-                    {%endfor%}
-                    
-                </table>
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Contenido</h2><hr/>
             </div>
-            <div class="col-6">
-                <table id="resumenes">
-                    <tr>
-                        <th scope="col" colspan="2"onclick="sortTable(0,'resumenes',1)">
-                            <h2>Resúmenes</h2>
-                        </th>
-                    </tr>
-                    {% for resumen in resumenes%}
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-md-4 col-xl-4 offset-md-2">
+                <table>
+                    <thead>
                         <tr>
-                            <td>
-                                <a href="{% url 'resumen' resumen.id %}"><li>{{resumen.curso}}º {{resumen.titulo}}</li></a>
-                            </td>
+                            <th style="width: 300px!important;" onclick="sortTable(0,'videos',0)">
+                                <h3><i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Vídeos</h3>
+                            </th>
                         </tr>
-                    {%endfor%}
-                    
+                    </thead>
                 </table>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
+                
+                    <table id="videos">
+                        {% for video in videos %}
+                            <tr>
+                                <td style="width:300px">
+                                    <a href="{% url 'video' video.id %}">{{video.curso}}º&nbsp;{{video.titulo}}</a>
+                                </td>
+                            </tr>
+                        {%endfor%}
+                    
+                    </table>
+                </div>
+
+            </div>
+            <div class="col-xs-6 col-md-6 col-xl-6">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 300px!important;" onclick="sortTable(0,'resumenes',0)">
+                                <h3><i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Resúmenes</h3>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
+                    <table id="resumenes">
+
+                        {% for resumen in resumenes%}
+                            <tr>
+                                <td style="width:300px">
+                                    <a href="{% url 'resumen' resumen.id %}">{{resumen.curso}}º&nbsp;{{resumen.titulo}}</a>
+                                </td>
+                            </tr>
+                        {%endfor%}
+                        
+                    </table>
+                </div>
             </div>
         </div>   
-</div>
+
 {% endblock %}
 {% block menu_lateral_block%}
     <div class="lateral">
         <div class ="flex-container">
             <div class="medio">
-                <h4>Buscador</h4><br>
+                <h4><i class="fa-solid fa-magnifying-glass"></i>&nbsp;Buscador</h4><br>
                 
                 <form action="contenido" method="GET">
                     <div>

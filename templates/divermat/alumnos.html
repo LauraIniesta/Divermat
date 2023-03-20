@@ -8,7 +8,7 @@
 {% block body_block %}
     <div class="row">
         <div class="col-xs-5 col-md-5 col-lg-5 offset-md-1 ">
-            <h3 onclick="sortTable(0,'myTable',0)">Alumnos</h3>
+            <h3>Alumnos</h3>
             <div class="table-wrapper-scroll-y my-custom-scrollbar">
                 <table id="myTable" class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
 
@@ -42,7 +42,7 @@
                                     {{alum.first_name}}&nbsp;{{alum.last_name}}
                                 </td>
                                 <td>
-                                    <a href="{% url 'seguimientoalumnoclase' alum.id%}">{{alum.username}}</a>
+                                    <a href="{% url 'alumnos' alum.id%}">{{alum.username}}</a>
                                     
                                 </td>
                                 <td>
@@ -62,16 +62,22 @@
             {% if seguimiento is True%}
             <h3>Seguimiento <a href="{% url 'seguimientoalumnoclase' alumno.id %}">{{alumno}}</a></h3>
                 <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                    <table>
+                    <table id="seguimientoAlumnos" class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
                         <tr>
-                            <th style="width: fit-content;" >
-                                <h4>Tema</h4>
+                            <th onclick="sortTable(0,'seguimientoAlumnos',1)" style="width: fit-content;" >
+                                <h5>
+                                    <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Tema
+                                </h5>
                             </th>
-                            <th style="width:150px">
-                                <h4>% Acierto</h4>
+                            <th onclick="sortTable(1,'seguimientoAlumnos',1)" style="width:150px">
+                                <h5>
+                                    <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;%&nbsp;Acierto
+                                </h5>
                             </th>
-                            <th style="width: 150px;">
-                                <h4>Nº Ejercicios</h4> 
+                            <th onclick="sortTable(2,'seguimientoAlumnos',1)" style="width: 150px;">
+                                <h5>
+                                    <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Nº&nbsp;Ejercicios
+                                </h5> 
                             </th>
                         </tr>
                         <!--Seguimiento alumno-->
@@ -100,7 +106,7 @@
 <div class="lateral">
     <div class ="flex-container">
         <div class="medio">
-            <h4>Buscador</h4><br>
+            <h4><i class="fa-solid fa-magnifying-glass"></i>&nbsp;Buscador</h4><br>
             
             <form action="alumnos" method="GET">
                 <div>
