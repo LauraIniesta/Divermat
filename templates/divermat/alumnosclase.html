@@ -5,42 +5,108 @@
 {% endblock %}
 
 {% block body_block %}
-    <div class="flex-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-xs-5 col-md-5 col-lg-5 offset-md-3">
+                        <h2>&nbsp;&nbsp;&nbsp;&nbsp;Clase:&nbsp;{{clase.curso}}º&nbsp;{{clase.nombre}}</h2><hr/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6 col-md-6 col-lg-6">
+                        <form id="borrarAlumno" action="" method="POST">
+                            {% csrf_token %}
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <h3>Alumnos</h3>
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 260px!important;">
+                                <table id="myTable" class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
+                                    <thead>
+                                        <tr>
+                                            
+                                            <th onclick="sortTable(0,'myTable',1)">
+                                                <h5>
+                                                    <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Nombre
+                                                </h5>
+                                            </th>
+                                            <th onclick="sortTable(1,'myTable',1)">
+                                                <h5><i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Usuario</h5>
+                                            </th>
+                                            <th onclick="sortTable(2,'myTable',1)">
+                                                <h5><i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Contraseña</h5>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    {%for alumno in alumnos%}
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="Alumnos" value={{alumno.id}}> </input> {{alumno.first_name}}&nbsp;{{alumno.last_name}}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'seguimientoalumnoclase' alumno.id%}">{{alumno.username}}</a>
+                                                
+                                            </td>
+                                            <td>
+                                                {% if alumno.password_temporal %}
+                                                    {{alumno.password_temporal}}
+                                                {%endif%}
+                                            </td>
 
-        <form id="borrarAlumno" action="" method="POST">
-            {% csrf_token %}
-
-            <table id="myTable">
-
-                <tr>
-                    <th onclick="sortTable(0,'myTable',2)">
-                        <h2>Alumnos Clase: {{clase.curso}}º {{clase.nombre}}</h2>
-                    </th>
-                </tr>
-                    {% for alum in alumnos %}
-                    <tr>
-                        <td style="width: 300px;"> 
-                            <input type="checkbox" name="Alumnos" value={{alum.id}}>{{alum}}</input>
-                        </td>
-                    </tr>
-                    {%endfor%}
-            </table>
-            <input class="boton" type="submit" value="Borrar"></input>
-            <!-- <button class="boton" onclick="ResetForm()">Cancelar</button> -->
-
-        </form>
-        <div style="margin-left: 100px;">
-            <form id="NuevoAlumno" method="post">
-                <p>{{form.n_alumnos.label}}</p>
-                {% if form.n_alumno.errors %}
-                    {% for error in form.n_alumnos.errors %}
-                        <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
-                    {% endfor %}
-                {% endif %}
-                <p>{{form.n_alumnos}}</p>
-                {% csrf_token %}
-                <input class="boton" type="submit" value="Generar"> 
-            </form>
+                                        </tr>
+                                    {%endfor%}
+                                </table>
+                            </div>
+                            
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <input class="boton" type="submit" value="Borrar"></input>
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>     
+                        </form>     
+                    </div>
+                    <div class="col-xs-4 col-md-4 col-lg-4 offset-md-1">
+                        <table>
+                            <tr></tr>
+                            <tr></tr>
+                            <tr></tr>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <form id="NuevoAlumno" method="post">
+                                            <!-- 
+                                            <p>Indica&nbsp;el&nbsp;número&nbsp;de&nbsp;alumnos&nbsp;que&nbsp;deseas&nbsp;añadir&nbsp;a&nbsp;la&nbsp;clase:</p>
+                                             -->
+                                            <p>Indica el número de alumnos que deseas añadir a la clase:</p>
+                                            {% if form.n_alumno.errors %}
+                                                {% for error in form.n_alumnos.errors %}
+                                                    <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                                                {% endfor %}
+                                            {% endif %}
+                                            <p>{{form.n_alumnos}}</p>
+                                            {% csrf_token %}
+                                            <input class="boton" type="submit" value="Generar"> 
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            
         </div>
     </div>
 

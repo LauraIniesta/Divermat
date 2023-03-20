@@ -2,81 +2,111 @@
 
 {% block title_block %}
     Alumnos
+   
 {% endblock %}
 
 {% block body_block %}
-<div class="flex-container">
-    <table id="myTable" style="margin-left: 150px;">
-        <tr>
-            <th>
-                <h2>Alumnos</h2>
-            </th>
-        </tr>
-        <tr>
-            <th onclick="sortTable(0,'myTable',2)">
-                <h3>Lista de alumnos</h3>
-            </th>
-        </tr>
+    <div class="row">
+        <div class="col-xs-5 col-md-5 col-lg-5 offset-md-1 ">
+            <h3 onclick="sortTable(0,'myTable',0)">Alumnos</h3>
+            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                <table id="myTable" class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
 
-        {% for alum in alumnos %}
-            <tr>
-                <td style="width:300px;">
-                    <a href="{% url 'alumnos' alum.id %}">{{alum}}</a>
-                    {% if alum.password_temporal%}
-                        -> {{alum.password_temporal}}
-                    {%endif%}
-                </td>
-            </tr>
-        {%endfor%}
-    </table>
-    {% if seguimiento is True%}
-        <table style="margin-left: auto;">
-            <tr>
-                
-            </tr>
-            <tr> 
-                <td style="width: 300px;">
-                    <h3>Seguimiento <a href="{% url 'seguimientoalumnoclase' alumno.id %}">{{alumno}}</a></h3>
-                </td>
-            </tr>
-            <tr>
-                <td style="width:100px; text-align: center;">
-                <h3>Tema</h3>
-                </td>
-                <td style="width:150px;">
-                    <h3>% Acierto</h3>
-                </td>
-                <td style="width:150px">
-                <h3>Nº Ejercicios</h3> 
-                </td>
-            </tr>
-            <!--Seguimiento alumno-->
-            {% for infor in informacion%}
-            <tr>
-                <td >
-                    {{infor.tema}}
-                </td>
-                <td style="text-align: center">
-                    {{infor.acierto}}
-                </td>
-                <td style="text-align: center">
-                    {{infor.n_ejercicios}}
-                </td>
-            </tr>
-            {%endfor%}
-        </table>
-    {%endif%}
-</div>
+                <!-- <table id="myTable" class="table-hover mb-0" style="height: 200px;"> -->
+                    <thead>
+                        <tr>
+                            <!-- <th scope="col" onclick="sortTable(0,'myTable',2)">
+                                <h4>Usuario Contraseña</h4> 
+                            </th> -->
+                            <!-- <th onclick="sortTable(1,'myTable',2)">
+                                <h4>Contraseña</h4>
+                            </th> -->
+                            <th onclick="sortTable(0,'myTable',1)">
+                                <h5>
+                                    <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Nombre
+                                </h5>
+                            </th>
+                            <th onclick="sortTable(1,'myTable',1)">
+                                <h5><i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Usuario</h5>
+                            </th>
+                            <th onclick="sortTable(2,'myTable',1)">
+                                <h5><i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Contraseña</h5>
+                            </th>
+                        </tr>
+                        
+                    </thead>
+                    <tbody>
+                        {% for alum in alumnos %}
+                            <tr>
+                                <td>
+                                    {{alum.first_name}}&nbsp;{{alum.last_name}}
+                                </td>
+                                <td>
+                                    <a href="{% url 'seguimientoalumnoclase' alum.id%}">{{alum.username}}</a>
+                                    
+                                </td>
+                                <td>
+                                    {% if alum.password_temporal %}
+                                        {{alum.password_temporal}}
+                                    {%endif%}
+                                </td>
 
+                            </tr>
+                            
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-xs-6 col-md-6 col-lg-6">
+            {% if seguimiento is True%}
+            <h3>Seguimiento <a href="{% url 'seguimientoalumnoclase' alumno.id %}">{{alumno}}</a></h3>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <table>
+                        <tr>
+                            <th style="width: fit-content;" >
+                                <h4>Tema</h4>
+                            </th>
+                            <th style="width:150px">
+                                <h4>% Acierto</h4>
+                            </th>
+                            <th style="width: 150px;">
+                                <h4>Nº Ejercicios</h4> 
+                            </th>
+                        </tr>
+                        <!--Seguimiento alumno-->
+                        {% for infor in informacion%}
+                        <tr>
+                            <td style="width: fit-content;">
+                                {{infor.tema}}
+                            </td>
+                            <td style="text-align: center">
+                                {{infor.acierto}}%
+                            </td>
+                            <td style="text-align: center">
+                                {{infor.n_ejercicios}}
+                            </td>
+                        </tr>
+                        {%endfor%}
+                    </table>
+                </div>
+            {%endif%}
+        </div>
+       
+    </div>
+
+{% endblock %}
+{% block menu_lateral_block%}
 <div class="lateral">
     <div class ="flex-container">
         <div class="medio">
-            <a>Buscar</a></br></br>
+            <h4>Buscador</h4><br>
+            
             <form action="alumnos" method="GET">
                 <div>
                     <input type="text" onfocus="this.value=''" name="buscar" value="Buscar Alumno"></br></br>
                     <div>
-                        <select name="curso" value="Curso">
+                        <select name="curso" value="Curso" style="width:195px; height:28px;">
                             <option selected>Curso</option>
                             <option>1º ESO </option>
                             <option>2º ESO </option>
@@ -90,4 +120,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock%}

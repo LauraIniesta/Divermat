@@ -75,18 +75,19 @@
         </ol>
     </div>
 {% endif %}
-
-
+{% endblock %}
+{% block menu_lateral_block%}
 <div class="lateral">
     <div class ="flex-container">
         <div class="medio">
-            <a>Buscar</a></br></br>
+            <h4>Buscador</h4><br>
+            
             <form action={{Tipo}} method="GET">
                 <div>
                     <input type="text" onfocus="this.value=''" name="buscar" value="Buscar"></br></br>
                     <div>
                     {% if alumno is False %}
-                        <select name="curso">
+                        <select name="curso" style="width:195px; height:28px;">
                             <option selected>Curso</option>
                             <option>1º ESO </option>
                             <option>2º ESO </option>
@@ -96,7 +97,7 @@
                     {% endif %}
                 </div>
                 <div>
-                    <select name="tema">
+                    <select name="tema" style="width:195px; height:28px;">
                         <option selected>Tema</option>
                         {% for tema in temas%}
                             <option>{{tema}} </option>
@@ -105,7 +106,7 @@
                 </div>
                {% if Tipo != "Resúmenes" and Tipo != "Videos" %}
                     <div>
-                        <select name="tipo">
+                        <select name="tipo" style="width:195px; height:28px;">
                             <option selected>Tipo</option>
                             <option>Test </option>
                             <option>Respuesta corta </option>

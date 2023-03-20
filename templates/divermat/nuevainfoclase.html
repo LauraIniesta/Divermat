@@ -5,45 +5,43 @@
 {% endblock %}
 
 {% block body_block %}
-<div>
-    <table>
-        <tr>
-            <td>
-                <h2>Clase: {{curso}}º {{nombre}}</h2>
-            </td>
-        </tr>
-        <tr>
-            <td><h3>Información</h3></td>
-            <td><h3>Cambiar Información</h3></td>
-        </tr>
-        
-        <tr>
-            <td>
-                <div>
-                    Curso: {{curso}}<br>
-                    Año Académico: {{ano_academico}}<br>
-                    Nombre:{{nombre}}<br>
-                    Centro Educativo:{{centro}}<br>
-                </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col-xs-5 col-md-5 col-lg-5 offset-md-3">
+                    <h2>&nbsp;&nbsp;&nbsp;&nbsp;Clase:&nbsp;{{curso}}º&nbsp;{{nombre}}</h2><hr>
 
-            </td>
-            <td>
-                Introduce los nuevos datos:
-                <form id="NuevaInfoClase" action="{% url 'infoclase' claseid=clase.id%}" method="POST">
-                    <table>
-                        {{form}}
-                    </table>
-                    {% csrf_token %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-md-4 col-xl-4 offset-md-1">
+                    <h3>Información</h3><br>
+                    <div>
+                        <b>Curso:&nbsp;</b>{{curso}}<br>
+                        <b>Año&nbsp;Académico:&nbsp;</b>{{ano_academico}}<br>
+                        <b>Nombre:&nbsp;</b>{{nombre}}<br>
+                        <b>Centro&nbsp;Educativo:&nbsp;</b>{{centro}}<br>
+                    </div>
+    
+                </div>
+                <div class="col-xs-5 col-md-5 col-xl-5 offset-md-1">
+                    <h3>Cambiar&nbsp;Información</h3><br>
+                    <h5>Introduce&nbsp;los&nbsp;nuevos&nbsp;datos:</h5>
+                    <form id="NuevaInfoClase" action="{% url 'infoclase' claseid=clase.id%}" method="POST">
+                        <table>
+                            {{form}}
+                        </table>
+                        {% csrf_token %}
+            
+                       <br> <input class="boton" type="submit" value="Cambiar"> <br><br>
+                    </form>
+                </div>
+            </div>
+        </div>
         
-                   <br> <input class="boton" type="submit" value="Cambiar"> <br><br>
-                   
-                    
-                </form>
-            </td>
-        </tr>  
-                
-             
-    </table>
+    </div>
+    
 </div>
 
 {% endblock %}

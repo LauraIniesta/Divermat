@@ -6,7 +6,6 @@
 
 {% block body_block %}
 <div>
-    <form action="{% url 'ejercicio' ejercicio=ejercicio.id%}" method="GET">
         {% if ejercicio.nsoluciones is 1%}
             <div>
                 <h2>Ejercicio:  {{ejercicio.titulo}}</h2>
@@ -54,7 +53,6 @@
                 {% endif %}
             </div>
         {% endif %}  
-    </form>
 
     <h4 style="color:crimson">{{resultado}}</h4>
 </div>

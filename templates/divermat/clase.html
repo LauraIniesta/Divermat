@@ -5,133 +5,234 @@
 {% endblock %}
 
 {% block body_block %}
-<div class="flex-container">
+<div class="container-fluid">
     {% if alumno is False %}
-        <table>
-            <!-- <caption>
-                <h2>Clase: {{curso}}º {{nombre}}</h2>
-                <a href="{% url 'ejerciciosAsignados' clase.id%}" >Ejercicios Asignados</a>
-            </caption> -->
-            <tr>
-                <td></td>
-                <td style="width: 350px;">
-                    <h2>Clase: {{curso}}º {{nombre}}</h2>
-                </td>
-                <td>
-                    <a href="{% url 'ejerciciosAsignados' clase.id %}"> Ejercicios Asignados </a>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 350px;">
-                    <h3>Alumno-Contraseña</h3>
-                </td>
-                <td>
-                    <h3>Informacion</h3>
-                </td>
-                <td>
-                    <h3>Seguimiento</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <table>
-                        {%for alumno in alumnos%}
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                        <h2>&nbsp;&nbsp;&nbsp;&nbsp;Clase:&nbsp;{{curso}}º&nbsp;{{nombre}}</h2><hr/>
+
+                    </div>
+                    <div class="col-xs-3 col-md-3 col-lg-3 ">
+                        <a href="{% url 'ejerciciosAsignados' clase.id %}"> Ejercicios&nbsp;Asignados </a>
+                        
+                    </div>
+                    <!-- <div class="col-4">
+                        <a href="{% url 'seguimientoclase' clase.id %}">Seguimiento Clase</a> 
+                        
+                    </div> -->
+                    <!-- <table>
                         <tr>
-                            <td>
-                                {{alumno.first_name}}
+                            <td style="width: 350px;">
+                                <h2>Clase: {{curso}}º {{nombre}}</h2>
                             </td>
-                            <td>
-                               <a href="{% url 'seguimientoalumnoclase' alumno.id%}" >{{alumno.username}}</a>
+                            <td style="width: 350px;">
+                                <a href="{% url 'ejerciciosAsignados' clase.id %}"> Ejercicios Asignados </a>
                             </td>
-                            <td style="width:200px">
-                                {% if alumno.password_temporal %}
-                                    -> {{alumno.password_temporal}}
-                                {%endif%}
+                            <td style="width: 350px;">
+                             <a href="{% url 'seguimientoclase' clase.id %}"><h3>Seguimiento Clase</h3></a> 
                             </td>
                         </tr>
-                        {%endfor%}
-                    </table>
-                    <a href="{% url 'alumnosclase' clase.id %}"> Modificar</a>                
-                </td>
-                <td>
-                    <div>
-                        Curso: {{curso}}<br>
-                        Año Académico: {{ano_academico}}<br>
-                        Nombre:{{nombre}}<br>
-                        Total Alumnos:{{nalumnos}}<br>
-                        Centro Educativo:{{centro}}<br>
-                        <br>
-                        <br>
-                        <a href="{% url 'infoclase' clase.id %}"> Modificar Información </a>
-                    </div>
-                </td>
-                <td>
-                    <div>
+                    </table> -->
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-md-4 col-lg-4">
                         <table>
-                            <tr>
-                                <td>
-                                <h3>Tema</h3>
-                                </td>
-                                <td>
-                                    <h3>% Acierto</h3>
-                                </td>
-                            </tr>
-                            <!--Seguimiento alumno-->
-                            {% for infor in informacion%}
-                            <tr>
-                                <td>
-                                    {{infor.tema}}
-                                </td>
-                                <td style="text-align: center">
-                                    {{infor.acierto}}
-                                </td>
-                            </tr>
-                            {%endfor%}
-                        <tr>
-                            <td>
-                                <a href="{% url 'seguimientoclase' clase.id %}"> Más Informacion </a>
-                            </td>
-                        </tr> 
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <h3>Alumnos</h3>
+                                    </th>
+                                </tr>
+                            </thead>
                         </table>
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 280px!important;">
+                            <!-- <table class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;"> -->
+                            <table class="table-hover" > 
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <h5>Nombre</h5>
+                                        </th>
+                                        <th>
+                                            <h5>Usuario</h5>
+                                        </th>
+                                        <th>
+                                            <h5>Contraseña&nbsp;</h5>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                {%for alumno in alumnos%}
+                                    <tr>
+                                        <td>
+                                            {{alumno.first_name}}&nbsp;{{alumno.last_name}}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'seguimientoalumnoclase' alumno.id%}">{{alumno.username}}</a>
+                                            
+                                        </td>
+                                        <td>
+                                            {% if alumno.password_temporal %}
+                                                {{alumno.password_temporal}}
+                                            {%endif%}
+                                        </td>
+
+                                    </tr>
+                                {%endfor%}
+                            </table>
+                        </div>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a href="{% url 'alumnosclase' clase.id %}"> Modificar</a> 
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>     
+                            
                     </div>
-                </td>
-            </tr>
-        </table>
+                    <div class="col-xs-4 col-md-4 col-lg-4">
+                        <div style="height: 280px!important;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <h3>Información</h3><br>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <b>Curso:</b>&nbsp;{{curso}}<br>
+                                                <b>Año&nbsp;Académico:</b>&nbsp;{{ano_academico}}<br>
+                                                <b>Nombre:&nbsp;</b>{{nombre}}<br>
+                                                <b>Total&nbsp;Alumnos:&nbsp;</b>{{nalumnos}}<br>
+                                                <b>Centro&nbsp;Educativo:&nbsp;</b>{{centro}}<br>
+                                                <br>
+                                                <br>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a href="{% url 'infoclase' clase.id %}"> Modificar&nbsp;Información </a>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                        
+                    </div>
+                    <div class="col-xs-4 col-md-4 col-lg-4">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <h3>Seguimiento&nbsp;Clase</h3>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 280px!important;">
+                            <table class="table-hover" ><!--table /table>style=" border-collapse: collapse !important;"-->
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <h5>Tema</h5>
+                                        </th>
+                                        <th>
+                                            <h5>%&nbsp;Acierto</h5>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <!-- Seguimiento alumno -->
+                                {% for infor in informacion%}
+                                <tr>
+                                    <td>
+                                        {{infor.tema}}
+                                    </td>
+                                    <td style="text-align: center">
+                                        {{infor.acierto}}
+                                    </td>
+                                </tr>
+                                {%endfor%}
+                            </table>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a href="{% url 'seguimientoclase' clase.id %}"> Más&nbsp;Información </a>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     {% else %}
-        <table>
-            <caption>
-                <h2>Clase: {{curso}}º {{nombre}}</h2>
-            </caption>
-            <tr>
-                <td>
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-xs-4 col-md-4 col-lg-4 offset-md-2"> 
+                    <h2>Clase:&nbsp;{{curso}}º&nbsp;{{nombre}}</h2>
+                </div>
+                <div class="col-xs-4 col-md-4 col-lg-4"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 col-md-4 col-lg-4 offset-md-2">
                     <h3>Ejercicios Asignados</h3>
-                </td>
-                <td>
-                    <h3>Informacion</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>
                     <ol>            
                         {% for ejercicio in ejercicios.all %}
                             <a href="{% url 'ejercicio' ejercicio.id %}"><li>{{ejercicio.titulo}}</li></a><br>
                         {%endfor%}
                     </ol> 
-                    <a href="{% url 'ejerciciosAsignados' clase.id %}"> Más Informacion </a> 
-                                        
-                </td>
-                <td>
+                    <a href="{% url 'ejerciciosAsignados' clase.id %}"> Más Información </a> 
+                               
+                </div>
+                <div class="col-xs-6 col-md-6 col-lg-6">
+                    <h3>Información</h3>
                     <div>
-                        Curso: {{curso}}<br>
-                        Año Académico: {{ano_academico}}<br>
-                        Nombre:{{nombre}}<br>
-                        Total Alumnos:{{nalumnos}}<br>
-                        Centro Educativo:{{centro}}<br>
+                        <b>Curso:</b> {{curso}}<br>
+                        <b>Año Académico:</b> {{ano_academico}}<br>
+                        <b>Nombre: </b>{{nombre}}<br>
+                        <b>Total Alumnos: </b>{{nalumnos}}<br>
+                        <b>Centro Educativo: </b>{{centro}}<br>
                     </div>
-                </td>    
-            </tr>
-        </table>
+                </div>
+            </div>
+        </div>
+    </div>
     {% endif %}
 </div>
       
-{% endblock %}
+<!-- 
+<div class="row">
+    <div class="col-10 offset-md-2">
+        <h3>Información</h3>
+        <div>
+            <b>Curso:</b> {{curso}}<br>
+            <b>Año Académico:</b> {{ano_academico}}<br>
+            <b>Nombre: </b>{{nombre}}<br>
+            <b>Total Alumnos: </b>{{nalumnos}}<br>
+            <b>Centro Educativo: </b>{{centro}}<br>
+            <br>
+            <br>
+            <a href="{% url 'infoclase' clase.id %}"> Modificar Información </a>
+        </div>
+    </div>
+</div> -->
+
+{%endblock%}

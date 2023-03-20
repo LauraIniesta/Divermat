@@ -9,88 +9,121 @@
             {% endblock %}
         </title>    
         <link rel="stylesheet" type="text/css" href="{% static 'estilo.css' %}" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     </head>
-    <body class="grid">  
+    <body class="container-fluid">  
         <script src="/static/js/OrdenarTablas.js"></script>
-
-        <div class = "cab">
-            <table>
-                <tr>
-                    {% if user.is_authenticated %}
-                        <td style="width:300px">Hola {{user.get_username}}!</td> 
-                    {%else%}
-                        <td>Bienvenido!</td> 
-                    {%endif%}
-                    <td WIDTH="1600"><izq><h1 class = "izq"><a href="{% url 'index' %}">DIVERMAT!</a></h1></izq></td>
-
-                    {% if user.is_authenticated %}
-                        <td>
-                            <a href="{% url 'cerrar_sesion' %}">Cerrar_Sesión</a>
-                        </td>                        
-                        <td>
-                            <a href="{% url 'perfil' %}"><img width=40px height= 40px src="{{fotos.foto.url}}" alt="Mi_Perfil"></a>
-                        </td>
-                    {% else %}
-                        <td>
-                            <a href="{% url 'iniciar_sesion' %}">Iniciar_Sesión</a>
-                        </td>
-                        <td>
-                            <a href="{% url 'registro' %}">Registrarse</a>
-                        </td>
-                    {% endif %}
-                </tr>
-            </table>
-        </div>
-        {% if registro is False%}
-        <div class="menu">
-
-
-            <table >
-                {% if profesor is True %}
-                    <td>
-                        <a href="{% url 'clases' %}">Clases</a>
-                    </td>
-
-                    <td>
-                        <a href="{% url 'alumnos' %}">Alumnos</a>
-                    </td>
-
-                    <td>
-                        <a href="{% url 'index' %}">Ejercicios</a>
-                    </td>
-
-                    <td>
-                        <a href="{% url 'contenido' %}">Contenido</a>
-                    </td>
-                {% else %}
-                    <td>
-                        <a href="{% url 'index' %}">Ejercicios</a>
-                    </td>
-
-                    <td>
-                        <a href="{% url 'videos' %}">Vídeos</a>
-                    </td>
-
-                    <td>
-                        <a href="{% url 'resumenes' %}">Resúmenes</a>
-                    </td>
-
-                    <td>
-                        <a href="{% url 'examenes' %}">Exámenes</a>
-                    </td>
+        <script defer src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
+<!-- Definimos los datos de la cabecera de la pagina que se corresponden con la primera fila-->
+        <div class="row" style="background: rgb(171, 203, 250);">
+            <div class="col-xs-2 col-md-2 col-lg-2 offset-md-1" style="background: rgb(171, 203, 250);">
+                <br>
+                {% if user.is_authenticated %}
+                    <p>
+                        Hola {{user.get_username}}!
+                    </p>
+                {%else%}
+                    Bienvenido! 
                 {%endif%}
-            </table>
+            </div>
+            
+            <div class="col-xs-3 col-md-3 col-lg-3 align-self-center offset-md-2 " style="background: rgb(171, 203, 250);">
+                <h1><a href="{% url 'index' %}">DIVERMAT!</a></h1>
+            </div>
+            {% if user.is_authenticated %}
+
+                <div class="col-xs-2 col-md-2 col-lg-2 offset-md-2" style="background: rgb(171, 203, 250);">
+                    <br>
+                    <p>
+                        <a href="{% url 'cerrar_sesion' %}">Cerrar Sesión</a>&nbsp;&nbsp;
+                        <a href="{% url 'perfil' %}"><img width=40px height= 40px src="{{fotos.foto.url}}" alt="Mi Perfil"></a>
+                    </p>
+                </div>
+
+
+            {% else %}
+                <div class="col-xs-2 col-md-2 col-lg-2 offset-md-1" style="background: rgb(171, 203, 250);">
+
+                    <p>
+                        <br>
+                        <a href="{% url 'iniciar_sesion' %}">Iniciar Sesión</a>&nbsp;&nbsp;
+                        <a href="{% url 'registro' %}"> Registrarse</a>
+                    </p>
+                    
+                </div>
+            {% endif %}
         </div>
-        {% endif %}
-        <div class="contenido">
-            <div class="flex-container">
+        <!-- Definimos la siguiente fila que contiene el menú de la página -->
+        <div class="row">
+            <!-- La primera columna estará vacía -->
+            <div class="col-xs-4 col-sm-4 col-lg-4"></div>
+            <!-- La segunda columna se corresponde con el menú-->
+            <div class="col-xs-6 col-sm-6 col-lg-6">
+               
+                {% if registro is False%}
+                    <div class="menu">
+                        <table >
+                            {% if profesor is True %}
+                                <td>
+                                    <a href="{% url 'clases' %}">Clases</a>
+                                </td>
+            
+                                <td>
+                                    <a href="{% url 'alumnos' %}">Alumnos</a>
+                                </td>
+            
+                                <td>
+                                    <a href="{% url 'index' %}">Ejercicios</a>
+                                </td>
+            
+                                <td>
+                                    <a href="{% url 'contenido' %}">Contenido</a>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <a href="{% url 'index' %}">Ejercicios</a>
+                                </td>
+            
+                                <td>
+                                    <a href="{% url 'videos' %}">Vídeos</a>
+                                </td>
+            
+                                <td>
+                                    <a href="{% url 'resumenes' %}">Resúmenes</a>
+                                </td>
+            
+                                <td>
+                                    <a href="{% url 'examenes' %}">Exámenes</a>
+                                </td>
+                            {%endif%}
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+            <!-- Se divide en tres columnas, la tercera vacía -->
+            <div class="col-xs-4 col-sm-4 col-lg-4"></div>
+        </div>
+        <!-- La tercera fila contendrá el contenido y los Buscador -->
+        <div class="row">
+            <!-- La primera columna se corresponde con los Buscador -->
+            <div class="col-xs-2 col-sm-2 col-lg-2">
+                    
+                {% block menu_lateral_block %}
+                
+                {% endblock %}
+            </div>
+            <!-- La segunda columna se corresponde con el contenido -->
+            <div class="col-xs-10 col-sm-10 col-lg-10">
                 {% block body_block %}
             
                 {% endblock %}
             </div>
         </div>
-        <div class = "footer">
-             <cent><p>Para cualquier duda contactar con lauinirod@gmail.com</p></cent>
-        </div>
+        <!-- La cuarta fila se corresponde con el pie de página -->
+        <!-- <div class="row">
+            <div class = "footer">
+                <cent><p>Para cualquier duda contactar con lauinirod@gmail.com</p></cent>
+            </div>
+        </div> -->
     </body>
 </html>

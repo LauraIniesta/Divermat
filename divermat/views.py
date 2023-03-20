@@ -805,13 +805,14 @@ def clases(request):
             clase.profesor = profesor
             clase.save()
             #if alumnos_auto == 'Si':
-            alumnos = Alumno.objects.all()
-            nalm = len(alumnos)
-            # for alm in alumnos:
-            #     nalm +=1
+            alumnos = Alumno.objects.all().order_by("id")
+            nalm = 0
+            for alm in alumnos:
+                nalm +=1
+            ultimo_id = alumnos[nalm-1].id
             for i in range(0,n_alumnos):
                 alumno = Alumno()
-                alumno.username = "user_" + str(i+nalm)
+                alumno.username = "user_" + str(i+ultimo_id)
                 alumno.password = StringGenerator("[\l\d]{10}").render_list(1,unique=True)[0]
                 alumno.password_temporal = alumno.password
                 alumno.set_password(alumno.password)
@@ -1046,7 +1047,7 @@ def alumnosclase(request, claseid=None):
            # alumnos_auto = form.cleaned_data['alumnos_auto']
 
             #if alumnos_auto == 'Si':
-            alumnos = Alumno.objects.all()
+            alumnos = Alumno.objects.all().order_by("id")
             print(alumnos)
             nalm = 0
             for alm in alumnos:

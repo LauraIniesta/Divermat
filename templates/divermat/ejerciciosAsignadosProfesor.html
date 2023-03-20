@@ -6,48 +6,96 @@
 
 {% block body_block %}
 
-<div class="flex-container">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col-xs-5 col-md-5 col-lg-5 offset-md-3">
+                    <h2>&nbsp;&nbsp;&nbsp;&nbsp;Clase:&nbsp;{{clase.curso}}º&nbsp;{{clase.nombre}}</h2><hr>
+                </div>
+               
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-md-6 col-lg-6 offset-md-1">
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>
+                                    <h3>Lista&nbsp;de&nbsp;Ejercicios&nbsp;Asignados</h3>
+                                </td>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 280px!important;">
+                        <table id="ejerciciosAsignadosTable" class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable(0,'ejerciciosAsignadosTable',1)">
+                                        <h5>
+                                            <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Ejercicio
+                                        </h5>
+                                    </th>
+                                    <th onclick="sortTable(1,'ejerciciosAsignadosTable',1)">
+                                        <h5>
+                                            <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Nº&nbsp;Alumnos&nbsp;realizado
+                                        </h5>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ejercicio in ejercicios_asignados %}
+                                    <tr>
+                                        <td style="width:300px;">
+                                            <a href="{% url 'ejerciciosAsignados' clase.id ejercicio.ejercicio.id %}">{{ejercicio.ejercicio}}</a>
+                                        </td>
+                                        <td>
+                                            {{ejercicio.n_alumnos}}&nbsp;/&nbsp;{{clase.n_alumnos}}
+                                        </td>
+                                    </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-xs-4 col-md-4 col-lg-4 ">
+                    {% if ejercicio is True%}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <h3>Alumnos&nbsp;que&nbsp;han&nbsp;realizado:<h3>
+                                        <h5>{{ejercicio_seleccionado}}</h5>
+                                    </th>
+                                </tr>                                
+                            </thead>
+                        </table>
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 280px!important;">
 
-    <table id="ejerciciosAsignadosTable" style="margin-left: 0px;">
-        <caption style="width:650px">
-            <h2>Ejercicios Asignados a la clase: {{clase.curso}}º {{clase.nombre}}</h2>
-            <br>
-            <h3>Lista de ejercicios Asignados</h3>
-        </caption>
-        <tr>
-            <th onclick="sortTable(0,'ejerciciosAsignadosTable',1)">
-                <h4>Ejercicio</h4>
-            </th>
-            <th onclick="sortTable(1,'ejerciciosAsignadosTable',1)">
-                <h4>Hechos por </h4>
-            </th>
-        </tr>
-        {% for ejercicio in ejercicios_asignados %}
-            <tr>
-                <td style="width:300px;">
-                    <a href="{% url 'ejerciciosAsignados' clase.id ejercicio.ejercicio.id %}">{{ejercicio.ejercicio}}</a>
-                </td>
-                <td>
-                    {{ejercicio.n_alumnos}} / {{clase.n_alumnos}}
-                </td>
-            </tr>
-        {%endfor%}
-
-    </table>
-    {% if ejercicio is True%}
-        <table>
-            <caption style="width:500px">
-                <br><br>
-                <h3>Alumnos que han realizado el ejercicio:<br> {{ejercicio_seleccionado}}</h3><br>
-            </caption>
-            {% for alumno in alumnos %}
-                <tr>
-                    <td style="text-align:center">
-                        <a href="{% url 'seguimientoalumnoclase' alumno.id %}">{{alumno}}</a>
-                    </td>
-                </tr>
-            {%endfor%}       
-        </table>
-    {%endif%}
+                            <table id="ejerciciosRealizadosAlumnos" class="table-hover table" style=" border-collapse: collapse !important;  text-align: center !important;;">
+                                <thead>
+                                    <th onclick="sortTable(0,'ejerciciosRealizadosAlumnos',1)" style="text-align: center;">
+                                        <h5>
+                                            <i class="fa-solid fa-arrow-down-z-a"></i>
+                                        </h5>
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    {% for alumno in alumnos %}
+                                        <tr>
+                                            <td style="text-align: center;">
+                                                <a href="{% url 'seguimientoalumnoclase' alumno.id %}">{{alumno}}</a>
+                                            </td>
+                                        </tr>
+                                    {%endfor%}   
+                                </tbody>
+                            </table>
+                        </div>        
+                    {%endif%}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
 </div>
 {% endblock %}

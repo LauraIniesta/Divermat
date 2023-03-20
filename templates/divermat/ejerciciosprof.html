@@ -5,37 +5,42 @@
 {% endblock %}
 
 {% block body_block %}
-<div class="listamedio">
-    <table>
-        <tr>
-            <td>
-                <h2>Lista de {{Tipo}}</h2>
-            </td>
-            <td>
-                Seleccione la clase a la que desea asignar los ejercicios:<br>
-            </td>
-        </tr>
-        <form id="AsignarEjercicio" action="index" method="POST">{% csrf_token %}
-            <tr>
-                <td>
-                    <ol>            
-                        {% for conten in Contenido %}
-                            <input type="checkbox" name="Ejercicios" value={{conten.id}}><a href="{% url 'ejercicio' conten.id %}">{{conten.curso}}º {{conten.titulo}}</a></input><br>
-                        {%endfor%}
-                    </ol>  
-                </td>
-                <td>
-                    <select name="Clase">
-                        <option selected>Clase</option>
-                        {%for clase in clases%}
-                        <option>{{clase}}</option>
-                        {%endfor%}     
-                    </select></br></br>
-                    <input type="submit" value="Asignar"> <br><br>
-                </td>
-            </tr>
-        </form> 
-    </table>   
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col-xs-4 col-md-4 col-lg-4 offset-md-2">
+                    <h2>{{Tipo}}</h2>
+                </div>
+                <div class="col-xs-4 col-md-4 col-lg-4">
+                    Seleccione la clase a la que desea asignar los ejercicios:<br>
+                </div>
+            </div>
+            <form id="AsignarEjercicio" action="index" method="POST">{% csrf_token %}
+                <div class="row">
+                    <div class="col-xs-4 col-md-4 col-lg-4 offset-md-2">
+                        <ol>            
+                            {% for conten in Contenido %}
+                                <input type="checkbox" name="Ejercicios" value={{conten.id}}><a href="{% url 'ejercicio' conten.id %}">&nbsp;&nbsp;{{conten.curso}}º {{conten.titulo}}</a></input><br>
+                            {%endfor%}
+                        </ol> 
+                    </div>
+                        <div class="col-xs-4 col-md-4 col-lg-4">
+                            <select name="Clase">
+                                <option selected>Clase</option>
+                                {%for clase in clases%}
+                                <option>{{clase}}</option>
+                                {%endfor%}     
+                            </select></br></br>
+                            <input type="submit" value="Asignar"> <br><br>
+                        </div>  
+                    </div>
+                </div>
+            </form> 
+        </div>
+    </div>
+
+    
     {% if error_boolean is True %}
         <p style="color:crimson;">
             No se han podido asignar porque no coinciden con el curso de la clase los siguientes Ejercicios:<br>
@@ -46,16 +51,18 @@
     {% endif %}    
 </div>
 
- 
+{% endblock %}
+{% block menu_lateral_block%}
  <div class="lateral">
     <div class ="flex-container">
         <div class="medio">
-            <a>Buscar</a></br></br>
+            <h4>Buscador</h4><br>
+            
             <form action="index" method="GET">
                 <div>
                     <input type="text" onfocus="this.value=''" name="buscar" value="Buscar"></br></br>
                     
-                    <select name="curso">
+                    <select name="curso" style="width:195px; height:28px;">
                         <option selected>Curso</option>
                         <option>1º ESO </option>
                         <option>2º ESO </option>
@@ -64,7 +71,7 @@
                     </select></br></br>
                 </div>
                 <div>
-                    <select name="tema">
+                    <select name="tema" style="width:195px; height:28px;">
                         <option selected>Tema</option>
                         {% for tema in temas%}
                             <option>{{tema}} </option>
@@ -72,18 +79,17 @@
                     </select></br></br>
                 </div>
                 <div>
-                    <select name="tipo">
+                    <select name="tipo" style="width:195px; height:28px;">
                         <option selected>Tipo</option>
                         <option>Test </option>
                         <option>Respuesta corta </option>
                         <option>Problema </option>     
-                    </select>
+                    </select><br><br>
                 </div>
                 <input type="submit" value="Aceptar"></input>
             </form>
         </div>
     </div>
 </div>
-
 
 {% endblock %}

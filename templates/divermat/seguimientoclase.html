@@ -5,64 +5,70 @@
 {% endblock %}
 
 {% block body_block %}
-<div class="flex-container">
-    
-    <table id ="seguimiento">
-        <tr>
-            <td></td>
-            <td style="width: 350px;">
-                <h2>Clase: {{clase.curso}}º {{clase.nombre}}</h2>
-            </td>
-            <td>
-                <a href="{% url 'ejerciciosAsignados' clase.id %}"> Ejercicios Asignados </a>
-            </td>
-        </tr>
-        <tr>
-            <th onclick="sortTable(0,'seguimiento',2)">
-                <h3>Tema</h3>
-            </th>
-            <th onclick="sortTable(1,'seguimiento',2)">
-                <h3>%Acierto</h3>
-            </th>
-            <th onclick="sortTable(2,'seguimiento',2)">
-                <h3>Nº Ejercicios</h3>
-            </th>
-        </tr>
-        <!--Seguimiento alumno-->
-        {% for infor in informacion%}
-            <tr>
-                <td >
-                    {{infor.tema}}
-                </td>
-                <td style="text-align: center">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+            <h2>&nbsp;&nbsp;&nbsp;&nbsp;Clase:&nbsp;{{clase.curso}}º&nbsp;{{clase.nombre}}</h2><hr>
+        </div>
+        <div class="col-xs-4 col-md-4 col-lg-4">
+            <a href="{% url 'ejerciciosAsignados' clase.id %}"> Ejercicios&nbsp;Asignados </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-10 col-md-10 col-lg-10">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <h3>Seguimiento</h3>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 320px!important;">
+                <table id ="seguimiento" class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0,'seguimiento',1)">
+                                <h5>
+                                    <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Tema
+                                </h5>
 
-                    {{infor.acierto}}
-                </td>
-                <td style="text-align: center">
-                    {{infor.ejercicios}}
-                </td>
-            </tr>
-        {%endfor%}
-    </table>
-    <!-- <table>
-        <tr>
-            <td>
-                <h3>Ejercicios_Asignados</h3>
-            </td>
-        </tr>
-
-        {% for ejercicio in ejercicios_asignados%}
-            <tr>
-                <td style="width: 250px;">
-                     <input type="checkbox"> -->
-                        <!-- <a href="{% url 'ejercicio' ejercicio.id %}">{{ejercicio.titulo}}</a> -->
-                    <!-- </input>  -->
-               <!-- </td>
-            </tr>
-        {%endfor%}
-        <br>
-        <br> -->
-    <!-- </table> -->
+                            </th>
+                            <th onclick="sortTable(1,'seguimiento',1)">
+                                <h5>
+                                    <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;
+                                    %&nbsp;Acierto
+                                </h5>
+                            </th>
+                            <th onclick="sortTable(2,'seguimiento',1)">
+                                <h5>
+                                    <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;
+                                    Nº&nbsp;Ejercicios
+                                </h5>
+                            </th>
+                        </tr>
+                    </thead>
+                    <!--Seguimiento alumno-->
+                    {% for infor in informacion%}
+                        <tr>
+                            <td >
+                                {{infor.tema}}
+                            </td>
+                            <td >
+            
+                                {{infor.acierto}}
+                            </td>
+                            <td >
+                                {{infor.ejercicios}}
+                            </td>
+                        </tr>
+                    {%endfor%}
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+
       
 {% endblock %}

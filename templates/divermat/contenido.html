@@ -5,14 +5,14 @@
 {% endblock %}
 
 {% block body_block %}
-<div class="listamedio">
-    <table>
-        <tr>
-            <td>
+<div class="flex-container">
+    <!-- <div class="col"> -->
+        <div class="row">
+            <div class="col-6">
                 <table id="videos">
                     <tr>
                         <th onclick="sortTable(0,'videos',1)">
-                            <h2>Lista de Vídeos</h2>
+                            <h2>Vídeos</h2>
                         </th>
                     </tr>
                     {% for video in videos %}
@@ -24,12 +24,12 @@
                     {%endfor%}
                     
                 </table>
-            </td>
-            <td>
+            </div>
+            <div class="col-6">
                 <table id="resumenes">
                     <tr>
-                        <th onclick="sortTable(0,'resumenes',1)">
-                            <h2>Lista de Resúmenes</h2>
+                        <th scope="col" colspan="2"onclick="sortTable(0,'resumenes',1)">
+                            <h2>Resúmenes</h2>
                         </th>
                     </tr>
                     {% for resumen in resumenes%}
@@ -41,46 +41,44 @@
                     {%endfor%}
                     
                 </table>
-            </td>
-        </tr>
-    </table>
-
-    
-   
+            </div>
+        </div>   
 </div>
-
- 
- <div class="lateral">
-    <div class ="flex-container">
-        <div class="medio">
-            <a>Buscar</a></br></br>
-            <form action="contenido" method="GET">
-                <div>
-                    <input type="text" onfocus="this.value=''" name="buscar" value="Buscar"></br></br>
+{% endblock %}
+{% block menu_lateral_block%}
+    <div class="lateral">
+        <div class ="flex-container">
+            <div class="medio">
+                <h4>Buscador</h4><br>
+                
+                <form action="contenido" method="GET">
                     <div>
-                        {% if alumno is False %}
-                            <select name="curso">
-                                <option selected>Curso</option>
-                                <option>1º ESO </option>
-                                <option>2º ESO </option>
-                                <option>3º ESO </option>  
-                                <option>4º ESO </option>      
-                            </select></br></br>
-                        {% endif %}
+                        <input type="text" onfocus="this.value=''" name="buscar" value="Buscar"></br></br>
+                        <div>
+                            {% if alumno is False %}
+                                <select name="curso" style="width:195px; height:28px;">
+                                    <option selected>Curso</option>
+                                    <option>1º ESO </option>
+                                    <option>2º ESO </option>
+                                    <option>3º ESO </option>  
+                                    <option>4º ESO </option>      
+                                </select></br></br>
+                            {% endif %}
+                        </div>
                     </div>
-                <div>
-                    <select name="tema">
-                        <option selected>Tema</option>
-                        {% for tema in temas%}
-                            <option>{{tema}} </option>
-                        {% endfor %}     
-                    </select></br></br>
-                </div>
-                <input type="submit" value="Aceptar"></input>
-            </form>
+                    <div>
+                        <select name="tema">
+                            <option selected>Tema</option>
+                            {% for tema in temas%}
+                                <option>{{tema}} </option>
+                            {% endfor %}     
+                        </select></br></br>
+                    </div>
+                    <input type="submit" value="Aceptar"></input>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
 
 {% endblock %}

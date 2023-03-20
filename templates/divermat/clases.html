@@ -5,65 +5,74 @@
 {% endblock %}
 
 {% block body_block %}
-<div class="flex-container">
-    <table>
-        <tr>
-            <td>
-                <h2>Mis Clases</h2>
-            </th>
-            <td>
-                <h2>Crear una nueva clase</h2>
-            </td>
-        </tr>
-        <tr>
-            <td>
-            
+<!-- <div class="flex-container"> -->
+    <div class="row">
+        <div class="col-xs-3 col-md-3 col-lg-3 offset-md-3">
+            <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clases</h2><hr/>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-5 col-md-5 col-lg-5 offset-md-1">
+            <table>
+                <thead>
+                    <th>
+                        <h3>Mis&nbsp;Clases</h3>
+                    </th>
+                </thead>
+            </table>
+            <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
                 <table>
                     {% for c in clases %}
-                    <tr><td><a href="{% url 'clase' c.id %}"><li>{{c}}</li></a></td></tr>
+                    <tr><td><a href="{% url 'clase' c.id %}">{{c}}</a></td></tr>
                     {%endfor%}
-
-                </table>
-
-            </td>
     
+                </table>
+            </div>
             
-            <td>
-                <div>
-                    <form id="NuevaClase" action="clases" method="POST">
-                        <table>
-                            {{form}}
-                        </table>
-                        {% csrf_token %}
-            
-                        <input class="boton" type="submit" value="Crear">   
-                    </form>
-                </div>
-            </td>
-        </tr>
-    </table>
-</div>
-<div class="lateral">
-    <div class ="flex-container">
-        <div class="medio">
-            <a>Buscar</a></br></br>
-            <form action="clases" method="GET">
-                <div>
-                    <input type="text" onfocus="this.value=''" name="buscar" value="Buscar Clase"></br></br>
-                    <div>
-                        <select name="curso" value="Curso">
-                            <option selected>Curso</option>
-                            <option>1º ESO </option>
-                            <option>2º ESO </option>
-                            <option>3º ESO </option>  
-                            <option>4º ESO </option>      
-                        </select></br></br>
-                    </div>
-                    <input class="botonLateral" type="submit" value="Aceptar"></input>
-                </div>
+        </div>
+        <div class="col-xs-6 col-md-6 col-lg-6">
+            <table>
+                <thead>
+                    <th>
+                        <h3>Crear&nbsp;una&nbsp;nueva&nbsp;clase</h3>
+                    </th>
+                </thead>
+            </table>
+            <form id="NuevaClase" action="clases" method="POST">
+                <table>
+                    {{form}}
+                </table>
+                {% csrf_token %}
+                <input class="boton" type="submit" value="Crear">   
             </form>
         </div>
     </div>
-</div>
+<!-- </div> -->
+{% endblock %}
+{% block menu_lateral_block%}
+
+    <div class="lateral">
+        <div class ="flex-container">
+            <div class="medio">
+                <h4>Buscador</h4><br>
+                <form action="clases" method="GET">
+                    <div>
+                        <input type="text" onfocus="this.value=''" name="buscar" value="Buscar Clase"></br></br>
+                        <div>
+                            <select name="curso" value="Curso" style="width:195px; height:28px;">
+                                <option selected>Curso</option>
+                                <option>1º ESO </option>
+                                <option>2º ESO </option>
+                                <option>3º ESO </option>  
+                                <option>4º ESO </option>      
+                            </select></br></br>
+                        </div>
+                        <input class="botonLateral" type="submit" value="Aceptar"></input>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
        
 {% endblock %}
