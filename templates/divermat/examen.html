@@ -5,40 +5,57 @@
 {% endblock %}
 
 {% block body_block %}
-<div>
-   <h2> {{examen_data.examen}}</h2>
-   <table>
-    <tr>
-        <td style="width:150px;">
-            {% if nota is True %}
-                {% if examen_data.examen.nota >= 5 %}
-                    <h4 style="color:green">NOTA: {{examen_data.examen.nota}}</h4>
-                {% else %}
-                    <h4 style="color:crimson">NOTA: {{examen_data.examen.nota}}</h4>
-                {% endif %}
-            {% endif %}
-        </td>
-        <td style="width:250px;">
-            {% if examen_data.cronometrado is True%}
-                <h4 style="color:cadetblue">TIEMPO: {{examen_data.tiempo}}</h4>
-            {% endif %}
-        </td>
-    </tr>
-   </table>
-   
 
+<div class="row">
+    <div class="col-xs-7 col-md-7 col-lg-7">
+        <h2>{{examen_data.examen}}</h2><hr>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-7 col-md-7 col-lg-7">
+        <table>
+            <tr>
+                <td style="width:150px;">
+                    {% if nota is True %}
+                        {% if examen_data.examen.nota >= 5 %}
+                            <h4 style="color:green">NOTA: {{examen_data.examen.nota}}</h4>
+                        {% else %}
+                            <h4 style="color:crimson">NOTA: {{examen_data.examen.nota}}</h4>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td style="width:250px;">
+                    {% if examen_data.cronometrado is True%}
+                        <h4 style="color:cadetblue">TIEMPO: {{examen_data.tiempo}}</h4>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<form action="{% url 'examen' examen=examen_data.examen.id %}" method="POST">
     <ol>
-        <form action="{% url 'examen' examen=examen_data.examen.id %}" method="POST">
-            {% for ejercicio in examen_data.ejercicios %}
-                <li>
-                    {% if ejercicio.nsoluciones is 1%}
-                        <div>
-                            <h4>{{ejercicio.titulo}}: {{ejercicio.enunciado}}</h4>
-                            {% if ejercicio.foto %}
-                            <img width=350px height= 250px src="{{ejercicio.foto.url}}" alt="error en la imagen">
-                            {%endif%}                            {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test-->
-                                <p>Selecciona la solución correcta</p>
+        {% for ejercicio in examen_data.ejercicios %}
+            <div>
+                <div class="row">
+                    <div class="col-xs-7 col-md-7 col-lg-7">
+                        <h4><li>{{ejercicio.enunciado}}</li></h4>
+                    </div>
+                </div>
 
+                <div class="row">
+                    {% if ejercicio.foto %}
+
+                        <div class="col-xs-4 col-md-4 col-lg-4">
+                            <img width=350px height= 250px src="{{ejercicio.foto.url}}" alt="error&nbsp;en&nbsp;la&nbsp;imagen">
+                        </div>
+
+                    {%endif%} 
+                    <div class="col">
+                        {% if ejercicio.nsoluciones is 1%}
+
+                            {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test-->
+                                <p><h5>Selecciona la solución correcta</h5></p>
                                 {% for sol in ejercicio.soluciones %}
                                     {% if sol.checked is True%}
                                         <input checked="checked" type="radio" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" required> {{sol.solucion}} </br>
@@ -46,63 +63,43 @@
                                         <input type="radio" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" required> {{sol.solucion}} </br>
                                     {%endif%}
                                 {% endfor %}
-
+                                <br>                   
                             {% else %} <!--Ejercicio de respuesta corta-->
-
-                            {% if ejercicio.solucion_introducida is True %}
-                                    {% for sol in ejercicio.soluciones %}
-                                        {% if sol.checked is True%}
-                                            <input label="Introduce las soluciones separadas por ';': " type="text" name="{{ejercicio.id}}"value="{{sol.solucion}}" required></br></br>
-                                        {%endif%}
-                                    {%endfor%}
-                                {%else%}
-                                    <input label="Introduce las soluciones separadas por ';': " type="text" name="{{ejercicio.id}}"value="" required></br></br>
-                                {%endif%}
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <div>
-                            <h4>Ejercicio:  {{ejercicio.titulo}}</h4>
-                            <h5>{{ejercicio.enunciado}}</h5>
-                            {% if ejercicio.foto %}
-                            <img width=350px height= 250px src="{{ejercicio.foto.url}}" alt="error en la imagen">
-                            {%endif%}
-                            {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test con varias soluciones-->
-
-                                <p>Selecciona la solución correcta</p>
-
-                                {% for sol in ejercicio.soluciones %}
-                                    {% if sol.checked is True%}
-                                        <input checked="checked" type="checkbox" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" > {{sol.solucion}} </br>                                        
-                                    {% else %}
-                                        <input type="checkbox" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" > {{sol.solucion}} </br>                                        
-                                    {% endif %}
-                                {% endfor %}  
-
-                            {% else %} <!--Ejercicio de respuesta corta con varias soluciones-->
-                              
+                                <p><h5>Introduce la solución</h5></p>    
                                 <input label="Introduce las soluciones separadas por ';': " type="text" name="{{ejercicio.id}}"value="{{ejercicio.solucion_introducida}}" required></br></br>
 
                             {% endif %}
-                        </div>
-                    {% endif %}
+                        {% else %}
+                                {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test con varias soluciones-->
+                                    <p><h5>Selecciona la solución correcta</h5></p>
+                                    {% for sol in ejercicio.soluciones %}
+                                        {% if sol.checked is True%}
+                                            <input checked="checked" type="checkbox" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" > {{sol.solucion}} </br>                                        
+                                        {% else %}
+                                            <input type="checkbox" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" > {{sol.solucion}} </br>                                        
+                                        {% endif %}
+                                    {% endfor %}  
+                                    <br>
+                                {% else %} <!--Ejercicio de respuesta corta con varias soluciones-->
+                                    <p><h5>Introduce la solución o soluciones separadas por ";"</h5></p>
+                                    <input label="Introduce las soluciones separadas por ';': " type="text" name="{{ejercicio.id}}"value="{{ejercicio.solucion_introducida}}" required></br></br>
 
-                    <h4 style="color:crimson">{{ejercicio.resultado}}</h4>
+                                {% endif %}
+                        {% endif %}
+                        <h4 style="color:crimson">{{ejercicio.resultado}}</h4>
 
-                </li>
-            {% endfor %}
-            {% csrf_token %}
-            {% if hacer_examen is True%}
-                <input class="boton" type="submit" value="Aceptar"> 
-            {%endif%}  
-        </form>
+                    </div>
 
+                </div>
+
+            </div>
+
+        {% endfor %}
     </ol>
-</div>
-
-
-
-</div>
-
+    {% csrf_token %}
+    {% if hacer_examen is True%}
+        <input class="boton" type="submit" value="Aceptar"> 
+    {%endif%}  
+</form>
 
 {% endblock %}

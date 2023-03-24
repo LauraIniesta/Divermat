@@ -491,9 +491,14 @@ def examenesExterno(request):
 
     else:
         curso = request.GET.get('curso', '')
-        form = NuevoExamen(curso=curso)
-        content['form'] = form
-        request.method='GET'
+        if curso != 'curso':
+            form = NuevoExamen(curso=curso)
+            content['form'] = form
+            request.method='GET'
+        else:
+            form = NuevoExamen(curso=None)
+            content['form'] = form
+            request.method='GET'
 
     return render(request,'divermat/examenes.html', context=content)
 
