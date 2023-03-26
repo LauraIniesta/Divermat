@@ -80,7 +80,7 @@
                             <table id="historialExamenes"  class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
                                 <thead>
                                     <tr>
-                                        <th onclick="sortTable(0,'historialExamenes',1)">
+                                        <th onclick="sortDateTable(0,'historialExamenes',1)">
                                             <h5>
                                                 <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Fecha
                                             </h5>
@@ -88,6 +88,11 @@
                                         <th onclick="sortTable(1,'historialExamenes',1)">
                                             <h5>
                                                 <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Examen
+                                            </h5>
+                                        </th>
+                                        <th onclick="sortNumericTable(2,'historialExamenes',1)">
+                                            <h5>
+                                                <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Nota
                                             </h5>
                                         </th>
                                     </tr>
@@ -101,6 +106,9 @@
                                         <td style="width: 300px;">
                                             <a href="{% url 'examen' examen=examen.id %}">{{examen.titulo}}</a>
             
+                                        </td>
+                                        <td>
+                                            {{examen.nota}}
                                         </td>
                                     </tr>
                                 {% endfor %}

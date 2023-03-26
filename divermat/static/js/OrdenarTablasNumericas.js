@@ -1,4 +1,4 @@
-function sortTable(n,tabla,init) {
+  function sortNumericTable(n,tabla,init) {
     var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
     table = document.getElementById(tabla);
     switching = true;
@@ -22,14 +22,14 @@ function sortTable(n,tabla,init) {
         /*check if the two rows should switch place,
         based on the direction, asc or desc:*/
         if (dir == "asc") {
-          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          if (parseInt(x.innerHTML,10) > parseInt(y.innerHTML,10)) {
             //if so, mark as a switch and break the loop:
 
             shouldSwitch= true;
             break;
           }
         } else if (dir == "desc") {
-          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          if (parseInt(x.innerHTML,10) < parseInt(y.innerHTML,10)) {
 
             //if so, mark as a switch and break the loop:
             shouldSwitch = true;

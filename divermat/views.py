@@ -143,8 +143,8 @@ def iniciar_sesion(request):
                         login(request, usuario)
                         return redirect('cambiar_contrasenia')
                     else:
-                        usuario.password_temporal = None
-                        usuario.save()
+                        alumno.password_temporal = None
+                        alumno.save()
                         login(request, usuario)
                         return redirect('/')
                 else:
@@ -713,11 +713,11 @@ def ejercicio(request, ejercicio=None):
             content['soluciones'].append(solucion_data)
 
         if solucion_seleccionada:
-            solucion_esperada_string = str(ejercicio.solucion_correcta).replace("'",".").replace(",",".").replace(";",", ")
+            solucion_esperada_string = str(ejercicio.solucion_correcta).lower().replace("'",".").replace(",",".").replace(";",", ")
 
             if ejercicio.nsoluciones == 1:
                 
-                if str(ejercicio.solucion_correcta).replace(",",".").replace("'",".") == str(solucion_seleccionada[0]).replace(",",".").replace("'","."):
+                if str(ejercicio.solucion_correcta).lower().replace(",",".").replace("'",".") == str(solucion_seleccionada[0]).lower().replace(",",".").replace("'","."):
                     content['resultado'] = "¡Respuesta correcta!"
                     correcto = True
                 else:
@@ -726,11 +726,11 @@ def ejercicio(request, ejercicio=None):
             else:
                 content['resultado'] = "¡Respuesta correcta!"
                 correcto = True
-                soluciones_correctas = ejercicio.solucion_correcta.split(";")
+                soluciones_correctas = ejercicio.solucion_correcta.lower().split(";")
                 for el in solucion_seleccionada:
                     flag = False
                     for sol in soluciones_correctas:
-                        if str(el).replace(",",".").replace("'",".") == str(sol).replace(",",".").replace("'","."):
+                        if str(el).lower().replace(",",".").replace("'",".") == str(sol).lower().replace(",",".").replace("'","."):
                             flag = True
                     if(flag == False):
                         content['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string
@@ -1012,8 +1012,12 @@ def infoclase(request, claseid=None):
                     nombre = form.cleaned_data['nombre']
                     centro = form.cleaned_data['centro']
                     if curso != "" and curso !=None:
+                        alumnos = Alumno.objects.filter(clase=c)
                         c.curso = curso
                         c.save()
+                        for alumno in alumnos:
+                            alumno.curso = curso
+                            alumno.save()
                     if ano_academico != None and ano_academico!="":
                         c.ano_academico = ano_academico
                         c.save()
@@ -1125,7 +1129,6 @@ def seguimientoalumnoclase(request, alumnoid=None):
     content['registro'] = False
     content['profesor'] = True
     content['alumno'] = False
-
     if alumnoid:
         try:
             alumno=Alumno.objects.get(id=alumnoid)
@@ -1134,7 +1137,8 @@ def seguimientoalumnoclase(request, alumnoid=None):
             content['username'] = alumno.username
             content['centro'] = alumno.centro
             content['clase'] = alumno.clase
-            content['seguimiento'] = Seguimiento.objects.filter(alumno=alumno)
+            seguimiento = Seguimiento.objects.filter(alumno=alumno)
+            content['seguimiento'] = seguimiento
 
         except Alumno.DoesNotExist:
             content['error'] = "Error obteniendo la informacion del alumno"
@@ -1570,7 +1574,7 @@ def getSolucionesEjercicio(ejercicio_data,ejercicio,ejercicios_alumno,form_data)
             soluciones_data.append(solucion_data)
         ejercicio_data['soluciones'] = soluciones_data
 
-        if str(respuesta).replace(",",".").replace("'",".") == str(ejercicio.solucion_correcta).replace(",",".").replace("'","."):
+        if str(respuesta).lower().replace(",",".").replace("'",".") == str(ejercicio.solucion_correcta).lower().replace(",",".").replace("'","."):
             ejercicio_data['resultado'] = "¡Respuesta Correcta!"
             correcto=True
 
@@ -1600,13 +1604,13 @@ def getSolucionesEjercicio(ejercicio_data,ejercicio,ejercicios_alumno,form_data)
                 flag = False
 
                 for sol in soluciones_correctas:
-                    if str(r).replace(",",".").replace("'",".") == str(sol).replace(",",".").replace("'","."):
+                    if str(r).lower().replace(",",".").replace("'",".") == str(sol).lower().replace(",",".").replace("'","."):
                         flag = True
                 if(flag == False):
-                    ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string 
+                    ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string.lower() 
                     correcto=False 
         else:
-            ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string 
+            ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string.lower() 
             correcto=False 
     
     if ejercicios_alumno is not None:
@@ -1615,6 +1619,6 @@ def getSolucionesEjercicio(ejercicio_data,ejercicio,ejercicios_alumno,form_data)
         ejercicio_alumno.save()
 
     if ejercicio.tipo == 2:
-        ejercicio_data['solucion_introducida']=str(solucion_introducida).replace("[","").replace("]","").replace(",",";").replace("'","").replace(" ","")
+        ejercicio_data['solucion_introducida']=str(solucion_introducida).lower().replace("[","").replace("]","").replace(",",";").replace("'","").replace(" ","")
 
     return ejercicio_data,correcto

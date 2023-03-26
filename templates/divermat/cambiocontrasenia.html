@@ -29,7 +29,7 @@
                 </tr>
                 <tr>
                     <td>
-                        Introduzca la nueva contraseña:<br>
+                        <i class="fas fa-info" onclick="hideShowInfo('password_help_text');"></i>&nbsp;Introduzca&nbsp;la&nbsp;nueva&nbsp;contraseña:
                         {% if form.new_password1.errors %}
                             {% for error in form.new_password1.errors %}
                                 <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
@@ -47,7 +47,10 @@
                             {% endfor %}
                         {% endif %}
                         {{ form.new_password2 }}
-                        <p>{{ form.new_password1.help_text }}</p>
+                        <p id="password_help_text" style="display:none;"> 1. Su contraseña no puede parecerse a su información personal.<br>
+                            2. Su contraseña debe contener al menos 8 caracteres.<br>
+                            3. Su contraseña no puede ser una contraseña común.<br>
+                            4. Su contraseña no puede ser completamente numérica.</p>
                     </td>
                 </tr>
                 <tr>

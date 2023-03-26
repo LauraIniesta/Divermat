@@ -84,6 +84,9 @@ class NuevaClase(forms.ModelForm):
 
 class NuevaInfoProfesor(forms.ModelForm):
 
+    username = forms.CharField(max_length=150,required=False)
+    centro = forms.CharField(max_length=150,required=False)
+
     class Meta:
         model = Profesor
         fields = (
@@ -101,7 +104,8 @@ class NuevaInfoProfesor(forms.ModelForm):
         }
 
 class NuevaInfoAlumno(forms.ModelForm):
-
+    first_name = forms.CharField(max_length=150,required=False)
+    last_name = forms.CharField(max_length=150,required=False)
     class Meta:
         model = Alumno
         fields = (

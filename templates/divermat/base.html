@@ -13,6 +13,8 @@
     </head>
     <body class="container-fluid">  
         <script src="/static/js/OrdenarTablas.js"></script>
+        <script src="/static/js/OrdenarTablasNumericas.js"></script>
+        <script src="/static/js/OrdenarTablasDate.js"></script>
         <script src="/static/js/hideShowInformacion.js"></script>
         <script defer src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
 <!-- Definimos los datos de la cabecera de la pagina que se corresponden con la primera fila-->
@@ -37,7 +39,7 @@
                     <br>
                     <p>
                         <a href="{% url 'cerrar_sesion' %}">Cerrar Sesión</a>&nbsp;&nbsp;
-                        <a href="{% url 'perfil' %}"><img width=40px height= 40px src="{{fotos.foto.url}}" alt="Mi Perfil"></a>
+                        <a href="{% url 'perfil' %}">&nbsp;<i class="fa-solid fa-user fa-xl"></i>&nbsp;Perfil</a>
                     </p>
                 </div>
 

@@ -1,4 +1,5 @@
-function sortTable(n,tabla,init) {
+
+  function sortDateTable(n,tabla,init) {
     var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
     table = document.getElementById(tabla);
     switching = true;
@@ -21,15 +22,20 @@ function sortTable(n,tabla,init) {
         y = rows[i + 1].getElementsByTagName("TD")[n];
         /*check if the two rows should switch place,
         based on the direction, asc or desc:*/
-        if (dir == "asc") {
-          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-            //if so, mark as a switch and break the loop:
+        var xFechaSplit = x.innerHTML.replaceAll(" ","").replaceAll("\n","").split("/")
+        var xFecha = xFechaSplit[2]+"-"+xFechaSplit[1]+"-"+xFechaSplit[0]
+        var yFechaSplit = y.innerHTML.replaceAll(" ","").replaceAll("\n","").split("/")
+        var yFecha = yFechaSplit[2]+"-"+yFechaSplit[1]+"-"+yFechaSplit[0]
 
+        if (dir == "asc") {
+
+          if (new Date(xFecha) > new Date(yFecha)) {
+            //if so, mark as a switch and break the loop:
             shouldSwitch= true;
             break;
           }
         } else if (dir == "desc") {
-          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          if (new Date(xFecha) < new Date(yFecha)) {
 
             //if so, mark as a switch and break the loop:
             shouldSwitch = true;
