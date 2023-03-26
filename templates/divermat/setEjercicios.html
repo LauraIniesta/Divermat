@@ -6,73 +6,79 @@
 
 {% block body_block %}
 <div>
-    <h2>Set de Ejercicios </h2>
-    
+    <div class="row">
+        <div class="col-xs-7 col-md-7 col-lg-7">
+            <h2>Set&nbsp;de&nbsp;Ejercicios</h2><hr>
+        </div>
+    </div>
 
-    <h3>Tema {{tema.titulo}}</h3>
-    <ol>
-        <form action="{% url 'setEjercicios' tema.id %}" method="POST">
-            {% for ejercicio in set %}
-                <li>
-                    {% if ejercicio.nsoluciones is 1%}
-                        <div>
-                            <h4>{{ejercicio.titulo}}: {{ejercicio.enunciado}}</h4>
-                            {% if ejercicio.foto %}
-                                <img width=350px height= 250px src="{{ejercicio.foto.url}}" alt="error en la imagen">
-                            {%endif%}
-                            {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test-->
-                                <p>Selecciona la solución correcta</p>
-
-                                {% for sol in ejercicio.soluciones %}
-                                    {% if sol.checked is True%}
-                                        <input checked="checked" type="radio" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" required> {{sol.solucion}} </br>
-                                    {% else %}
-                                        <input type="radio" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" required> {{sol.solucion}} </br>
-                                    {%endif%}
-                                {% endfor %}
-
-                            {% else %} <!--Ejercicio de respuesta corta-->
-
-                                <input label="Introduce la solución: " type="text" name="{{ejercicio.id}}" value="{{ejercicio.solucion_introducida}}" required></br></br>
-            
-                            {% endif %}
+    <div class="row">
+        <div class="col-xs-7 col-md-7 col-lg-7">
+            <h3>Tema:&nbsp;{{tema.titulo}}</h3>
+        </div>
+    </div>
+    <form action="{% url 'setEjercicios' tema.id %}" method="POST">
+        {% for ejercicio in set %}
+            <ol>
+                <div>
+                    <div class="row">
+                        <div class="col-xs-7 col-md-7 col-lg-7">
+                            <h4><li>{{ejercicio.enunciado}}</li></h4>
                         </div>
-                    {% else %}
-                        <div>
-                            <h4>Ejercicio:  {{ejercicio.titulo}}</h4>
-                            <h5>{{ejercicio.enunciado}}</h5>
-                            {% if ejercicio.foto %}
-                            <img width=350px height= 250px src="{{ejercicio.foto.url}}" alt="error en la imagen">
-                            {%endif%}
-                            {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test con varias soluciones-->
+                    </div>
+                    <div class="row">
+                        {% if ejercicio.foto %}
 
-                                <p>Selecciona la solución correcta</p>
+                            <div class="col-xs-4 col-md-4 col-lg-4">
+                                <img width=350px height= 250px src="{{ejercicio.foto.url}}" alt="error&nbsp;en&nbsp;la&nbsp;imagen">
+                            </div>    
+                        {%endif%} 
+                        <div class="col">
+                            {% if ejercicio.nsoluciones is 1%}
+                                {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test-->
+                                    <p><h5>Selecciona la solución correcta</h5></p>
+                                    {% for sol in ejercicio.soluciones %}
+                                        {% if sol.checked is True%}
+                                            <input checked="checked" type="radio" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" required> {{sol.solucion}} </br>
+                                        {% else %}
+                                            <input type="radio" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" required> {{sol.solucion}} </br>
+                                        {%endif%}
+                                    {% endfor %}
+                                    <br>                   
+                                {% else %} <!--Ejercicio de respuesta corta-->
+                                    <p><h5>Introduce la solución</h5></p>    
+                                    <input label="Introduce las soluciones separadas por ';': " type="text" name="{{ejercicio.id}}"value="{{ejercicio.solucion_introducida}}" required></br></br>
 
-                                {% for sol in ejercicio.soluciones %}
-                                    {% if sol.checked is True%}
-                                        <input checked="checked" type="checkbox" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" > {{sol.solucion}} </br>                                        
-                                    {% else %}
-                                        <input type="checkbox" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" > {{sol.solucion}} </br>                                        
+                                {% endif %}
+                            {% else %}
+                                    {% if ejercicio.tipo is 1 %} <!--Ejercicio de tipo Test con varias soluciones-->
+                                        <p><h5>Selecciona la solución correcta</h5></p>
+                                        {% for sol in ejercicio.soluciones %}
+                                            {% if sol.checked is True%}
+                                                <input checked="checked" type="checkbox" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" > {{sol.solucion}} </br>                                        
+                                            {% else %}
+                                                <input type="checkbox" id="{{ejercicio.id}}" value="{{sol.solucion}}" name="{{ejercicio.id}}" > {{sol.solucion}} </br>                                        
+                                            {% endif %}
+                                        {% endfor %}  
+                                        <br>
+                                    {% else %} <!--Ejercicio de respuesta corta con varias soluciones-->
+                                        <p><h5>Introduce la solución o soluciones separadas por ";"</h5></p>
+                                        <input label="Introduce las soluciones separadas por ';': " type="text" name="{{ejercicio.id}}"value="{{ejercicio.solucion_introducida}}" required></br></br>
+
                                     {% endif %}
-                                {% endfor %}  
-
-                            {% else %} <!--Ejercicio de respuesta corta con varias soluciones-->
-                            
-                                <input label="Introduce las soluciones separadas por ';': " type="text" name="{{ejercicio.id}}"value="{{ejercicio.solucion_introducida}}" required></br></br>
-            
                             {% endif %}
-                        </div>
-                    {% endif %}
-            
-                    <h4 style="color:crimson">{{ejercicio.resultado}}</h4>
-        
-                </li>
-            {% endfor %}
-            {% csrf_token %}
-            <input class="boton" type="submit" value="Aceptar">   
-        </form>
+                            <h4 style="color:crimson">{{ejercicio.resultado}}</h4>
 
-    </ol>
+                        </div>
+                    </div>
+                </div>
+            </ol>
+        
+        {% endfor %}
+        {% csrf_token %}
+        <input class="boton" type="submit" value="Aceptar">   <br><br>
+    </form>
+
 
 
 </div>

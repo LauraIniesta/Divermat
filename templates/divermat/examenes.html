@@ -4,31 +4,127 @@
     Inicio
 {% endblock %}
 {% block body_block %}
-    {% if Examen is True %}
-        <div>
-            <h3>Examen nº {{ n_examen }}</h3></br></br>
-            <!--Examen-->
+    {% if alumno is True%}
+        <div class="row">
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Exámenes</h2><hr/>
+            </div>
         </div>
 
-    {% else %}
-    <div class="row">
-        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
-            <h2>&nbsp;&nbsp;Exámenes</h2><hr/>
+        <div class="row">
+            <div class="col-xs-6 col-md-6 col-lg-6"> 
+                <div class="row">
+                    <div class="col"> 
+                        <h3>Selecciona&nbsp;los&nbsp;datos&nbsp;para&nbsp;realizar&nbsp;el&nbsp;Examen</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col"> 
+                        <form id="NuevoExamenForm" action="examenes" method="POST">
+                            <div class="row">
+                                
+                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                    <b>{{form.crono.label}}</b>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                    &nbsp;{{form.crono}}
+                                </div>
+                            </div>
+            
+                            <div class="row">
+                                
+                                <div class="col-xs-12 col-md-12 col-lg-12">
+                                    <b>{{form.temas.label}}:</b>
+                                    {% if form.temas.errors %}
+                                        {% for error in form.temas.errors %}
+                                            <p style="color:crimson;"><strong>{{ error|escape }}</strong></p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-7 col-md-7 col-lg-7">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 150px!important;">
+                                        <table>
+                                            {% for tema in form.temas %}
+                                                    <tr>
+                                                        <td>
+                                                            {{tema}}
+            
+                                                        </td>
+                                                    </tr>
+                                            {%endfor%}
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            {% csrf_token %}
+                            <div class="row">
+                                <input class="boton" type="submit" value="Aceptar">   
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6 col-xs-6 col-md-6 col-lg-6 ">
+                <div class="row">
+                    <div class="col"> 
+                        <h3>Historial&nbsp;de&nbsp;Exámenes</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col"> 
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important; width: 400px;">
+                            <table id="historialExamenes"  class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
+                                <thead>
+                                    <tr>
+                                        <th onclick="sortTable(0,'historialExamenes',1)">
+                                            <h5>
+                                                <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Fecha
+                                            </h5>
+                                        </th>
+                                        <th onclick="sortTable(1,'historialExamenes',1)">
+                                            <h5>
+                                                <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Examen
+                                            </h5>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                
+                                {% for examen in examenes%}
+                                    <tr>
+                                        <td>
+                                            {{examen.inicio.day}}/{{examen.inicio.month}}/{{examen.inicio.year}}
+                                        </td>
+                                        <td style="width: 300px;">
+                                            <a href="{% url 'examen' examen=examen.id %}">{{examen.titulo}}</a>
+            
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+            
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-6 col-md-6 col-lg-6 offset-md-3"> 
-            <h3>Selecciona&nbsp;los&nbsp;datos&nbsp;para&nbsp;realizar&nbsp;el&nbsp;Examen</h3>
+    {%else%}
+        <div class="row">
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                <h2>&nbsp;&nbsp;Exámenes</h2><hr/>
+            </div>
         </div>
-        <div class="col-xs-6 col-xs-6 col-md-6 col-lg-6 ">
-            {% if alumno is True%}
-                <h3>Historial&nbsp;de&nbsp;Exámenes</h3>
-            {% endif %}
+        <div class="row">
+            <div class="col-xs-6 col-md-6 col-lg-6 offset-md-3"> 
+                <h3>Selecciona&nbsp;los&nbsp;datos&nbsp;para&nbsp;realizar&nbsp;el&nbsp;Examen</h3>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-6 col-md-6 col-lg-6 offset-md-3"> 
-            {% if alumno is not True %}
+        <div class="row">
+            <div class="col-xs-6 col-md-6 col-lg-6 offset-md-3"> 
+
                 <form id="FiltrarTemas" action="examenes" method="GET">
                     <div class="row">
                         
@@ -51,7 +147,6 @@
                         </div>
                     </div>
                 </form>
-            {% endif %}
                 <form id="NuevoExamenForm" action="examenes" method="POST">
                     <div class="row">
                         
@@ -97,43 +192,9 @@
                         <input class="boton" type="submit" value="Aceptar">   
                     </div>
                 </form>
-        </div>
-
-
-        <div class="col-xs-6 col-xs-6 col-md-6 col-lg-6 ">
-            <div class="row">
-                {% if alumno is True%}
-                    <h3>Historial&nbsp;de&nbsp;Exámenes</h3>
-                {% endif %}
             </div>
-            <div class="row">
-                {% if alumno is True%}
-                    <div>
-                        {% for examen in examenes%}
-
-                            <ul>
-                                <a href="{% url 'examen' examen=examen.id %}">{{examen.titulo}}</a>
-                            </ul>
-
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-            
         </div>
-    </div>
-            
-    {% endif %}
-    <!-- <script>
-        function myFunction() {
-            var x = document.getElementById("curso");
-            console.log(x.value);
-            var temas = document.getElementsByName("form.temas");
-            console.log(temas.values)
-                
-        }
-    </script> -->
-
+    {%endif%}
 {% endblock %}
 <!-- 
 {% block javascript %}

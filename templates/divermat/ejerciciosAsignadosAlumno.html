@@ -6,47 +6,82 @@
 
 {% block body_block %}
 
-<div class="flex-container">
+<div class="row">
+    <div class="col-xs-7 col-md-7 col-lg-7 offset-md-2">
+        <h2>Ejercicios&nbsp;Asignados&nbsp;a&nbsp;la&nbsp;clase:&nbsp;{{clase.curso}}º&nbsp;{{clase.nombre}}</h2><hr>
+    </div>
+   
+</div> 
+<div class="row">
+    <div class="col-xs-4 col-md-4 col-lg-4 offset-md-1">
+        <div class="row">
+            <div class="col">
+                <h3>Ejercicios&nbsp;Pendientes</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 280px!important;">
+                    <table id="ejerciciosAsignadosTable" class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable(0,'ejerciciosAsignadosTable',1)">
+                                    <h5>
+                                        <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Ejercicio
+                                    </h5>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ejercicio in ejercicios_pendientes %}
+                                <tr>
+                                    <td style="width:350px;">
+                                       <a href="{% url 'ejercicio' ejercicio.id %}">{{ejercicio}}</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+        
 
-    <table id="ejerciciosAsignadosTable" style="margin-left: 0px;">
-        <caption style="width:650px">
-            <h2>Ejercicios Asignados a la clase:&nbsp;{{clase.curso}}º&nbsp;{{clase.nombre}}</h2>
-        </caption>
-        <tr>
-            <td>
-                <table id="ejerciciosAsignadosTable" style="margin-left: 0px;">
-                    <tr>
-                        <th style="width:300px" onclick="sortTable(0,'ejerciciosAsignadosTable',1)">
-                            <h4>Ejercicio Pendientes</h4>
-                        </th>
-                    </tr>
-                    {% for ejercicio in ejercicios_pendientes %}
-                        <tr>
-                            <td style="width:350px;">
-                                <li><a href="{% url 'ejercicio' ejercicio.id %}">{{ejercicio}}</a></li>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </td>
-            <td >
-                <table id="ejerciciosAsignadosTable2" style="margin-left: 0px;">
-                    <tr>
-                        <th style="width:300px" onclick="sortTable(0,'ejerciciosAsignadosTable2',1)">
-                            <h4>Ejercicio Hechos</h4>
-                        </th>
-                    </tr>
-                    {% for ejercicio in ejercicios_realizados %}
-                        <tr>
-                            <td style="width:350px;">
-                                <li>{{ejercicio}}</li>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </td>
-        </tr>
-
-    </table>
+    <div class="col-xs-4 col-md-4 col-lg-4 offset-md-1">
+        <div class="row">
+            <div class="col">
+                <h3>Ejercicios&nbsp;Hechos</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 280px!important;">
+                    <table id="ejerciciosAsignadosTable2" class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
+                        <thead>
+                            <tr>
+                                <th style="width:300px" onclick="sortTable(0,'ejerciciosAsignadosTable2',1)">
+                                    <h5>
+                                        <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Ejercicio
+                                    </h5>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ejercicio in ejercicios_realizados %}
+                                <tr>
+                                    <td style="width:350px;">
+                                        {{ejercicio}}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+ 
+
 {% endblock %}

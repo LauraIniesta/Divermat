@@ -6,46 +6,121 @@
 {% endblock %}
 
 {% block body_block %}
-{% if ejercicios is True %}
-    {% if alumno is True %}
-        <div>
-            <table>
-                <tr>
-                    <td>
-                        <h2>Lista de {{Tipo}}</h2>
-                    </td>
-                    <td style="width:300px">
-                        <h4>Generar set de ejercicios</h4>
-                    </td>
-                    <td style="width:300px">
-                        <a href="{% url 'ejerciciosAsignados' clase.id %}">Ejercicios Asignados {{clase.curso}}º {{clase.nombre}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <ol>
-                            {% for conten in Contenido %}
-                            <a href="{% url 'ejercicio' conten.id %}"><li>{{conten.titulo}}</li></a>
-                            {%endfor%}
-                        </ol>
-                    </td>
-                    <td>
-                        <form id="NuevoSetEjercicios" action="index" method="POST">
 
+    {% if ejercicios is True %}
+        {% if alumno is True %}
+        <div class="row">
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{Tipo}}</h2><hr/>
+            </div>
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-1">
+                <a href="{% url 'ejerciciosAsignados' clase.id %}">Ejercicios Asignados {{clase.curso}}º {{clase.nombre}}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-1">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <h3>Lista&nbsp;de&nbsp;{{Tipo}}</h3>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
+                    <ol>
+                        {% for conten in Contenido %}
+                            <a href="{% url 'ejercicio' conten.id %}"><li>{{conten.titulo}}</li></a>
+                        {%endfor%}
+                    </ol>
+                </div>
+            </div>
+            <div class="col-xs-4 col-md-4 col-lg-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <h3>Generar&nbsp;Set&nbsp;de&nbsp;Ejercicios</h3>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <form id="NuevoSetEjercicios" action="index" method="POST">
+                    <div class="row">
+                        <div class="col">
                             <table>
                                 {{form}}
                             </table>
-                            {% csrf_token %}
-            
-                            <input class="boton" type="submit" value="Generar">           
-                        </form>
-                    </td>
-                </tr>
+                        </div>                        
+                    </div>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col offset-md-1">
+                            <br><br><input class="boton" type="submit" value="Generar"> 
+                        </div>                        
+                    </div>
+                              
+                </form>
 
-            </table>
-            
+            </div>
         </div>
-    {%else%}
+
+        {%else%}
+
+        <div class="row">
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                <h2>&nbsp;&nbsp;{{Tipo}}</h2><hr/>
+            </div>
+        </div>
+        <div class="row">
+                <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    <h3>Lista&nbsp;de&nbsp;{{Tipo}}</h3>
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
+                        <ol>
+                            {% for conten in Contenido %}
+                                <a href="{% url 'ejercicio' conten.id %}"><li>{{conten.titulo}}</li></a>
+                            {%endfor%}
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        {%endif%}
+    {% elif Tipo == "Resúmenes" %}
+    <div class="row">
+        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+            <h2>&nbsp;&nbsp;{{Tipo}}</h2><hr/>
+        </div>
+    </div>
+        <div class="row">
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <h3>Lista&nbsp;de&nbsp;{{Tipo}}</h3>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
+                    <ol>
+                        {% for conten in Contenido %}
+                        <a href="{% url 'resumen' conten.id %}"><li>{{conten.titulo}}</li></a>
+                        {%endfor%}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    {% else %}
         <div class="row">
             <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
                 <h2>&nbsp;&nbsp;{{Tipo}}</h2><hr/>
@@ -65,111 +140,58 @@
                 <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
                     <ol>
                         {% for conten in Contenido %}
-                            <a href="{% url 'ejercicio' conten.id %}"><li>{{conten.titulo}}</li></a>
+                        <a href="{% url 'video' conten.id %}"><li>{{conten.titulo}}</li></a>
                         {%endfor%}
                     </ol>
                 </div>
             </div>
         </div>
-    {%endif%}
-{% elif Tipo == "Resúmenes" %}
-    <div class="row">
-        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
-            <h2>&nbsp;&nbsp;{{Tipo}}</h2><hr/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
-            <table>
-                <thead>
-                    <tr>
-                        <th>
-                            <h3>Lista&nbsp;de&nbsp;{{Tipo}}</h3>
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
-                <ol>
-                    {% for conten in Contenido %}
-                    <a href="{% url 'resumen' conten.id %}"><li>{{conten.titulo}}</li></a>
-                    {%endfor%}
-                </ol>
-            </div>
-        </div>
-    </div>
-{% else %}
-    <div class="row">
-        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
-            <h2>&nbsp;&nbsp;{{Tipo}}</h2><hr/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
-            <table>
-                <thead>
-                    <tr>
-                        <th>
-                            <h3>Lista&nbsp;de&nbsp;{{Tipo}}</h3>
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
-                <ol>
-                    {% for conten in Contenido %}
-                    <a href="{% url 'video' conten.id %}"><li>{{conten.titulo}}</li></a>
-                    {%endfor%}
-                </ol>
-            </div>
-        </div>
-    </div>
-{% endif %}
+    {% endif %}
 {% endblock %}
 {% block menu_lateral_block%}
-<div class="lateral">
-    <div class ="flex-container">
-        <div class="medio">
-            <h4><i class="fa-solid fa-magnifying-glass"></i>&nbsp;Buscador</h4><br>
-            
-            <form action={{Tipo}} method="GET">
-                <div>
-                    <input type="text" onfocus="this.value=''" name="buscar" value="Buscar"></br></br>
+    <div class="lateral">
+        <div class ="flex-container">
+            <div class="medio">
+                <h4><i class="fa-solid fa-magnifying-glass"></i>&nbsp;Buscador</h4><br>
+                
+                <form action={{Tipo}} method="GET">
                     <div>
-                        {% if alumno is False %}
-                            <select name="curso" style="width:195px; height:28px;">
-                                <option selected>Curso</option>
-                                <option>1º ESO </option>
-                                <option>2º ESO </option>
-                                <option>3º ESO </option>  
-                                <option>4º ESO </option>      
-                            </select></br></br>
-                        {% endif %}
+                        <input type="text" onfocus="this.value=''" name="buscar" value="Buscar"></br></br>
+                        <div>
+                            {% if alumno is False %}
+                                <select name="curso" style="width:195px; height:28px;">
+                                    <option selected>Curso</option>
+                                    <option>1º ESO </option>
+                                    <option>2º ESO </option>
+                                    <option>3º ESO </option>  
+                                    <option>4º ESO </option>      
+                                </select></br></br>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <select name="tema" style="width:195px; height:28px;">
-                        <option selected>Tema</option>
-                        {% for tema in temas%}
-                            <option>{{tema}} </option>
-                        {% endfor %}     
-                    </select></br></br>
-                </div>
-               {% if Tipo != "Resúmenes" and Tipo != "Videos" %}
                     <div>
-                        <select name="tipo" style="width:195px; height:28px;">
-                            <option selected>Tipo</option>
-                            <option>Test </option>
-                            <option>Respuesta corta </option>
-                            <option>Problema </option>     
+                        <select name="tema" style="width:195px; height:28px;">
+                            <option selected>Tema</option>
+                            {% for tema in temas%}
+                                <option>{{tema}} </option>
+                            {% endfor %}     
                         </select></br></br>
                     </div>
-                {%endif%}
-                <input type="submit" value="Aceptar"></input>
+                {% if Tipo != "Resúmenes" and Tipo != "Videos" %}
+                        <div>
+                            <select name="tipo" style="width:195px; height:28px;">
+                                <option selected>Tipo</option>
+                                <option>Test </option>
+                                <option>Respuesta corta </option>
+                                <option>Problema </option>     
+                            </select></br></br>
+                        </div>
+                    {%endif%}
+                    <input type="submit" value="Aceptar"></input>
 
-            </form>
+                </form>
 
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

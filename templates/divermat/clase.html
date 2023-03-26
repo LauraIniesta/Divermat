@@ -18,23 +18,6 @@
                         <a href="{% url 'ejerciciosAsignados' clase.id %}"> Ejercicios&nbsp;Asignados </a>
                         
                     </div>
-                    <!-- <div class="col-4">
-                        <a href="{% url 'seguimientoclase' clase.id %}">Seguimiento Clase</a> 
-                        
-                    </div> -->
-                    <!-- <table>
-                        <tr>
-                            <td style="width: 350px;">
-                                <h2>Clase: {{curso}}º {{nombre}}</h2>
-                            </td>
-                            <td style="width: 350px;">
-                                <a href="{% url 'ejerciciosAsignados' clase.id %}"> Ejercicios Asignados </a>
-                            </td>
-                            <td style="width: 350px;">
-                             <a href="{% url 'seguimientoclase' clase.id %}"><h3>Seguimiento Clase</h3></a> 
-                            </td>
-                        </tr>
-                    </table> -->
                 </div>
                 <div class="row">
                     <div class="col-xs-4 col-md-4 col-lg-4">
@@ -183,38 +166,57 @@
         </div>
     {% else %}
     <div class="row">
-        <div class="col-12">
+        <div class="col-xs-5 col-md-5 col-lg-5 offset-md-3">
+            <h2>&nbsp;&nbsp;&nbsp;&nbsp;Clase:&nbsp;{{curso}}º&nbsp;{{nombre}}</h2><hr>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-4 col-md-4 col-lg-4 offset-md-2">
             <div class="row">
-                <div class="col-1"></div>
-                <div class="col-xs-4 col-md-4 col-lg-4 offset-md-2"> 
-                    <h2>Clase:&nbsp;{{curso}}º&nbsp;{{nombre}}</h2>
+                <div class="col-xs-12 col-md-12 col-lg-12">
+                    <h3>Información</h3><br>
                 </div>
-                <div class="col-xs-4 col-md-4 col-lg-4"></div>
             </div>
             <div class="row">
-                <div class="col-xs-4 col-md-4 col-lg-4 offset-md-2">
-                    <h3>Ejercicios Asignados</h3>
-                    <ol>            
-                        {% for ejercicio in ejercicios.all %}
-                            <a href="{% url 'ejercicio' ejercicio.id %}"><li>{{ejercicio.titulo}}</li></a><br>
-                        {%endfor%}
-                    </ol> 
-                    <a href="{% url 'ejerciciosAsignados' clase.id %}"> Más Información </a> 
-                               
-                </div>
-                <div class="col-xs-6 col-md-6 col-lg-6">
-                    <h3>Información</h3>
+                <div class="col-xs-12 col-md-12 col-lg-12">
                     <div>
-                        <b>Curso:</b> {{curso}}<br>
-                        <b>Año Académico:</b> {{ano_academico}}<br>
-                        <b>Nombre: </b>{{nombre}}<br>
-                        <b>Total Alumnos: </b>{{nalumnos}}<br>
-                        <b>Centro Educativo: </b>{{centro}}<br>
+                        <b>Curso:&nbsp;</b>{{curso}}º&nbsp;E.S.O<br>
+                        <b>Año&nbsp;Académico:&nbsp;</b>{{ano_academico}}<br>
+                        <b>Nombre:&nbsp;</b>{{nombre}}<br>
+                        <b>Total&nbsp;Alumnos:&nbsp;</b>{{nalumnos}}<br>
+                        <b>Centro&nbsp;Educativo:&nbsp;</b>{{centro}}<br>
                     </div>
+    
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-4 col-md-4 col-lg-4">
+            <div class="row">
+                <div class="col-xs-12 col-md-12 col-lg-12">
+                    <h3>Ejercicios&nbsp;Asignados</h3><br>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12 col-lg-12">
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 170px!important;">
+                        <ol>            
+                            {% for ejercicio in ejercicios.all %}
+                                <a href="{% url 'ejercicio' ejercicio.id %}"><li>{{ejercicio.titulo}}</li></a>
+                            {%endfor%}
+                        </ol> 
+                                 
+                    </div>
+
+                    <br><br><a href="{% url 'ejerciciosAsignados' clase.id %}"> &nbsp;&nbsp;Más&nbsp;Información&nbsp;</a>
+
                 </div>
             </div>
         </div>
     </div>
+
     {% endif %}
 </div>
       

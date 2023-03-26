@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body_block %}
-
+    
     {% if alumno is False%}
         <div class="row">
             <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
@@ -76,52 +76,63 @@
         </div>
            
     {% else %}
-        <div>
-            <table>
-                <tr>
-                    <td>Clase:<a href="{% url 'clase' clase.id %}"> {{clase.curso}}º ESO {{clase.nombre}}</a></td>
-                    <td><h3>Seguimiento</h3></td>
-                    <td><a href="{% url 'cambiar_contrasenia' %}">Cambiar Contraseña</a></td>
-                    <td><a href="{% url 'cambiarInformacionAlumno' %}">Cambiar Informacion</a></td>
+        <div class="row">
+            <div class="col-xs-3 col-md-3 col-lg-3">
+                <b>Clase:</b><a href="{% url 'clase' clase.id %}">&nbsp;{{clase.curso}}º&nbsp;ESO&nbsp;{{clase.nombre}}</a>
+            </div>
+            <div class="col-xs-4 col-md-4 col-lg-4">
+                <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mi&nbsp;Perfil</h2><hr/>
+            </div>
+            <div class="col-xs-2 col-md-2 col-lg-2">
+                <a href="{% url 'cambiar_contrasenia' %}">Cambiar&nbsp;Contraseña</a>
+            </div>
 
-                </tr>
-               
-                <tr>
-                    <td>
-                        <!--Poner lo de ordenar la tabla-->
-                    </td>
-                    <td>
-                        <div>
-                            <table id="seguimiento">
-                                <tr>
-                                    <th onclick="sortTable(0,'seguimiento',1)">
-                                        <h4>Temas</h4>
-                                    </th>
-                                    <th onclick="sortTable(1,'seguimiento',1)">
-                                            <h4>% Acierto</h4>
-                                    </th>
-                                    <th onclick="sortTable(2,'seguimiento',1)" style="text-align: center">
-                                            <h4>Nº Ejercicios Hechos</h4>
-                                    </th>
-                                </tr>
-                                {% for seg in seguimiento%}
-                                    <tr>
-                                        <td>
-                                            {{seg.tema}}
-                                        </td>
-                                        <td>
-                                            {{seg.acierto}}
-                                        </td>
-                                        <td style="text-align: center">
-                                            {{seg.n_ejercicios}}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-                    </td>
-                </tr>      
-            </table>
+            <div class="col-xs-2 col-md-2 col-lg-2">
+                <a href="{% url 'cambiarInformacionAlumno' %}">Cambiar&nbsp;Informacion</a>
+            </div>
+        </div>
+        <div class="row">
+            
+            <div class="col-xs-4 col-md-4 col-lg-4 offset-md-3">
+                <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Seguimiento&nbsp;</h3>
+            </div>
+           
+        </div>
+        <div class="row">
+            <div class="col-xs-9 col-md-9 col-lg-9 offset-md-1">
+                <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 270px!important;">
+                    <table id="seguimiento" class="table-hover table" style=" border-collapse: collapse !important;  text-align: left;">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0,'seguimiento',1)">
+                                <h5>
+                                    <i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;Temas
+                                </h5>
+                            </th>
+                            <th onclick="sortTable(1,'seguimiento',1)">
+                                    <h5><i class="fa-solid fa-arrow-down-z-a"></i>&nbsp;%&nbsp;Acierto</h5>
+                            </th>
+                            <th onclick="sortTable(2,'seguimiento',1)" style="text-align: center">
+                                    <h5><i class="fa-solid fa-arrow-down-z-a"></i>Nº&nbsp;Ejercicios&nbsp;Hechos</h5>
+                            </th>
+                        </tr>
+                    </thead>   
+                        {% for seg in seguimiento%}
+                            <tr>
+                                <td>
+                                    {{seg.tema}}
+                                </td>
+                                <td>
+                                    {{seg.acierto}}
+                                </td>
+                                <td style="text-align: center">
+                                    {{seg.n_ejercicios}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
         </div>
     {% endif %}
 {% endblock %}

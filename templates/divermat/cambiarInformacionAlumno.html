@@ -5,53 +5,34 @@
 {% endblock %}
 
 {% block body_block %}
-<div>
-    <table>
-        <tr>
-            <td><h3>Información</h3></td>
-            <td><h3>Cambiar Información</h3></td>
-        </tr>
-        
-            <tr>
-                <td>
-                    <table>
-                        <tr>
-                            <tr>
-                                <td>
-                                    Nombre de usuario: {{username}}
-                                </td>
-                            </tr>
-                            <td>
-                                Nombre: {{nombre}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Apellidos: {{apellidos}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Centro educativo: {{centro}}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td>
-                    Introduce los nuevos datos:
-                    <form id="NuevaInfo" action="cambiarInformacionAlumno" method="POST">
-                        <table>
-                            {{form}}
-                        </table>
-                        {% csrf_token %}
-            
-                       <br> <input class="boton" type="submit" value="Cambiar"> <br><br>
-                       
-                        
-                    </form>
-                </td>
-            </tr>      
-    </table>
-</div>
+<div class="row">
+    <div class="col-xs-5 col-md-5 col-lg-5 offset-md-3">
+        <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mi&nbsp;Información</h2><hr>
 
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-4 col-md-4 col-xl-4 offset-md-1">
+        <h3>Información</h3><br>
+        <div>
+            <b>Nombre&nbsp;de&nbsp;usuario:&nbsp;</b>{{username}}<br>
+            <b>Nombre:&nbsp;</b>{{nombre}}<br>
+            <b>Apellidos:&nbsp;</b>{{apellidos}}<br>
+            <b>Centro&nbsp;Educativo:&nbsp;</b>{{centro}}<br>
+        </div>
+
+    </div>
+    <div class="col-xs-5 col-md-5 col-xl-5 offset-md-1">
+        <h3>Cambiar&nbsp;Información</h3><br>
+        <h5>Introduce&nbsp;los&nbsp;nuevos&nbsp;datos:</h5>
+        <form id="NuevaInfo" action="cambiarInformacionAlumno" method="POST">
+            <table>
+                {{form}}
+            </table>
+            {% csrf_token %}
+
+           <br> <input class="boton" type="submit" value="Cambiar"> <br><br>          
+        </form>
+    </div>
+</div>
 {% endblock %}
