@@ -27,7 +27,18 @@
         <h5>Introduce&nbsp;los&nbsp;nuevos&nbsp;datos:</h5>
         <form id="NuevaInfo" action="cambiarInformacionAlumno" method="POST">
             <table>
-                {{form}}
+                <tr>
+                    <td>
+                        <b>Nombre:&nbsp;</b> {{form.first_name}}<br>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:300px;">
+                        <b>Apellidos:&nbsp;</b>{{form.last_name}}
+
+                    </td>
+                </tr>
             </table>
             {% csrf_token %}
 

@@ -191,7 +191,7 @@ class Seguimiento(models.Model):
                                  on_delete=models.CASCADE,
                                  default=None, null=True)
     ejercicios = models.ManyToManyField(Ejercicio,
-                                default=None) #Ids de los ejercicios que ha realizado
+                                default=None)
     n_ejercicios = models.IntegerField(default=0,null=True)
     acierto = models.FloatField(default=0.0, null=True)
     
