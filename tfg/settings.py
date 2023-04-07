@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from django.conf.global_settings import DATABASES
+import dj_database_url
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tfg.settings")
 
@@ -49,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',    
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -91,18 +92,17 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-"""
-if os.getenv('SQLITE', False):
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-else:
-    # import dj_database_url
-    DATABASES['default'] = dj_database_url.config(
-        default='postgres://alumnodb:alumnodb@localhost:5432/psi')
 
-"""
+# if os.getenv('SQLITE', False):
+#     DATABASES['default'] = {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# else:
+#     # import dj_database_url
+#     DATABASES['default'] = dj_database_url.config()
+#     DATABASES['default'].update(db_from_env)
+
 
 
 # Password validation
@@ -150,6 +150,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticHeroku')
 MEDIA_URL= "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR,"media/")
 #DATABASE_URL = 'postgres://alumnodb:alumnodb@localhost:5432/psi'

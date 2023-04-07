@@ -200,9 +200,3 @@ class Seguimiento(models.Model):
 
     def __str__(self):
         return str(self.alumno) + " " + str(self.tema) + " "
-
-
-class Foto(models.Model):
-
-    perfil = models.BooleanField(max_length=50, default=True)
-    foto = models.FileField(upload_to='media/fotos/%y',blank=True,null=False)

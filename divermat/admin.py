@@ -1,7 +1,7 @@
 from django.contrib import admin
 from divermat.models import (Profesor, Alumno, User, 
                     Clase, Curso, Ejercicio,EjercicioUsuario,Seguimiento,
-                    Examen, Video, Resumen,Tema, Foto)
+                    Examen, Video, Resumen,Tema)
 
 # Register your models here.
 admin.site.register(Profesor)
@@ -13,6 +13,5 @@ admin.site.register(Video)
 admin.site.register(Resumen)
 admin.site.register(Tema)
 admin.site.register(Examen)
-admin.site.register(Foto)
 admin.site.register(EjercicioUsuario)
 admin.site.register(Seguimiento)
