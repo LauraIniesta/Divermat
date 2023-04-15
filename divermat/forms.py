@@ -44,12 +44,6 @@ class NuevoSetEjercicios(forms.Form):
 
 class Registro(UserCreationForm):
 
-    help_texts = {
-        "Nombre de usuario": None,
-        "Contraseña": None,
-        "password2": None
-    }
-
     class Meta:
         model = Profesor
         fields = (
@@ -63,6 +57,7 @@ class Registro(UserCreationForm):
             
         )
 
+
 class NuevaClase(forms.ModelForm):
 
     class Meta:
@@ -75,7 +70,7 @@ class NuevaClase(forms.ModelForm):
         )
 
         labels = {
-            'name': ('Nombre'),
+            'nombre': ('Nombre'),
             'curso': ('Curso'),
             'ano_academico':('Fecha de Inicio'),
             'n_alumnos':('Número de alumnos'),
@@ -84,8 +79,8 @@ class NuevaClase(forms.ModelForm):
 
 class NuevaInfoProfesor(forms.ModelForm):
 
-    username = forms.CharField(max_length=150,required=False)
-    centro = forms.CharField(max_length=150,required=False)
+    username = forms.CharField(label="Nombre de usuario:",max_length=150,required=False)
+    centro = forms.CharField(label="Centro educativo:",max_length=150,required=False)
 
     class Meta:
         model = Profesor
@@ -93,40 +88,25 @@ class NuevaInfoProfesor(forms.ModelForm):
             'username',
             'centro',
         )
-        help_texts = {
-        "username": None,
-        "centro": None,
-        }
 
-        labels = {
-            'username': ('Nombre de usuario:'),
-            'centro': ('Centro educativo:'),
-        }
 
 class NuevaInfoAlumno(forms.ModelForm):
-    first_name = forms.CharField(max_length=150,required=False)
-    last_name = forms.CharField(max_length=150,required=False)
+    first_name = forms.CharField(label="Nombre:",max_length=150,required=False)
+    last_name = forms.CharField(label="Apellidos:",max_length=150,required=False)
+    
     class Meta:
         model = Alumno
         fields = (
             'first_name',
             'last_name',
         )
-        help_texts = {
-        "first_name": None,
-        "last_name": None,
-        }
 
-        labels = {
-            'first_name': ('Nombre:'),
-            'last_name': ('Apellidos:'),
-        }
 
 class NuevaInfoClase(forms.ModelForm):
     nombre = forms.CharField(max_length=15,required=False)
     curso = forms.ModelChoiceField(queryset=Curso.objects,required=False, widget=forms.widgets.Select(),initial='Curso')
     centro = forms.CharField(max_length=150, required=False)
-    ano_academico = forms.DateField(required=False)
+    ano_academico = forms.DateField(label="Fecha de Inicio:",required=False)
     class Meta:
         model = Clase
         fields = [
@@ -135,19 +115,7 @@ class NuevaInfoClase(forms.ModelForm):
             'ano_academico',
             'centro',
             ]
-        help_texts = {
-        "nombre": None,
-        "centro": None,
-        "ano_academico": None,
-        "curso": None,
-        }
 
-        labels = {
-            'nombre': ('Nombre de la clase:'),
-            'centro': ('Centro educativo:'),
-            'ano_academico': ('Fecha de Inicio:'),
-            'curso': ('Curso:'),
-        }
 
 class NuevoAlumno(forms.Form):
     
@@ -156,6 +124,7 @@ class NuevoAlumno(forms.Form):
     def clean_input(self):
         data = self.cleaned_data
         return data
+
 
 class InicioSesion(forms.Form):
     username=forms.CharField(max_length=255,label="Introduce tu nombre de usuario:")

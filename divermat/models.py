@@ -24,7 +24,7 @@ class Curso(models.Model):
         ordering = ('curso', )
 
     def __str__(self):
-        return self.curso
+        return str(self.curso)
 
 
 class Tema(models.Model):
@@ -160,6 +160,9 @@ class EjercicioUsuario(models.Model):
 
     resultado = models.CharField(max_length=1000, default = None, null=True)
 
+    def __str__(self):
+        return str(self.ejercicio) + " " + str(self.alumno) + " " +self.resultado
+
 
 class Examen(models.Model):
     titulo = models.CharField(max_length=200, default=None) #COmbinará el usuario con el curso y tema
@@ -181,7 +184,7 @@ class Examen(models.Model):
         ordering = ('curso', 'titulo', )
 
     def __str__(self):
-        return str(self.curso) + " " + self.titulo + " "
+        return str(self.curso) + " " + self.titulo
 
 class Seguimiento(models.Model):
     alumno = models.ForeignKey(Alumno, 
@@ -199,4 +202,4 @@ class Seguimiento(models.Model):
         ordering = ('tema',  )
 
     def __str__(self):
-        return str(self.alumno) + " " + str(self.tema) + " "
+        return str(self.alumno) + " " + str(self.tema)

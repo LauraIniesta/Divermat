@@ -4,9 +4,8 @@ from . import views
 
 urlpatterns = [
     url(r'setEjercicios/(?P<idTema>[\w]+)/$', views.setEjercicios, name='setEjercicios'),
-    url(r'setEjercicios/$', views.setEjercicios, name='setEjercicios'),
+    # url(r'setEjercicios/$', views.setEjercicios, name='setEjercicios'),
     url(r'examen/(?P<examen>[\w]+)/$', views.examen, name='examen'),
-    url(r'examen/$', views.examen, name='examen'),
     url(r'^$', views.index, name='index'),
     url(r'index', views.index, name='index'),
     url(r'Ejercicios', views.index, name='index'),
@@ -23,7 +22,7 @@ urlpatterns = [
     url(r'^ejerciciosAsignados/(?P<claseid>[\w]+)/$', views.ejerciciosAsignados, name='ejerciciosAsignados'),
     url(r'^ejerciciosAsignados/$', views.ejerciciosAsignados, name='ejerciciosAsignados'),
     url(r'ejercicio/(?P<ejercicio>[\w]+)/$', views.ejercicio, name='ejercicio'),
-    url(r'ejercicio', views.ejercicio, name='ejercicio'),
+    # url(r'ejercicio', views.ejercicio, name='ejercicio'),
     url(r'video/(?P<idVideo>[\w]+)/$', views.video, name='video'),
     url(r'resumen/(?P<idResumen>[\w]+)/$', views.resumen, name='resumen'),
     url(r'infoclase/(?P<claseid>[\w]+)/$', views.infoclase, name='infoclase'),

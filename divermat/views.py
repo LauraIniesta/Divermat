@@ -1,6 +1,7 @@
 from contextlib import nullcontext
 from http.client import HTTPException, HTTPResponse
 from django.http import Http404
+from django.urls import reverse
 from django.shortcuts import render, redirect
 
 from divermat.models import (Profesor, Alumno, Usuario, User,
@@ -56,7 +57,7 @@ def index(request):
                 
                 form = NuevoSetEjercicios(request.POST)
                 if form.is_valid():
-                    #Crear un examen que tenga 10 preguntas del tema y curso seleccionado y mostrarlo
+                    #Crear un set de ejercicios que tenga 10 preguntas del tema y curso seleccionado y mostrarlo
                     tema = form.cleaned_data['tema']
                     request.method = 'GET'
                     return setEjercicios(request,tema.id)
@@ -124,6 +125,9 @@ class registro(CreateView):
 def iniciar_sesion(request):
     content = {}
     error=False
+    if request.user.is_authenticated:
+        return redirect('index')
+    
     if request.method == 'POST':
         form = InicioSesion(request.POST)
 
@@ -215,24 +219,6 @@ def perfilProfesor(request,profesor):
 def perfilAlumno(request,alumno):
     content = {}
     content['registro'] = False
-
-    if request.method == 'POST':
-        form = NuevaInfoAlumno(request.POST)
-        if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            if first_name != "":
-                alumno.first_name = first_name
-                alumno.save()
-            if last_name != "":
-                alumno.last_name = last_name
-                alumno.save()
-    content['form'] = NuevaInfoAlumno()
-
-    content['nombre'] = alumno.first_name 
-    content['apellidos'] = alumno.last_name
-    content['username'] = alumno.username
-    content['centro'] = alumno.centro
     content['alumno'] = True
     content['clase'] = alumno.clase
     content['seguimiento'] = Seguimiento.objects.filter(alumno=alumno)
@@ -280,125 +266,82 @@ def setEjercicios(request,idTema=None):
     content['registro'] = False
     content['alumno'] = True
     content['profesor'] = False
-    tema = Tema.objects.get(id=idTema)
-    content['tema'] = tema
-    set = []
-    ejercicios = Ejercicio.objects.filter(tema=tema)
-    j=0
-    if len(ejercicios) >= 5:
-        while j < 5:
-            i = random.randint(0,len(ejercicios)-1)
-            ejercicio = ejercicios[i]
-            if ejercicio not in set:
-                ejercicio_data = {}
-                ejercicio_data['id'] = ejercicio.id
-                ejercicio_data['enunciado'] = ejercicio.enunciado
-                ejercicio_data['titulo'] = ejercicio.titulo
-                ejercicio_data['tipo'] = ejercicio.tipo
-                ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
-                ejercicio_data['foto'] = ejercicio.foto
-                soluciones = ejercicio.soluciones.split(";")
-                for solucion in soluciones:
-                    solucion_data={}
-                    solucion_data['solucion'] = solucion
-                    solucion_data['checked'] = False
-                    soluciones_data.append(solucion_data)
-                ejercicio_data['soluciones'] = soluciones_data
-                set.append(ejercicio_data)
-                j+=1
-    else:
-        for ejercicio in ejercicios:
-                ejercicio_data = {}
-                ejercicio_data['id'] = ejercicio.id
-                ejercicio_data['enunciado'] = ejercicio.enunciado
-                ejercicio_data['titulo'] = ejercicio.titulo
-                ejercicio_data['tipo'] = ejercicio.tipo
-                ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
-                ejercicio_data['foto'] = ejercicio.foto
+    if request.user.is_authenticated:
 
-                soluciones = ejercicio.soluciones.split(";")
-                soluciones_data=[]
-                for solucion in soluciones:
-                    solucion_data={}
-                    solucion_data['solucion'] = solucion
-                    solucion_data['checked'] = False
-                    soluciones_data.append(solucion_data)
-                ejercicio_data['soluciones'] = soluciones_data
-                set.append(ejercicio_data)
-    
-    if request.method == 'POST':
-
-        if request.user.is_authenticated:
+        try:
+            alumno = Alumno.objects.get(username=request.user)
             try:
-                alumno = Alumno.objects.get(username=request.user)
-                correcto = False
-            except Alumno.DoesNotExist:
-                alumno = None
+                try:
+                    tema = Tema.objects.get(id=idTema)
+                except ValueError:
+                    return redirect('index')
+            except Tema.DoesNotExist:
+                return redirect('index')
 
-        form_data = request.POST
-        for ejercicio_data in set:
-            ejercicio = Ejercicio.objects.get(id=ejercicio_data['id'])
-            ejercicio_data, correcto =  getSolucionesEjercicio(ejercicio_data,ejercicio,None,form_data)
-            # if ejercicio.nsoluciones == 1:
-            #     ejercicio_data['resultado'] = "Respuesta incorrecta el resultado esperado era: " + str(ejercicio.solucion_correcta)
-            #     correcto=False
-            #     # if ejercicio.tipo  is 1:
-            #     #     respuesta = form_data.get(str(ejercicio.id))
-            #     # else:
-            #     respuesta = form_data.get(str(ejercicio.id))
-            #     #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
-            #     soluciones_data=[]
-            #     for solucion in ejercicio.soluciones.split(";"):
-            #         solucion_data={}
-            #         solucion_data['solucion'] = solucion
-            #         solucion_data['checked'] = False
-            #         if solucion == respuesta:
-            #             solucion_data['checked'] = True
-            #         soluciones_data.append(solucion_data)
-            #     ejercicio_data['soluciones'] = soluciones_data
-                
-            #     if str(respuesta).replace(",",".").replace("'",".") == str(ejercicio.solucion_correcta).replace(",",".").replace("'","."):
-            #         ejercicio_data['resultado'] = "¡Respuesta Correcta!"
-            #         correcto=True
+            content['tema'] = tema
+            set = []
+            ejercicios = Ejercicio.objects.filter(tema=tema)
+            j=0
+            if len(ejercicios) >= 5:
+                while j < 5:
+                    i = random.randint(0,len(ejercicios)-1)
+                    ejercicio = ejercicios[i]
+                    if ejercicio not in set:
+                        ejercicio_data = {}
+                        ejercicio_data['id'] = ejercicio.id
+                        ejercicio_data['enunciado'] = ejercicio.enunciado
+                        ejercicio_data['titulo'] = ejercicio.titulo
+                        ejercicio_data['tipo'] = ejercicio.tipo
+                        ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
+                        ejercicio_data['foto'] = ejercicio.foto
+                        soluciones = ejercicio.soluciones.split(";")
+                        for solucion in soluciones:
+                            solucion_data={}
+                            solucion_data['solucion'] = solucion
+                            solucion_data['checked'] = False
+                            soluciones_data.append(solucion_data)
+                        ejercicio_data['soluciones'] = soluciones_data
+                        set.append(ejercicio_data)
+                        j+=1
+            else:
+                for ejercicio in ejercicios:
+                        ejercicio_data = {}
+                        ejercicio_data['id'] = ejercicio.id
+                        ejercicio_data['enunciado'] = ejercicio.enunciado
+                        ejercicio_data['titulo'] = ejercicio.titulo
+                        ejercicio_data['tipo'] = ejercicio.tipo
+                        ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
+                        ejercicio_data['foto'] = ejercicio.foto
 
-            # else:
-            #     soluciones_correctas = ejercicio.solucion_correcta.split(";")
-            #     ejercicio_data['resultado'] = "¡Respuesta Correcta!"
-            #     correcto=True
-                
-            #     if ejercicio.tipo == 1:
-
-            #         respuestas = form_data.getlist(str(ejercicio.id))
-            #     else:
-
-            #         respuestas = form_data.get(str(ejercicio.id)).split(";")
-            #     #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
-            #     soluciones_data=[]
-            #     for solucion in ejercicio.soluciones.split(";"):
-            #         solucion_data={}
-            #         solucion_data['solucion'] = solucion
-            #         solucion_data['checked'] = False
-            #         if solucion in respuestas:
-            #             solucion_data['checked'] = True
-            #         soluciones_data.append(solucion_data)
-            #     ejercicio_data['soluciones'] = soluciones_data
-                
-            #     for r in respuestas:
-            #         flag = False
-            #         for sol in soluciones_correctas:
-            #             if str(r).replace(",",".").replace("'",".") == str(sol).replace(",",".").replace("'","."):
-            #                 flag = True
-            #         if(flag == False):
-            #             ejercicio_data['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + str(soluciones_correctas)  
-            #             correcto=False 
+                        soluciones = ejercicio.soluciones.split(";")
+                        soluciones_data=[]
+                        for solucion in soluciones:
+                            solucion_data={}
+                            solucion_data['solucion'] = solucion
+                            solucion_data['checked'] = False
+                            soluciones_data.append(solucion_data)
+                        ejercicio_data['soluciones'] = soluciones_data
+                        set.append(ejercicio_data)
             
-            if alumno:
-                añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)                
-    
-    content['set'] = set
+            if request.method == 'POST':
 
-    return render(request,'divermat/setEjercicios.html', context=content)
+                correcto = False
 
+
+                form_data = request.POST
+                for ejercicio_data in set:
+                    ejercicio = Ejercicio.objects.get(id=ejercicio_data['id'])
+                    ejercicio_data, correcto =  getSolucionesEjercicio(ejercicio_data,ejercicio,None,form_data)           
+                    if alumno:
+                        añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)                
+            
+            content['set'] = set
+
+            return render(request,'divermat/setEjercicios.html', context=content)
+        
+        except Alumno.DoesNotExist:
+            return redirect('index')
+        
 def examenes(request):
     content = {}
     content['registro'] = False
@@ -414,11 +357,10 @@ def examenes(request):
             return examenesAlumno(usuario,request)
            
         except Alumno.DoesNotExist:
-            usuario = None    
+            return redirect('index')   
     #Si no hay un usuario logeado pero quieren hacer un examen
     else:
         return examenesExterno(request)
-    return render(request,'divermat/examenes.html', context=content)
 
 def examenesAlumno(alumno,request):
     content = {}
@@ -499,70 +441,90 @@ def examen(request, examen=None):
     content['registro'] = False
     content['nota'] = True
     set = []
+
+    if request.user.is_authenticated:
+        try:
+            usuario = Alumno.objects.get(username=request.user)
+        except Alumno.DoesNotExist:
+            return redirect('index')
     #Obtenemos el Examen
-    examen_object = Examen.objects.get(id=examen)
-    #Obtenemos los ejercicios del examen para el alumno
-    ejercicios_alumno = examen_object.ejercicios.all()
-    ejercicios_examen = []
+    try:
+        try:
+            examen_object = Examen.objects.get(id=examen)
+        except ValueError:
+            return redirect('examenes')
+        #Obtenemos los ejercicios del examen para el alumno
+        ejercicios_alumno = examen_object.ejercicios.all()
+        ejercicios_examen = []
 
-    #Para cada ejercicio del examen para el alumno
-    for ejercicio_alumno in ejercicios_alumno:
-        #Obtenemos el ejercicio y guardamos los datos que vamos a necesitar en ejercicio_data
-        ejercicio = Ejercicio.objects.get(id=ejercicio_alumno.ejercicio.id)
-        ejercicios_examen.append(ejercicio)
-        ejercicio_data = getEjercicioDataSolucionesSeleccionadas(ejercicio_alumno,ejercicio)
-        #Añadimos la info del ejercicio al set
-        set.append(ejercicio_data)
+        #Para cada ejercicio del examen para el alumno
+        for ejercicio_alumno in ejercicios_alumno:
+            #Obtenemos el ejercicio y guardamos los datos que vamos a necesitar en ejercicio_data
+            ejercicio = Ejercicio.objects.get(id=ejercicio_alumno.ejercicio.id)
+            ejercicios_examen.append(ejercicio)
+            ejercicio_data = getEjercicioDataSolucionesSeleccionadas(ejercicio_alumno,ejercicio)
+            #Añadimos la info del ejercicio al set
+            set.append(ejercicio_data)
 
-    if request.method == 'POST' and examen_object.fin is None:
-        alumno=None
-        if request.user.is_authenticated:
-            try:
-                alumno = Alumno.objects.get(username=request.user)
-                correcto = False
-                content['alumno'] = True
-            except Alumno.DoesNotExist:
-                alumno = None
+        if request.method == 'POST' and examen_object.fin is None:
+            alumno=None
+            if request.user.is_authenticated:
+                try:
+                    alumno = Alumno.objects.get(username=request.user)
+                    correcto = False
+                    content['alumno'] = True
+                except Alumno.DoesNotExist:
+                    alumno = None
 
-        form_data = request.POST
-        ejercicios_correctos = 0
-        for ejercicio_data in set:
-            ejercicio = Ejercicio.objects.get(id=ejercicio_data['id'])
-            ejercicio_data,correcto = getSolucionesEjercicio(ejercicio_data,ejercicio,ejercicios_alumno,form_data)
+            form_data = request.POST
+            ejercicios_correctos = 0
+            for ejercicio_data in set:
+                ejercicio = Ejercicio.objects.get(id=ejercicio_data['id'])
+                ejercicio_data,correcto = getSolucionesEjercicio(ejercicio_data,ejercicio,ejercicios_alumno,form_data)
+                
+                if alumno:
+                    añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)   
+                if correcto:
+                    ejercicios_correctos += 1
+
+            if ejercicios_correctos > 0:
+                examen_object.nota = round((ejercicios_correctos*100)/len(ejercicios_alumno),2)
+            else:
+                examen_object.nota = 0
             
-            if alumno:
-                añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)   
-            if correcto:
-                ejercicios_correctos += 1
+            examen_object.fin=datetime.now(timezone.utc)
+            examen_object.save()
 
-        if ejercicios_correctos > 0:
-            examen_object.nota = round((ejercicios_correctos*100)/len(ejercicios_alumno),2)
-        else:
-            examen_object.nota = 0
+        examen_data={}
         
-        examen_object.fin=datetime.now(timezone.utc)
-        examen_object.save()
-
-    examen_data={}
+        if examen_object.cronometrado is True:
+            examen_data['cronometrado'] = True
+            tiempo = str(examen_object.fin - examen_object.inicio)
+            examen_data['tiempo'] = tiempo.split(".")[0]
+            examen_object.save()
+        
+        examen_data['ejercicios'] = set
+        examen_data['examen'] = examen_object
+        content['examen_data']=examen_data
+        content['hacer_examen'] = False
+        #SI hay user authenticated poner Alumno a True
+        return render(request,'divermat/examen.html', context=content)
     
-    if examen_object.cronometrado is True:
-        examen_data['cronometrado'] = True
-        tiempo = str(examen_object.fin - examen_object.inicio)
-        examen_data['tiempo'] = tiempo.split(".")[0]
-        examen_object.save()
-    
-    examen_data['ejercicios'] = set
-    examen_data['examen'] = examen_object
-    content['examen_data']=examen_data
-    content['hacer_examen'] = False
-    #SI hay user authenticated poner Alumno a True
-    return render(request,'divermat/examen.html', context=content)
+    except Examen.DoesNotExist:
 
+        return redirect('examenes')
+    
 def videos(request):
     #Mostrar en pequeño la ventana del video
     content = {}
     content['registro'] = False
     content['alumno'] = False
+    if request.user.is_authenticated:
+        try:
+            usuario = Alumno.objects.get(username=request.user)
+        except Alumno.DoesNotExist:
+            return redirect('index')
+        
     content['Tipo'] = 'Videos'
     content['Contenido'] = {}
     todos_videos = Video.objects.all()
@@ -598,24 +560,32 @@ def video(request,idVideo):
     content = {}
     content['registro'] = False
     content['alumno'] = False
-    content['video'] = Video.objects.get(id=idVideo)
-    if request.user.is_authenticated:
-        try:
-            alumno = Alumno.objects.get(username=request.user)
-            content['alumno'] = True
-            content['profesor'] = False
-        except Alumno.DoesNotExist:
-            alumno = None
-            content['alumno'] = False
-            content['profesor'] = True
+    try:
+        content['video'] = Video.objects.get(id=idVideo)
+        if request.user.is_authenticated:
+            try:
+                alumno = Alumno.objects.get(username=request.user)
+                content['alumno'] = True
+                content['profesor'] = False
+            except Alumno.DoesNotExist:
+                alumno = None
+                content['alumno'] = False
+                content['profesor'] = True
 
-    return render(request,'divermat/video.html',content)
+        return render(request,'divermat/video.html',content)
+    except Video.DoesNotExist or ValueError:
+        return redirect('index')
 
 def resumenes(request):
 
     content = {}
     content['registro'] = False
     content['alumno'] = False
+    if request.user.is_authenticated:
+        try:
+            usuario = Alumno.objects.get(username=request.user)
+        except Alumno.DoesNotExist:
+            return redirect('index')
     content['Tipo'] = 'Resúmenes'
     content['Contenido'] = {}
     todos_res = Resumen.objects.all()
@@ -646,25 +616,29 @@ def resumenes(request):
     
     return render(request,'divermat/inicio.html', context=content,)
 
-
 #Mostrar el resumen como tal
 def resumen(request,idResumen):
     content = {}
     content['registro'] = False
     content['alumno'] = False
-    content['resumen'] = Resumen.objects.get(id=idResumen)
-    if request.user.is_authenticated:
+    try:
         try:
-            alumno = Alumno.objects.get(username=request.user)
-            content['alumno'] = True
-            content['profesor'] = False
-        except Alumno.DoesNotExist:
-            alumno = None
-            content['alumno'] = False
-            content['profesor'] = True
+            content['resumen'] = Resumen.objects.get(id=idResumen)
+        except ValueError:
+            return redirect('index')
+        if request.user.is_authenticated:
+            try:
+                alumno = Alumno.objects.get(username=request.user)
+                content['alumno'] = True
+                content['profesor'] = False
+            except Alumno.DoesNotExist:
+                alumno = None
+                content['alumno'] = False
+                content['profesor'] = True
 
-    return render(request,'divermat/resumen.html', content )
-
+        return render(request,'divermat/resumen.html', content )
+    except Resumen.DoesNotExist:
+        return redirect('index')
 
 #Mostrar el ejercicio como tal para obtener respuesta del usuario
 def ejercicio(request, ejercicio=None):
@@ -682,51 +656,57 @@ def ejercicio(request, ejercicio=None):
             profesor = Profesor.objects.get(username=request.user)
             return ejercicioProfesor(request,ejercicio)
     if ejercicio:
-        content['ejercicio'] = Ejercicio.objects.get(id=ejercicio)
-        ejercicio = Ejercicio.objects.get(id=ejercicio)
-        soluciones = ejercicio.soluciones.split(";")
-        content['soluciones'] = []
-        solucion_seleccionada = request.GET.getlist('solucion', [])
+        try:
+            try:
+                content['ejercicio'] = Ejercicio.objects.get(id=ejercicio)
+            except ValueError:
+                return redirect('index')
+            
+            ejercicio = Ejercicio.objects.get(id=ejercicio)
+            soluciones = ejercicio.soluciones.split(";")
+            content['soluciones'] = []
+            solucion_seleccionada = request.GET.getlist('solucion', [])
 
-        for solucion in soluciones:
-            solucion_data={}
-            solucion_data['solucion'] = solucion
-            solucion_data['checked'] = False
-            if solucion in solucion_seleccionada:
-                solucion_data['checked'] = True
+            for solucion in soluciones:
+                solucion_data={}
+                solucion_data['solucion'] = solucion
+                solucion_data['checked'] = False
+                if solucion in solucion_seleccionada:
+                    solucion_data['checked'] = True
 
-            content['soluciones'].append(solucion_data)
+                content['soluciones'].append(solucion_data)
 
-        if solucion_seleccionada:
-            solucion_esperada_string = str(ejercicio.solucion_correcta).lower().replace("'",".").replace(",",".").replace(";",", ")
+            if solucion_seleccionada:
+                solucion_esperada_string = str(ejercicio.solucion_correcta).lower().replace("'",".").replace(",",".").replace(";",", ")
 
-            if ejercicio.nsoluciones == 1:
-                
-                if str(ejercicio.solucion_correcta).lower().replace(",",".").replace("'",".") == str(solucion_seleccionada[0]).lower().replace(",",".").replace("'","."):
-                    content['resultado'] = "¡Respuesta correcta!"
-                    correcto = True
-                else:
-                    content['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string
-                    correcto = False
-            else:
-                content['resultado'] = "¡Respuesta correcta!"
-                correcto = True
-                soluciones_correctas = ejercicio.solucion_correcta.lower().split(";")
-                for el in solucion_seleccionada:
-                    flag = False
-                    for sol in soluciones_correctas:
-                        if str(el).lower().replace(",",".").replace("'",".") == str(sol).lower().replace(",",".").replace("'","."):
-                            flag = True
-                    if(flag == False):
+                if ejercicio.nsoluciones == 1:
+                    
+                    if str(ejercicio.solucion_correcta).lower().replace(",",".").replace("'",".") == str(solucion_seleccionada[0]).lower().replace(",",".").replace("'","."):
+                        content['resultado'] = "¡Respuesta correcta!"
+                        correcto = True
+                    else:
                         content['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string
                         correcto = False
-            if alumno!=None:
-                EjercicioUsuario.objects.create(ejercicio=ejercicio,alumno=alumno,soluciones_seleccionadas=solucion_seleccionada,resultado=content['resultado'])
-                añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)
-        
-        if ejercicio.tipo == 2:
-            content['solucion_introducida']=str(solucion_seleccionada).replace("[","").replace("]","").replace(",",".").replace("'","").replace(" ","")
-
+                else:
+                    content['resultado'] = "¡Respuesta correcta!"
+                    correcto = True
+                    soluciones_correctas = ejercicio.solucion_correcta.lower().split(";")
+                    for el in solucion_seleccionada:
+                        flag = False
+                        for sol in soluciones_correctas:
+                            if str(el).lower().replace(",",".").replace("'",".") == str(sol).lower().replace(",",".").replace("'","."):
+                                flag = True
+                        if(flag == False):
+                            content['resultado'] = "Respuesta incorrecta, el resultado esperado era: " + solucion_esperada_string
+                            correcto = False
+                if alumno!=None:
+                    EjercicioUsuario.objects.create(ejercicio=ejercicio,alumno=alumno,soluciones_seleccionadas=solucion_seleccionada,resultado=content['resultado'])
+                    añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)
+            
+            if ejercicio.tipo == 2:
+                content['solucion_introducida']=str(solucion_seleccionada).replace("[","").replace("]","").replace(",",".").replace("'","").replace(" ","")
+        except Ejercicio.DoesNotExist:
+            return redirect('index')
     return render(request,'divermat/ejercicio.html', context=content)
 
 @login_required
@@ -736,31 +716,35 @@ def ejercicioProfesor(request,ejercicio):
     content['profesor'] = True
     content['alumno'] = False
     if ejercicio:
-        content['ejercicio'] = Ejercicio.objects.get(id=ejercicio)
-        ejercicio = Ejercicio.objects.get(id=ejercicio)
-        soluciones = ejercicio.soluciones.split(";")
-        content['soluciones'] = []
+        try:
+            try:
+                content['ejercicio'] = Ejercicio.objects.get(id=ejercicio)
+            except ValueError:
+                return redirect('index')
+            ejercicio = Ejercicio.objects.get(id=ejercicio)
+            soluciones = ejercicio.soluciones.split(";")
+            content['soluciones'] = []
 
-        if ejercicio.nsoluciones == 1:
-            print("1 solucion")
-            for solucion in soluciones:
-                solucion_data={}
-                solucion_data['solucion'] = solucion
-                solucion_data['checked'] = False
-                if ejercicio.solucion_correcta == solucion:
-                    solucion_data['checked'] = True
-                content['soluciones'].append(solucion_data)              
-        else:
+            if ejercicio.nsoluciones == 1:
+                for solucion in soluciones:
+                    solucion_data={}
+                    solucion_data['solucion'] = solucion
+                    solucion_data['checked'] = False
+                    if ejercicio.solucion_correcta == solucion:
+                        solucion_data['checked'] = True
+                    content['soluciones'].append(solucion_data)              
+            else:
 
-            soluciones_correctas = ejercicio.solucion_correcta.split(";")
-            for solucion in soluciones:
-                solucion_data={}
-                solucion_data['solucion'] = solucion
-                solucion_data['checked'] = False
-                if solucion in soluciones_correctas:
-                    solucion_data['checked'] = True
-                content['soluciones'].append(solucion_data)
-
+                soluciones_correctas = ejercicio.solucion_correcta.split(";")
+                for solucion in soluciones:
+                    solucion_data={}
+                    solucion_data['solucion'] = solucion
+                    solucion_data['checked'] = False
+                    if solucion in soluciones_correctas:
+                        solucion_data['checked'] = True
+                    content['soluciones'].append(solucion_data)
+        except (Ejercicio.DoesNotExist or ValueError):
+            return redirect('index')
 
     return render(request,'divermat/ejercicioProfesor.html', context=content)
 
@@ -769,71 +753,76 @@ def clases(request):
 
     content = {}
     content['registro'] = False
-    profesor = Profesor.objects.get(username=request.user)
-    content['profesor'] = True
-    content['alumno'] = False
-    clasesProf = Clase.objects.filter(profesor=profesor)
+    try:
+        profesor = Profesor.objects.get(username=request.user)
+        content['profesor'] = True
+        content['alumno'] = False
+        clasesProf = Clase.objects.filter(profesor=profesor)
 
-    busqueda = request.GET.get('buscar', '')
-    filtro = request.GET.get('curso', '')
-    content['clases'] = []
-    clases = []
-    if busqueda and busqueda != "Buscar Clase":
-        for c in clasesProf:
-            if unidecode(busqueda.lower()) in unidecode(c.nombre.lower()) or unidecode(busqueda.lower()) in unidecode(str(c.centro).lower()):
-                clases.append(c)
-            elif unidecode(busqueda.lower()) in unidecode(str(c.curso).lower()) or unidecode(busqueda.lower()) in unidecode(str(c.ano_academico).lower()):
-                clases.append(c)
-    else:
-        clases = clasesProf
-    
-    if filtro and filtro != "Curso":
-        for c in clases:
-            if str(c.curso)+"º ESO" == filtro:
-                content['clases'].append(c)
-    else:
-        content['clases'] = clases
-
-    if request.method == 'POST':
-        form = NuevaClase(request.POST)
-        if form.is_valid():
-            nombre = form.cleaned_data['nombre']
-            curso = form.cleaned_data['curso']
-            n_alumnos = form.cleaned_data['n_alumnos']
-           # alumnos_auto = form.cleaned_data['alumnos_auto']
-            ano_academico = form.cleaned_data['ano_academico']
-            clase = Clase()
-            clase.nombre = nombre
-            clase.curso = curso
-            clase.ano_academico = ano_academico
-            clase.n_alumnos = n_alumnos
-            clase.centro = profesor.centro
-            clase.profesor = profesor
-            clase.save()
-            #if alumnos_auto == 'Si':
-            alumnos = Alumno.objects.all().order_by("id")
-            nalm = 0
-            for alm in alumnos:
-                nalm +=1
-            ultimo_id = alumnos[nalm-1].id
-            for i in range(0,n_alumnos):
-                alumno = Alumno()
-                alumno.username = "user_" + str(i+ultimo_id)
-                alumno.password = StringGenerator("[\l\d]{10}").render_list(1,unique=True)[0]
-                alumno.password_temporal = alumno.password
-                alumno.set_password(alumno.password)
-                alumno.centro = profesor.centro
-                alumno.curso = curso
-                alumno.clase = clase
-                alumno.numexamen = 0
-                alumno.tipo = True
-                alumno.save()
+        busqueda = request.GET.get('buscar', '')
+        filtro = request.GET.get('curso', '')
+        content['clases'] = []
+        clases = []
+        if busqueda and busqueda != "Buscar Clase":
+            for c in clasesProf:
+                if unidecode(busqueda.lower()) in unidecode(c.nombre.lower()) or unidecode(busqueda.lower()) in unidecode(str(c.centro).lower()):
+                    clases.append(c)
+                elif unidecode(busqueda.lower()) in unidecode(str(c.curso).lower()) or unidecode(busqueda.lower()) in unidecode(str(c.ano_academico).lower()):
+                    clases.append(c)
+        else:
+            clases = clasesProf
         
-    form = NuevaClase(None,None)
-    content['form'] = form
-    request.method = 'GET'
-    return render(request,'divermat/clases.html', context=content,)
+        if filtro and filtro != "Curso":
+            for c in clases:
+                if str(c.curso)+"º ESO" == filtro:
+                    content['clases'].append(c)
+        else:
+            content['clases'] = clases
 
+        if request.method == 'POST':
+            form = NuevaClase(request.POST)
+            if form.is_valid():
+                nombre = form.cleaned_data['nombre']
+                curso = form.cleaned_data['curso']
+                n_alumnos = form.cleaned_data['n_alumnos']
+            # alumnos_auto = form.cleaned_data['alumnos_auto']
+                ano_academico = form.cleaned_data['ano_academico']
+                clase = Clase()
+                clase.nombre = nombre
+                clase.curso = curso
+                clase.ano_academico = ano_academico
+                clase.n_alumnos = n_alumnos
+                clase.centro = profesor.centro
+                clase.profesor = profesor
+                clase.save()
+                #if alumnos_auto == 'Si':
+                alumnos = Alumno.objects.all().order_by("id")
+                nalm = 0
+                for alm in alumnos:
+                    nalm +=1
+                ultimo_id = alumnos[nalm-1].id
+                for i in range(0,n_alumnos):
+                    alumno = Alumno()
+                    alumno.username = "user_" + str(i+ultimo_id)
+                    alumno.password = StringGenerator("[\l\d]{10}").render_list(1,unique=True)[0]
+                    alumno.password_temporal = alumno.password
+                    alumno.set_password(alumno.password)
+                    alumno.centro = profesor.centro
+                    alumno.curso = curso
+                    alumno.clase = clase
+                    alumno.numexamen = 0
+                    alumno.tipo = True
+                    alumno.save()
+            
+        form = NuevaClase(None,None)
+        content['form'] = form
+        request.method = 'GET'
+        return render(request,'divermat/clases.html', context=content,)
+    
+    except Profesor.DoesNotExist:
+
+        return redirect('index')
+    
 @login_required
 def alumnos(request, alumno=None):
     busqueda = request.GET.get('buscar', '')
@@ -841,35 +830,52 @@ def alumnos(request, alumno=None):
     content = {}
     content['registro'] = False
     content['profesor'] = True
-    content['alumnos'] = []
-    
-    alumnos = Alumno.objects.all()
-    if busqueda and busqueda != "Buscar Alumno":
-        alumnos_filtered = []
-        for a in alumnos:
-            if unidecode(busqueda.lower()) in unidecode(a.first_name.lower()) or unidecode(busqueda.lower()) in unidecode(a.last_name.lower()):
-                alumnos_filtered.append(a)            
-            elif unidecode(busqueda.lower()) in unidecode(a.username.lower()) or unidecode(busqueda.lower()) in unidecode(a.centro.lower()):  
-                alumnos_filtered.append(a) 
-        alumnos = alumnos_filtered
+    try:
+        profesor = Profesor.objects.get(username=request.user)
 
-    if filtro and filtro != "Curso":
-        alumnos_filtered=[]
-        for a in alumnos:
-            if str(a.curso)+"º ESO" == filtro:
-                alumnos_filtered.append(a)
-        alumnos=alumnos_filtered
-    content['alumnos'] = alumnos
-    content["seguimiento"] = False
-    if alumno:
-        for alum in Alumno.objects.all():
-            if alum.id == int(alumno):
-                content['alumno'] = alum    
-                content["seguimiento"] = True
-                break
-        content['informacion'] = Seguimiento.objects.filter(alumno=alum)
-        
-    return render(request,'divermat/alumnos.html', context=content,)
+        content['alumnos'] = []
+        #Obtenemos las clases del profesor
+        clases_profesor = Clase.objects.filter(profesor=profesor)
+        #Recorremos las clases del profesor y obtenemos los alumnos de cada una de ellas y lo añadimos al array alumnos
+        alumnos = []
+        for clase in clases_profesor:
+            alumnos_clase = Alumno.objects.filter(clase=clase)
+            for alumno_indv in alumnos_clase:
+                alumnos.append(alumno_indv)
+
+        alumnos_no_filter = alumnos
+
+        if busqueda and busqueda != "Buscar Alumno":
+            alumnos_filtered = []
+            for a in alumnos:
+                if unidecode(busqueda.lower()) in unidecode(a.first_name.lower()) or unidecode(busqueda.lower()) in unidecode(a.last_name.lower()):
+                    alumnos_filtered.append(a)            
+                elif unidecode(busqueda.lower()) in unidecode(a.username.lower()) or unidecode(busqueda.lower()) in unidecode(a.centro.lower()):  
+                    alumnos_filtered.append(a) 
+            alumnos = alumnos_filtered
+
+        if filtro and filtro != "Curso":
+            alumnos_filtered=[]
+            for a in alumnos:
+                if str(a.curso)+"º ESO" == filtro:
+                    alumnos_filtered.append(a)
+            alumnos=alumnos_filtered
+        content['alumnos'] = alumnos
+        content["seguimiento"] = False
+        if alumno:
+            try:
+                for alum in alumnos_no_filter:
+                    if alum.id == int(alumno):
+                        content['alumno'] = alum    
+                        content["seguimiento"] = True
+                        break
+                content['informacion'] = Seguimiento.objects.filter(alumno=alum)
+            except ValueError:
+                return redirect('index')
+            
+        return render(request,'divermat/alumnos.html', context=content,)
+    except Profesor.DoesNotExist:
+        return redirect('index')
 
 @login_required
 def contenido(request):
@@ -880,26 +886,24 @@ def contenido(request):
         profesor = Profesor.objects.get(username=request.user)
         content['profesor'] = True
         content['alumno'] = False
+        content['videos'] = Video.objects.all()
+        content['resumenes'] = Resumen.objects.all()
+        temas = []
+        for tema in Tema.objects.all():
+            temas.append(tema.titulo)
+        content['temas'] = temas
 
+        todos_videos = Video.objects.all()
+        todos_res = Resumen.objects.all()
+
+        content['videos'] = getFilteredContent(todos_videos,request)
+        content['resumenes'] = getFilteredContent(todos_res,request)
+
+        return render(request,'divermat/contenido.html', context=content,)
     except Profesor.DoesNotExist:
         content['profesor'] = False
+        return redirect('index')
     
-    content['videos'] = Video.objects.all()
-    content['resumenes'] = Resumen.objects.all()
-    temas = []
-    for tema in Tema.objects.all():
-        temas.append(tema.titulo)
-    content['temas'] = temas
-
-    todos_videos = Video.objects.all()
-    todos_res = Resumen.objects.all()
-
-    content['videos'] = getFilteredContent(todos_videos,request)
-    content['resumenes'] = getFilteredContent(todos_res,request)
-
-    return render(request,'divermat/contenido.html', context=content,)
-
-
 @login_required
 def clase(request,clase=None):
 
@@ -907,23 +911,22 @@ def clase(request,clase=None):
     content['registro'] = False
 
     if clase:
-        
-        flag = False
-        for c in Clase.objects.all():
-            if c.id == int(clase):
-                flag = True
-                break
-        if flag:
-            try:
-                usuario = Profesor.objects.get(username=request.user)
-                return claseProfesor(request,c)
-            except Profesor.DoesNotExist:
-                try:
-                    usuario = Alumno.objects.get(username=request.user)
-                    return claseAlumno(request,c)
-                except Alumno.DoesNotExist:
-                    return render(request,'divermat/clase.html', context=content,)
 
+        try:
+            usuario = Profesor.objects.get(username=request.user)
+            try:
+                c = Clase.objects.get(id=int(clase), profesor=usuario)
+                return claseProfesor(request,c)
+            except Clase.DoesNotExist or ValueError:
+                return redirect('clases')
+        except Profesor.DoesNotExist:
+            try:
+                usuario = Alumno.objects.get(username=request.user)
+                return claseAlumno(request,usuario.clase)
+            except Alumno.DoesNotExist:
+                return redirect('index')
+    
+    return redirect('clases')
 
 @login_required
 def claseProfesor(request,clase):
@@ -970,136 +973,151 @@ def infoclase(request, claseid=None):
     content={}
     content['registro'] = False
     content['profesor'] = True
-    content['alumno'] = False
-    if claseid:
-        for c in Clase.objects.all():
-            if c.id == int(claseid):
-                flag = True
-                break
-        if flag:  
-            content['clase'] = c
-            content['curso'] = c.curso
-            content['ano_academico'] = c.ano_academico
-            content['nombre'] = c.nombre
-            content['centro'] = c.centro
-            if request.method == 'POST':
-                form = NuevaInfoClase(request.POST)
-                if form.is_valid():
-                    curso = form.cleaned_data['curso']
-                    ano_academico = form.cleaned_data['ano_academico']
-                    nombre = form.cleaned_data['nombre']
-                    centro = form.cleaned_data['centro']
-                    if curso != "" and curso !=None:
-                        alumnos = Alumno.objects.filter(clase=c)
-                        c.curso = curso
-                        c.save()
-                        for alumno in alumnos:
-                            alumno.curso = curso
-                            alumno.save()
-                    if ano_academico != None and ano_academico!="":
-                        c.ano_academico = ano_academico
-                        c.save()
-                    if nombre != "" and nombre !=None:
-                        print(nombre)
-                        c.nombre = nombre
-                        c.save()
-                    if centro != "" and centro != None:
-                        c.centro = centro
-                        c.save()
+    try:
+        profesor = Profesor.objects.get(username=request.user)
 
-                    return clase(request,claseid)
+        content['alumno'] = False
+        if claseid:
+            try:
+                try:
+                    c = Clase.objects.get(id=int(claseid),profesor=profesor) 
+                except ValueError:
+                    return redirect('clases')
+                content['clase'] = c
+                content['curso'] = c.curso
+                content['ano_academico'] = c.ano_academico
+                content['nombre'] = c.nombre
+                content['centro'] = c.centro
+                if request.method == 'POST':
+                    form = NuevaInfoClase(request.POST)
+                    if form.is_valid():
+                        curso = form.cleaned_data['curso']
+                        ano_academico = form.cleaned_data['ano_academico']
+                        nombre = form.cleaned_data['nombre']
+                        centro = form.cleaned_data['centro']
+                        if curso != "" and curso !=None:
+                            alumnos = Alumno.objects.filter(clase=c)
+                            c.curso = curso
+                            c.save()
+                            for alumno in alumnos:
+                                alumno.curso = curso
+                                alumno.save()
+                        if ano_academico != None and ano_academico!="":
+                            c.ano_academico = ano_academico
+                            c.save()
+                        if nombre != "" and nombre !=None:
+                            c.nombre = nombre
+                            c.save()
+                        if centro != "" and centro != None:
+                            c.centro = centro
+                            c.save()
+
+                        return clase(request,claseid)
+            except Clase.DoesNotExist:
+                content['form'] = NuevaInfoClase()
+                return redirect('index')
+            
+        content['form'] = NuevaInfoClase()
         
-    content['form'] = NuevaInfoClase()
-    
-    return render(request,'divermat/nuevainfoclase.html', context=content,)
+        return render(request,'divermat/nuevainfoclase.html', context=content,)
+    except Profesor.DoesNotExist:
+        return redirect('clases')
 
 @login_required
 def alumnosclase(request, claseid=None):
     content={}
     content['registro'] = False
     content['profesor'] = True
-    if claseid:
-        for c in Clase.objects.all():
-            if c.id == int(claseid):
-                flag = True
-                break
-
-        if flag:  
-
-            alumnos = getAlumnosClase(c.id)
-            content['clase'] = c
-            content['alumnos'] = alumnos
-    if request.method == 'POST':
-        lista = request.POST.getlist("Alumnos")
-        print(lista)
-        for alum in lista:
-            alumnoid = alum
-            alumno = Alumno.objects.get(id=alumnoid)
-            alumno.delete()
-            alumnos = getAlumnosClase(claseid)
-            #La lista sale actualizada al haber puesto clase a None en el alumno
-            #Clase.objects.filter(id=claseid).update(alumnos=alumnos)
+    try:
+        usuario = Profesor.objects.get(username=request.user)
+        if claseid:
+            try:
+                try:
+                    c=Clase.objects.get(id=int(claseid)) 
+                except ValueError:
+                    return redirect('clases')
+                alumnos = getAlumnosClase(c.id)
+                content['clase'] = c
+                content['alumnos'] = alumnos
+            except Clase.DoesNotExist:
+                return redirect('clases')
             
-            content['clase'] = alumno.clase
-            content['alumnos'] = alumnos
-        
-        form = NuevoAlumno(request.POST)
-        
-        if form.is_valid():
-            n_alumnos = form.cleaned_data['n_alumnos']
-            clase = Clase.objects.get(id=claseid)
-            content['clase'] = clase
-           # alumnos_auto = form.cleaned_data['alumnos_auto']
+        if request.method == 'POST':
+            lista = request.POST.getlist("Alumnos")
+            for alum in lista:
+                alumnoid = alum
+                alumno = Alumno.objects.get(id=alumnoid)
+                alumno.delete()
+                alumnos = getAlumnosClase(claseid)
+                #La lista sale actualizada al haber puesto clase a None en el alumno
+                #Clase.objects.filter(id=claseid).update(alumnos=alumnos)
+                
+                content['clase'] = alumno.clase
+                content['alumnos'] = alumnos
+            
+            form = NuevoAlumno(request.POST)
+            
+            if form.is_valid():
+                n_alumnos = form.cleaned_data['n_alumnos']
+                clase = Clase.objects.get(id=claseid)
+                content['clase'] = clase
+            # alumnos_auto = form.cleaned_data['alumnos_auto']
 
-            #if alumnos_auto == 'Si':
-            alumnos = Alumno.objects.all().order_by("id")
-            print(alumnos)
-            nalm = 0
-            for alm in alumnos:
-                nalm +=1
-            ultimo_id = alumnos[nalm-1].id
-            for i in range(0,n_alumnos):
-                alumno = Alumno()
-                alumno.username = "user_" + str(i+ultimo_id)
-                alumno.password = StringGenerator("[\l\d]{10}").render_list(1,unique=True)[0]
-                alumno.password_temporal = alumno.password
-                alumno.set_password(alumno.password)
-                alumno.centro = clase.centro
-                alumno.curso = clase.curso
-                alumno.clase = clase
-                alumno.numexamen = 0
-                alumno.tipo = True
-                alumno.save()
+                #if alumnos_auto == 'Si':
+                alumnos = Alumno.objects.all().order_by("id")
+                nalm = 0
+                for alm in alumnos:
+                    nalm +=1
+                ultimo_id = alumnos[nalm-1].id
+                for i in range(0,n_alumnos):
+                    alumno = Alumno()
+                    alumno.username = "user_" + str(i+ultimo_id)
+                    alumno.password = StringGenerator("[\l\d]{10}").render_list(1,unique=True)[0]
+                    alumno.password_temporal = alumno.password
+                    alumno.set_password(alumno.password)
+                    alumno.centro = clase.centro
+                    alumno.curso = clase.curso
+                    alumno.clase = clase
+                    alumno.numexamen = 0
+                    alumno.tipo = True
+                    alumno.save()
+            
+        form = NuevoAlumno(None,None)
+        content['form'] = form
         
-    form = NuevoAlumno(None,None)
-    content['form'] = form
-    
-    return render(request,'divermat/alumnosclase.html', context=content,)
+        return render(request,'divermat/alumnosclase.html', context=content,)
+    except Profesor.DoesNotExist:
+        return redirect('index')
 
 @login_required
 def seguimientoclase(request, claseid=None):
     content={}
     content['registro'] = False
-    content['profesor'] = True
-    content['alumno'] = False
+    try:
+        usuario = Profesor.objects.get(username=request.user)
+        content['profesor'] = True
+        content['alumno'] = False
 
-    if claseid:
-        for c in Clase.objects.all():
-            if c.id == int(claseid):
-                flag = True
-                break
-
-        if flag:
-            content['clase'] = c  
-            informacion = []
-            for t in Tema.objects.filter(curso=c.curso):
-                informacion.append(calcularAcierto(t,c))
-            content['informacion'] = informacion
-            #Comprobarlo cuando estén los alumnos listos
-            content['ejercicios_asignados'] = c.ejercicios.all()
-
-    return render(request,'divermat/seguimientoclase.html', context=content,)
-
+        if claseid:
+            try:
+                try:
+                    c = Clase.objects.get(id=int(claseid))
+                except ValueError:
+                    return redirect('clases')
+                content['clase'] = c  
+                informacion = []
+                for t in Tema.objects.filter(curso=c.curso):
+                    informacion.append(calcularAcierto(t,c))
+                content['informacion'] = informacion
+                #Comprobarlo cuando estén los alumnos listos
+                content['ejercicios_asignados'] = c.ejercicios.all()
+                return render(request,'divermat/seguimientoclase.html', context=content,)
+            except Clase.DoesNotExist:
+                return redirect('clases')
+        return redirect('clases')
+    except Profesor.DoesNotExist:
+        return redirect('index')
+    
 @login_required
 def seguimientoalumnoclase(request, alumnoid=None):
     content={}
@@ -1108,7 +1126,11 @@ def seguimientoalumnoclase(request, alumnoid=None):
     content['alumno'] = False
     if alumnoid:
         try:
-            alumno=Alumno.objects.get(id=alumnoid)
+            try:
+                alumno=Alumno.objects.get(id=alumnoid)
+            except ValueError:
+                return redirect('index')
+            
             content['nombre'] = alumno.first_name 
             content['apellidos'] = alumno.last_name
             content['username'] = alumno.username
@@ -1119,7 +1141,8 @@ def seguimientoalumnoclase(request, alumnoid=None):
 
         except Alumno.DoesNotExist:
             content['error'] = "Error obteniendo la informacion del alumno"
-
+            return redirect('index')
+    
     return render(request,'divermat/seguimientoalumnoclase.html', context=content,)
 
 @login_required
@@ -1128,17 +1151,16 @@ def ejerciciosAsignados(request,claseid=None, ejercicioid=None):
     content['registro'] = False
     try:
         usuario = Profesor.objects.get(username=request.user)
-        return ejerciciosAsignadosProfesor(request,claseid,ejercicioid)
+        return ejerciciosAsignadosProfesor(request,claseid,ejercicioid,usuario)
     except Profesor.DoesNotExist:
         try:
             usuario = Alumno.objects.get(username=request.user)
             return ejerciciosAsignadosAlumno(request,usuario)
         except Alumno.DoesNotExist:
-            return render(request,'divermat/ejerciciosAsignadosProfesor.html', context=content,)
-
+            return redirect('index')
 
 @login_required
-def ejerciciosAsignadosProfesor(request,claseid,ejercicioid):
+def ejerciciosAsignadosProfesor(request,claseid,ejercicioid,usuario):
     content = {}
     content['registro'] = False
     content['profesor'] = True
@@ -1147,34 +1169,39 @@ def ejerciciosAsignadosProfesor(request,claseid,ejercicioid):
         content['ejercicio'] = True
     if claseid:
         # Obtenemos la clase de la que el profesor quiere sacar los ejercicios asignados
-        clase = Clase.objects.get(id=claseid)
-        content['clase'] = clase
-        # Gueneramos la lista en la que añadiremos los ejercicios Asignados a la clase
-        content['ejercicios_asignados'] = []
-        # Obtenemos los alumnos pertenecientes a la clase
-        alumnos = Alumno.objects.filter(clase=clase)
-        if clase.ejercicios is not None:
-            # Recorremos los ejercicios y alumnos para ver qué alumnos han hecho qué ejercicios
-            for ejercicio in clase.ejercicios.all():
-                # Generamos el objeto que tendrá el ejercicio y una lista con los alumnos que lo han realizado
-                ejercicio_asignado = {}
-                ejercicio_asignado['ejercicio'] = ejercicio
-                alumnos_hecho_ej = []
-                for alumno in alumnos:
-                    ejus = EjercicioUsuario.objects.filter(alumno=alumno,ejercicio=ejercicio)
-                    if ejus.count() > 0:
-                        alumnos_hecho_ej.append(alumno)
-                ejercicio_asignado['alumnos'] = alumnos_hecho_ej
-                ejercicio_asignado['n_alumnos'] = len(alumnos_hecho_ej)
-                # Añadimos a la lista de ejercicios asignados la información obtenida
-                content['ejercicios_asignados'].append(ejercicio_asignado)
-                if ejercicioid != None and int(ejercicioid) == ejercicio.id:
-                    content['alumnos'] = alumnos_hecho_ej
-                    content['ejercicio_seleccionado'] = ejercicio   
-    return render(request,'divermat/ejerciciosAsignadosProfesor.html', context=content,)
-    
-
-    
+        try:
+            try:
+                clase = Clase.objects.get(id=claseid,profesor=usuario)
+            except ValueError:
+                return redirect('index')
+            content['clase'] = clase
+            # Gueneramos la lista en la que añadiremos los ejercicios Asignados a la clase
+            content['ejercicios_asignados'] = []
+            # Obtenemos los alumnos pertenecientes a la clase
+            alumnos = Alumno.objects.filter(clase=clase)
+            if clase.ejercicios is not None:
+                # Recorremos los ejercicios y alumnos para ver qué alumnos han hecho qué ejercicios
+                for ejercicio in clase.ejercicios.all():
+                    # Generamos el objeto que tendrá el ejercicio y una lista con los alumnos que lo han realizado
+                    ejercicio_asignado = {}
+                    ejercicio_asignado['ejercicio'] = ejercicio
+                    alumnos_hecho_ej = []
+                    for alumno in alumnos:
+                        ejus = EjercicioUsuario.objects.filter(alumno=alumno,ejercicio=ejercicio)
+                        if ejus.count() > 0:
+                            alumnos_hecho_ej.append(alumno)
+                    ejercicio_asignado['alumnos'] = alumnos_hecho_ej
+                    ejercicio_asignado['n_alumnos'] = len(alumnos_hecho_ej)
+                    # Añadimos a la lista de ejercicios asignados la información obtenida
+                    content['ejercicios_asignados'].append(ejercicio_asignado)
+                    if ejercicioid != None and int(ejercicioid) == ejercicio.id:
+                        content['alumnos'] = alumnos_hecho_ej
+                        content['ejercicio_seleccionado'] = ejercicio   
+            return render(request,'divermat/ejerciciosAsignadosProfesor.html', context=content,)
+        except Clase.DoesNotExist:
+            return redirect('index')
+    return redirect('index')
+       
 @login_required
 def ejerciciosAsignadosAlumno(request,alumno):
     content = {}
@@ -1203,7 +1230,8 @@ def ejerciciosAsignadosAlumno(request,alumno):
         content['ejercicios_realizados'] = ejercicios_realizados
         content['ejercicios_pendientes'] = ejercicios_pendientes
 
-    return render(request,'divermat/ejerciciosAsignadosAlumno.html', context=content,)
+        return render(request,'divermat/ejerciciosAsignadosAlumno.html', context=content,)
+    return redirect('index')
 
 #Metodos que se usan internamente
 
