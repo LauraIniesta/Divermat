@@ -14,7 +14,7 @@ class Usuario(User):
         #  imprimir en orden de last_name,first_name
 
     def __str__(self):
-        return self.first_name + " " + self.last_name
+        return str(self.first_name) + " " + str(self.last_name)
 
 
 class Curso(models.Model):
@@ -48,7 +48,7 @@ class Profesor(Usuario):
         #  imprimir en orden de last_name,first_name
 
     def __str__(self):
-        return self.first_name + " " + self.last_name
+        return str(self.first_name) + " " + str(self.last_name)
 
 class Ejercicio(models.Model):
     curso = models.ForeignKey(Curso,
@@ -94,7 +94,7 @@ class Clase(models.Model):
         #  imprimir en orden de last_name,first_name
 
     def __str__(self):
-        return str(self.curso) + "º ESO " + self.nombre + " " + str(self.ano_academico) + " " + self.centro
+        return str(self.curso) + "º ESO " + str(self.nombre) + " " + str(self.ano_academico) + " " + str(self.centro)
 
 class Alumno(Usuario):
     #User ya tiene name username y last name
@@ -110,7 +110,7 @@ class Alumno(Usuario):
         #  imprimir en orden de last_name,first_name
 
     def __str__(self):
-        return self.first_name + " " + self.last_name + "-" + self.username
+        return str(self.first_name) + " " + str(self.last_name) + "-" + str(self.username)
 
 
 class Video(models.Model):
@@ -161,7 +161,7 @@ class EjercicioUsuario(models.Model):
     resultado = models.CharField(max_length=1000, default = None, null=True)
 
     def __str__(self):
-        return str(self.ejercicio) + " " + str(self.alumno) + " " +self.resultado
+        return str(self.ejercicio) + " " + str(self.alumno) + " " + str(self.resultado)
 
 
 class Examen(models.Model):
@@ -184,7 +184,7 @@ class Examen(models.Model):
         ordering = ('curso', 'titulo', )
 
     def __str__(self):
-        return str(self.curso) + " " + self.titulo
+        return str(self.curso) + " " + str(self.titulo)
 
 class Seguimiento(models.Model):
     alumno = models.ForeignKey(Alumno, 
