@@ -30,7 +30,7 @@ SECRET_KEY = '1)b-d7xg-_r^b5w35$juog!u1osp+!p3i_vdf#o343tl@k*wkh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['lauinirod.pythonanywhere.com']
+ALLOWED_HOSTS = ['lauinirod.pythonanywhere.com','127.0.0.1']
 
 
 
@@ -151,8 +151,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/divermat/static'
-STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 MEDIA_URL= "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR,"media/")
-#DATABASE_URL = 'postgres://alumnodb:alumnodb@localhost:5432/psi'
