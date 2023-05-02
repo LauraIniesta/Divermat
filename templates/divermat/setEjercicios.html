@@ -18,8 +18,8 @@
         </div>
     </div>
     <form action="{% url 'setEjercicios' tema.id %}" method="POST">
+        <ol>
         {% for ejercicio in set %}
-            <ol>
                 <div>
                     <div class="row">
                         <div class="col-xs-7 col-md-7 col-lg-7">
@@ -71,10 +71,9 @@
 
                         </div>
                     </div>
-                </div>
-            </ol>
-        
+                </div>       
         {% endfor %}
+    </ol>
         {% csrf_token %}
         <input class="boton" type="submit" value="Aceptar">   <br><br>
     </form>
