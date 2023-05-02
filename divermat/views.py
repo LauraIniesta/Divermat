@@ -295,6 +295,7 @@ def setEjercicios(request,idTema=None):
                         ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
                         ejercicio_data['foto'] = ejercicio.foto
                         soluciones = ejercicio.soluciones.split(";")
+                        soluciones_data=[]
                         for solucion in soluciones:
                             solucion_data={}
                             solucion_data['solucion'] = solucion
