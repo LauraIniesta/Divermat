@@ -36,7 +36,7 @@ def index(request):
         
     temas = []
     for tema in Tema.objects.all():
-        temas.append(tema.titulo)
+        temas.append(str(tema.curso)+"º."+tema.titulo)
     content['temas'] = temas
     
     if request.user.is_authenticated:
@@ -531,7 +531,7 @@ def videos(request):
     todos_videos = Video.objects.all()
     temas = []
     for tema in Tema.objects.all():
-        temas.append(tema.titulo)
+        temas.append(str(tema.curso)+"º."+tema.titulo)
     content['temas'] = temas
   
     if request.user.is_authenticated:
@@ -593,7 +593,7 @@ def resumenes(request):
 
     temas = []
     for tema in Tema.objects.all():
-        temas.append(tema.titulo)
+        temas.append(str(tema.curso)+"º."+tema.titulo)
     content['temas'] = temas
     
     if request.user.is_authenticated:
@@ -891,7 +891,7 @@ def contenido(request):
         content['resumenes'] = Resumen.objects.all()
         temas = []
         for tema in Tema.objects.all():
-            temas.append(tema.titulo)
+            temas.append(str(tema.curso)+"º."+tema.titulo)
         content['temas'] = temas
 
         todos_videos = Video.objects.all()
@@ -1308,7 +1308,7 @@ def getFilteredContent(todos_elem,request):
         contenido = []
         elem_filtrados = []
         for elem in todos_elem:
-            if str(tema) in str(elem.tema):
+            if str(tema).replace("1º.","").replace("2º.","").replace("3º.","").replace("4º.","") in str(elem.tema):
                 conten = {}
                 conten['id'] = elem.id
                 conten['curso'] = elem.curso
