@@ -834,13 +834,15 @@ class ViewsContentSendToTemplate(TestCase):
             
     def test_Index_context_is_correct(self):
         """Probamos el contenido enviado al Index por un usuario no loggeado"""
+        tema1 = Tema.objects.all()[0]
+        tema2 = Tema.objects.all()[1]
         respuesta = self.client.get(reverse('index'))
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertTrue(respuesta.context['ejercicios'])
         self.assertEqual(respuesta.context['Tipo'],'Ejercicios')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         self.assertEqual(respuesta.context['Contenido'][0],self.EJERCICIO_DIC)
         self.assertEqual(respuesta.context['Contenido'][1],self.EJERCICIO_DIC2)
@@ -852,8 +854,8 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertFalse(respuesta.context['alumno'])
         self.assertTrue(respuesta.context['ejercicios'])
         self.assertEqual(respuesta.context['Tipo'],'Ejercicios')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         self.assertEqual(respuesta.context['Contenido'][0],self.EJERCICIO_DIC)
         self.assertEqual(len(respuesta.context['Contenido']),len(Ejercicio.objects.filter(curso=self.curso)))
@@ -865,8 +867,8 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertFalse(respuesta.context['alumno'])
         self.assertTrue(respuesta.context['ejercicios'])
         self.assertEqual(respuesta.context['Tipo'],'Ejercicios')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         self.assertEqual(respuesta.context['Contenido'][0],self.EJERCICIO_DIC)
         self.assertEqual(len(respuesta.context['Contenido']),len(Ejercicio.objects.filter(tema=self.tema)))
@@ -877,8 +879,8 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertFalse(respuesta.context['alumno'])
         self.assertTrue(respuesta.context['ejercicios'])
         self.assertEqual(respuesta.context['Tipo'],'Ejercicios')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         self.assertEqual(respuesta.context['Contenido'][0],self.EJERCICIO_DIC2)
         self.assertEqual(len(respuesta.context['Contenido']),1)
@@ -903,6 +905,7 @@ class ViewsContentSendToTemplate(TestCase):
     
     def test_Index_context_is_correct_Profesor(self):
         """Probamos el contenido enviado al Index por un profesor"""
+        tema1 = Tema.objects.all()[0]
         login = self.client.force_login(self.profesor)
         respuesta = self.client.get(reverse('index'))
         self.assertFalse(respuesta.context['registro'])
@@ -912,7 +915,7 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertEqual(respuesta.context['Tipo'],'Ejercicios')
         self.assertEqual(respuesta.context['clases'][0],Clase.objects.filter(profesor=self.profesor)[0])
         self.assertEqual(len(respuesta.context['clases']),len(Clase.objects.filter(profesor=self.profesor)))
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         self.assertEqual(respuesta.context['Contenido'][0],self.EJERCICIO_DIC)
         self.assertEqual(respuesta.context['Contenido'][1],self.EJERCICIO_DIC2)
@@ -1134,12 +1137,14 @@ class ViewsContentSendToTemplate(TestCase):
 
     def test_Videos_context_is_correct(self):
         """Probamos el contenido enviado a Videos por un usuario no loggeado"""
+        tema1 = Tema.objects.all()[0]
+        tema2 = Tema.objects.all()[1]
         respuesta = self.client.get(reverse('videos'))
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Videos')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         # self.assertEqual(respuesta.context['Contenido'][0],self.VIDEO_DIC)
         # self.assertEqual(respuesta.context['Contenido'][1],self.VIDEO_DIC2)
@@ -1150,8 +1155,8 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Videos')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         # self.assertEqual(respuesta.context['Contenido'][0],self.RESUMEN_DIC)
         self.assertEqual(len(respuesta.context['Contenido']),len(Video.objects.filter(curso=self.curso)))
@@ -1162,8 +1167,8 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Videos')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         # self.assertEqual(respuesta.context['Contenido'][0],self.RESUMEN_DIC)
         self.assertEqual(len(respuesta.context['Contenido']),len(Video.objects.filter(tema=self.tema)))
@@ -1174,8 +1179,8 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Videos')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         # self.assertEqual(respuesta.context['Contenido'][0],self.RESUMEN_DIC2)
         # self.assertEqual(len(respuesta.context['Contenido']),1)
@@ -1195,12 +1200,14 @@ class ViewsContentSendToTemplate(TestCase):
 
     def test_Resumenes_context_is_correct(self):
         """Probamos el contenido enviado a Resumenes por un usuario no loggeado"""
+        tema1 = Tema.objects.all()[0]
+        tema2 = Tema.objects.all()[1]
         respuesta = self.client.get(reverse('resumenes'))
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Resúmenes')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         self.assertEqual(respuesta.context['Contenido'][0],self.RESUMEN_DIC)
         self.assertEqual(respuesta.context['Contenido'][1],self.RESUMEN_DIC2)
@@ -1211,8 +1218,8 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Resúmenes')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         self.assertEqual(respuesta.context['Contenido'][0],self.RESUMEN_DIC)
         self.assertEqual(len(respuesta.context['Contenido']),len(Resumen.objects.filter(curso=self.curso)))
@@ -1223,8 +1230,8 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Resúmenes')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         self.assertEqual(respuesta.context['Contenido'][0],self.RESUMEN_DIC)
         self.assertEqual(len(respuesta.context['Contenido']),len(Resumen.objects.filter(tema=self.tema)))
@@ -1235,8 +1242,8 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Resúmenes')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         self.assertEqual(respuesta.context['Contenido'][0],self.RESUMEN_DIC2)
         self.assertEqual(len(respuesta.context['Contenido']),1)
@@ -1456,6 +1463,8 @@ class ViewsContentSendToTemplate(TestCase):
     
     def test_Contenido_context_is_correct_Profesor(self):
         """Probamos el contenido enviado a Contenido por un profesor"""
+        tema1 = Tema.objects.all()[0]
+        tema2 = Tema.objects.all()[1]
         login=self.client.force_login(user=self.profesor)
         respuesta = self.client.get(reverse('contenido'))
         self.assertFalse(respuesta.context['registro'])
@@ -1466,8 +1475,8 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertEqual(respuesta.context['resumenes'][0],self.RESUMEN_DIC)
         self.assertEqual(respuesta.context['resumenes'][1],self.RESUMEN_DIC2)
         self.assertEqual(len(respuesta.context['resumenes']),len(Resumen.objects.all()))
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         
         """Probamos que el contenido es correcto si se aplica el filtro del curso"""
@@ -1479,8 +1488,8 @@ class ViewsContentSendToTemplate(TestCase):
         # self.assertEqual(len(respuesta.context['videos']),len(Video.objects.filter(curso=self.curso)))
         self.assertEqual(respuesta.context['resumenes'][0],self.RESUMEN_DIC)
         self.assertEqual(len(respuesta.context['resumenes']),len(Resumen.objects.filter(curso=self.curso)))
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
     
         """Probamos que el contenido es correcto si se aplica el filtro del tema"""
@@ -1492,8 +1501,8 @@ class ViewsContentSendToTemplate(TestCase):
         # self.assertEqual(len(respuesta.context['videos']),len(Video.objects.filter(tema=self.tema)))
         self.assertEqual(respuesta.context['resumenes'][0],self.RESUMEN_DIC)
         self.assertEqual(len(respuesta.context['resumenes']),len(Resumen.objects.filter(tema=self.tema)))
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
 
         """Probamos que el contenido es correcto si se aplica la búsqueda"""
@@ -1505,8 +1514,8 @@ class ViewsContentSendToTemplate(TestCase):
         # self.assertEqual(len(respuesta.context['videos']),len(Video.objects.all()))
         self.assertEqual(respuesta.context['resumenes'][0],self.RESUMEN_DIC2)
         self.assertEqual(len(respuesta.context['resumenes']),1)
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.all()[0].titulo)
-        self.assertEqual(respuesta.context['temas'][1],Tema.objects.all()[1].titulo)
+        self.assertEqual(respuesta.context['temas'][0],str(tema1.curso)+"º."+tema1.titulo)
+        self.assertEqual(respuesta.context['temas'][1],str(tema2.curso)+"º."+tema2.titulo)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
         
 
