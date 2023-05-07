@@ -34,7 +34,7 @@ class Tema(models.Model):
     titulo = models.CharField(default=None, max_length=150)
     
     class Meta:
-        ordering = ('tema', 'curso', )
+        ordering = ('curso', 'tema', )
 
     def __str__(self):
         return  str(self.curso) + "º ESO Tema:" + str(self.tema) + ". " + self.titulo
