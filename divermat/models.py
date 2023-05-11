@@ -112,7 +112,14 @@ class Alumno(Usuario):
     def __str__(self):
         return str(self.first_name) + " " + str(self.last_name) + "-" + str(self.username)
 
-
+class VideoFile(models.Model):
+    
+    tituloFile = models.CharField(max_length=50, default=None)
+    videoFile = models.FileField(upload_to='media/videos/%y',blank=True,null=False)
+    
+    def __str__(self):
+        return str(self.tituloFile)
+    
 class Video(models.Model):
     curso = models.ForeignKey(Curso,
                                  on_delete=models.CASCADE,
@@ -121,7 +128,10 @@ class Video(models.Model):
                                  on_delete=models.CASCADE,
                                  default=None, null=True)
     titulo = models.CharField(max_length=50, default=None)
-    video = models.FileField(upload_to='media/videos/%y',blank=True,null=False)
+    
+    video = models.ForeignKey(VideoFile,
+                                 on_delete=models.CASCADE,
+                                 default=None, null=True)
 
     class Meta:
         ordering = ('curso', 'tema', 'titulo', )
