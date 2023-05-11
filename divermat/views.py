@@ -1308,7 +1308,8 @@ def getFilteredContent(todos_elem,request):
         contenido = []
         elem_filtrados = []
         for elem in todos_elem:
-            if str(tema).replace("1º.","").replace("2º.","").replace("3º.","").replace("4º.","") in str(elem.tema):
+            elem_curso = str(tema).split("º")[0]
+            if elem_curso == str(elem.curso) and str(tema).replace("1º.","").replace("2º.","").replace("3º.","").replace("4º.","") in str(elem.tema):
                 conten = {}
                 conten['id'] = elem.id
                 conten['curso'] = elem.curso
