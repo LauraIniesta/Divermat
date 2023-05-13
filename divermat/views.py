@@ -50,7 +50,7 @@ def index(request):
             todos_ejs = Ejercicio.objects.filter(curso=alumno.curso)
             temas = []
             for tema in Tema.objects.filter(curso=alumno.curso):
-                temas.append(tema.titulo)
+                temas.append(str(tema.curso)+"º."+tema.titulo)
             content['temas'] = temas
 
             if request.method == 'POST':
@@ -543,7 +543,7 @@ def videos(request):
 
             temas = []
             for tema in Tema.objects.filter(curso=alumno.curso):
-                temas.append(tema.titulo)
+                temas.append(str(tema.curso)+"º."+tema.titulo)
             content['temas'] = temas
 
         except Alumno.DoesNotExist:
@@ -605,7 +605,7 @@ def resumenes(request):
 
             temas = []
             for tema in Tema.objects.filter(curso=alumno.curso):
-                temas.append(tema.titulo)
+                temas.append(str(tema.curso)+"º."+tema.titulo)
             content['temas'] = temas
 
         except Alumno.DoesNotExist:

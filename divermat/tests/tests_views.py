@@ -889,6 +889,8 @@ class ViewsContentSendToTemplate(TestCase):
         """Probamos el contenido enviado al Index por un alumno"""
         login = self.client.force_login(self.alumno)
         respuesta = self.client.get(reverse('index'))
+        tema = Tema.objects.filter(curso=self.alumno.curso)[0]
+        temaFiltro =str(tema.curso) + "º." + tema.titulo
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['profesor'])
         self.assertTrue(respuesta.context['alumno'])
@@ -896,7 +898,7 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertEqual(respuesta.context['Tipo'],'Ejercicios')
         self.assertEqual(respuesta.context['clase'],self.alumno.clase)
         self.assertEqual(respuesta.context['usuario'],self.alumno.username)
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.filter(curso=self.alumno.curso)[0].titulo)
+        self.assertEqual(respuesta.context['temas'][0], temaFiltro)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.filter(curso=self.alumno.curso)))
         self.assertEqual(respuesta.context['Contenido'][0],self.EJERCICIO_DIC)
         self.assertEqual(len(respuesta.context['Contenido']),len(Ejercicio.objects.filter(curso=self.alumno.curso)))
@@ -1189,10 +1191,13 @@ class ViewsContentSendToTemplate(TestCase):
         """Probamos el contenido enviado a Videos por un alumno"""
         login=self.client.force_login(user=self.alumno)
         respuesta = self.client.get(reverse('videos'))
+
+        tema = Tema.objects.filter(curso=self.alumno.curso)[0]
+        temaFiltro =str(tema.curso) + "º." + tema.titulo
         self.assertFalse(respuesta.context['registro'])
         self.assertTrue(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Videos')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.filter(curso=self.alumno.curso)[0].titulo)
+        self.assertEqual(respuesta.context['temas'][0],temaFiltro)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.filter(curso=self.alumno.curso)))
         # self.assertEqual(respuesta.context['Contenido'][0],self.RESUMEN_DIC)
         self.assertEqual(len(respuesta.context['Contenido']),len(Video.objects.filter(curso=self.alumno.curso)))
@@ -1252,10 +1257,13 @@ class ViewsContentSendToTemplate(TestCase):
         """"Probamos el contenido enviado a Resumenes por un alumno"""
         login=self.client.force_login(user=self.alumno)
         respuesta = self.client.get(reverse('resumenes'))
+
+        tema = Tema.objects.filter(curso=self.alumno.curso)[0]
+        temaFiltro =str(tema.curso) + "º." + tema.titulo
         self.assertFalse(respuesta.context['registro'])
         self.assertTrue(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Resúmenes')
-        self.assertEqual(respuesta.context['temas'][0],Tema.objects.filter(curso=self.alumno.curso)[0].titulo)
+        self.assertEqual(respuesta.context['temas'][0],temaFiltro)
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.filter(curso=self.alumno.curso)))
         self.assertEqual(respuesta.context['Contenido'][0],self.RESUMEN_DIC)
         self.assertEqual(len(respuesta.context['Contenido']),len(Resumen.objects.filter(curso=self.alumno.curso)))
