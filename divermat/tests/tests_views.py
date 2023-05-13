@@ -862,7 +862,7 @@ class ViewsContentSendToTemplate(TestCase):
 
     
         """Probamos que el contenido es correcto si se aplica el filtro del tema"""
-        respuesta = self.client.get(reverse('index'),{'tema':self.tema.titulo})
+        respuesta = self.client.get(reverse('index'),{'tema':str(self.tema.curso)+"º."+self.tema.titulo})
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertTrue(respuesta.context['ejercicios'])
@@ -1163,7 +1163,7 @@ class ViewsContentSendToTemplate(TestCase):
 
     
         """Probamos que el contenido es correcto si se aplica el filtro del tema"""
-        respuesta = self.client.get(reverse('videos'),{'tema':self.tema.titulo})
+        respuesta = self.client.get(reverse('videos'),{'tema':str(self.tema.curso)+"º."+self.tema.titulo})
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Videos')
@@ -1226,7 +1226,7 @@ class ViewsContentSendToTemplate(TestCase):
 
     
         """Probamos que el contenido es correcto si se aplica el filtro del tema"""
-        respuesta = self.client.get(reverse('resumenes'),{'tema':self.tema.titulo})
+        respuesta = self.client.get(reverse('resumenes'),{'tema':str(self.tema.curso)+"º."+self.tema.titulo})
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertEqual(respuesta.context['Tipo'],'Resúmenes')
@@ -1493,7 +1493,7 @@ class ViewsContentSendToTemplate(TestCase):
         self.assertEqual(len(respuesta.context['temas']),len(Tema.objects.all()))
     
         """Probamos que el contenido es correcto si se aplica el filtro del tema"""
-        respuesta = self.client.get(reverse('contenido'),{'tema':self.tema.titulo})
+        respuesta = self.client.get(reverse('contenido'),{'tema':str(self.tema.curso)+"º."+self.tema.titulo})
         self.assertFalse(respuesta.context['registro'])
         self.assertFalse(respuesta.context['alumno'])
         self.assertTrue(respuesta.context['profesor'])
