@@ -1,4 +1,4 @@
-function sortTable(n,tabla,init) {
+function sortTableContenido(n,tabla,init) {
     var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
     table = document.getElementById(tabla);
     switching = true;
@@ -17,8 +17,8 @@ function sortTable(n,tabla,init) {
         shouldSwitch = false;
         /*Get the two elements you want to compare,
         one from current row and one from the next:*/
-        x = rows[i].getElementsByTagName("TD")[n];
-        y = rows[i + 1].getElementsByTagName("TD")[n];
+        x = rows[i].getElementsByTagName("a")[n];
+        y = rows[i + 1].getElementsByTagName("a")[n];
         /*check if the two rows should switch place,
         based on the direction, asc or desc:*/
         if (dir == "asc") {

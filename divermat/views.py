@@ -283,10 +283,12 @@ def setEjercicios(request,idTema=None):
             ejercicios = Ejercicio.objects.filter(tema=tema)
             j=0
             if len(ejercicios) >= 5:
+                ejercicios_added = []
                 while j < 5:
                     i = random.randint(0,len(ejercicios)-1)
                     ejercicio = ejercicios[i]
-                    if ejercicio not in set:
+                    if i not in ejercicios_added:
+                        ejercicios_added.append(i)
                         ejercicio_data = {}
                         ejercicio_data['id'] = ejercicio.id
                         ejercicio_data['enunciado'] = ejercicio.enunciado
@@ -323,21 +325,42 @@ def setEjercicios(request,idTema=None):
                             soluciones_data.append(solucion_data)
                         ejercicio_data['soluciones'] = soluciones_data
                         set.append(ejercicio_data)
-            
+            content['set'] = set
             if request.method == 'POST':
 
                 correcto = False
 
-
+                all_ejercicios = Ejercicio.objects.filter(tema=tema)
                 form_data = request.POST
-                for ejercicio_data in set:
+                set_ejercicios = []
+                for ej in all_ejercicios:
+                    respuesta = form_data.get(str(ej.id))
+                    if respuesta:
+                        ejercicio_data = {}
+                        ejercicio_data['id'] = ej.id
+                        ejercicio_data['enunciado'] = ej.enunciado
+                        ejercicio_data['titulo'] = ej.titulo
+                        ejercicio_data['tipo'] = ej.tipo
+                        ejercicio_data['nsoluciones'] = ej.nsoluciones
+                        ejercicio_data['foto'] = ej.foto
+
+                        soluciones = ej.soluciones.split(";")
+                        soluciones_data=[]
+                        for solucion in soluciones:
+                            solucion_data={}
+                            solucion_data['solucion'] = solucion
+                            solucion_data['checked'] = False
+                            soluciones_data.append(solucion_data)
+                        ejercicio_data['soluciones'] = soluciones_data
+                        set_ejercicios.append(ejercicio_data)
+                
+                for ejercicio_data in set_ejercicios:
                     ejercicio = Ejercicio.objects.get(id=ejercicio_data['id'])
                     ejercicio_data, correcto =  getSolucionesEjercicio(ejercicio_data,ejercicio,None,form_data)           
                     if alumno:
-                        añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)                
+                        añadirEjSeguimientoAlumno(alumno,ejercicio,correcto)   
+                content['set'] = set_ejercicios             
             
-            content['set'] = set
-
             return render(request,'divermat/setEjercicios.html', context=content)
         
         except Alumno.DoesNotExist:
@@ -963,7 +986,7 @@ def claseAlumno(request,clase=None):
     content['nombre'] = clase.nombre
     content['nalumnos'] = clase.n_alumnos
     content['centro'] = clase.centro
-    content['ejercicios'] = clase.ejercicios
+    content['ejercicios'] = clase.ejercicios.filter(curso=clase.curso)
     content['alumno'] = True
     content['profesor'] = False
 
@@ -1182,7 +1205,7 @@ def ejerciciosAsignadosProfesor(request,claseid,ejercicioid,usuario):
             alumnos = Alumno.objects.filter(clase=clase)
             if clase.ejercicios is not None:
                 # Recorremos los ejercicios y alumnos para ver qué alumnos han hecho qué ejercicios
-                for ejercicio in clase.ejercicios.all():
+                for ejercicio in clase.ejercicios.filter(curso=clase.curso):
                     # Generamos el objeto que tendrá el ejercicio y una lista con los alumnos que lo han realizado
                     ejercicio_asignado = {}
                     ejercicio_asignado['ejercicio'] = ejercicio
@@ -1220,7 +1243,7 @@ def ejerciciosAsignadosAlumno(request,alumno):
         ejercicios_realizados = []
         ejercicios_pendientes = []
         # Recorremos los ejercicios asignados a la clase para ver qué ejercicios ha hecho el alumno
-        for ejercicio in clase.ejercicios.all():
+        for ejercicio in clase.ejercicios.filter(curso=clase.curso):
             ejus = EjercicioUsuario.objects.filter(alumno=alumno,ejercicio=ejercicio)
             if ejus.count() > 0:
                 ejercicios_realizados.append(ejercicio)
@@ -1519,6 +1542,7 @@ def getEjercicioDataSolucionesSeleccionadas(ejercicio_alumno,ejercicio):
     ejercicio_data['titulo'] = ejercicio.titulo
     ejercicio_data['tipo'] = ejercicio.tipo
     ejercicio_data['nsoluciones'] = ejercicio.nsoluciones
+    ejercicio_data['foto'] = ejercicio.foto
     if ejercicio_alumno.resultado != None:
         ejercicio_data['resultado'] = ejercicio_alumno.resultado
     #Separamos las posibles soluciones del ejercicio
@@ -1563,7 +1587,8 @@ def getSolucionesEjercicio(ejercicio_data,ejercicio,ejercicios_alumno,form_data)
         ejercicio_data['resultado'] = "Respuesta incorrecta el resultado esperado era: " + solucion_esperada_string
         correcto=False
         respuesta = form_data.get(str(ejercicio.id))
-        solucion_introducida = respuesta.replace(",",".").replace("'",".")
+        if respuesta:
+            solucion_introducida = respuesta.replace(",",".").replace("'",".")
       
         #incluimos en la informacion de las soluciones cuales han sido seleccionadas por el usuario
         soluciones_data=[]
